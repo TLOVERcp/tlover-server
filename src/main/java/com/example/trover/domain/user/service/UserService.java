@@ -7,4 +7,5 @@ import javax.validation.Valid;
 
 public interface UserService {
     LoginResponse loginUser(@Valid LoginRequest loginRequest);
+
 }
