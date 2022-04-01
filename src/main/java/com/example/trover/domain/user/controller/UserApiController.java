@@ -28,4 +28,9 @@ public class UserApiController {
         return ResponseEntity.ok(userService.loginUser(loginRequest));
     }
 
+//    @ApiOperation(value ="로그인^~^", notes = "로그안 합니다.")
+//    @PostMapping("login2")
+//    public ResponseEntity<LoginResponse> loginUser2(@Valid @RequestBody LoginRequest loginRequest){
+//        return ResponseEntity.ok(userService.loginUser(loginRequest));
+//    }
 }
