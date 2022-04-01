@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService{
         System.out.println(loginRequest.getLoginId());
         System.out.println(user.get().getUserLoginId());
         if (user.isEmpty()) throw new NotFoundUserException("해당 LoginId의 User를 찾을 수 없습니다.");
-        if (!user.get().getUser_password().equals(loginRequest.getPassword())) throw new InvalidPasswordException("Password가 잘못되었습니다.");
+        if (!user.get().getUserPassword().equals(loginRequest.getPassword())) throw new InvalidPasswordException("Password가 잘못되었습니다.");
         return LoginResponse.from(user.get());
     }
 }
