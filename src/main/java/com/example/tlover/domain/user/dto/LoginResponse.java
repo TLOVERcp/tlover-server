@@ -15,18 +15,14 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "로그인을 위한 응답 객체")
 public class LoginResponse {
 
-    private Long userId;
     private String message;
 
-    private String accessJwt;
-    private String refreshJwt;
+    //private String accessJwt;
+    //private String refreshJwt;
 
-    public static LoginResponse from(User user, String accessJwt, String refreshJwt) {
+    public static LoginResponse from(User user) {
         return LoginResponse.builder()
-                .userId(user.getUserId())
                 .message("로그인에 성공했습니다.")
-                .accessJwt(accessJwt)
-                .refreshJwt(refreshJwt)
                 .build();
     }
 

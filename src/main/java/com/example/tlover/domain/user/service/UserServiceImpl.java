@@ -5,6 +5,7 @@ import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.global.encryption.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,20 +17,25 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final SHA256Util sha256Util;
+
 
     @Override
     public User loginUser(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByUserLoginId(loginRequest.getLoginId());
 
         if (user.isEmpty()) throw new NotFoundUserException();
-        if (!user.get().getUserPassword().equals(loginRequest.getPassword())) throw new InvalidPasswordException();
+        if (!user.get().getUserPassword().equals(sha256Util.encrypt(loginRequest.getPassword()))) throw new InvalidPasswordException();
         return user.get();
     }
 
     @Override
     public User insertUser(SignupRequest signupRequest) {
-        userRepository.save(signupRequest.toEntity());
-        return signupRequest.toEntity();
+
+        User user = signupRequest.toEntity(sha256Util.encrypt(signupRequest.getPassword()));
+        this.duplicateCheck(DuplicateRequest.from(user));
+        userRepository.save(user);
+        return user;
     }
 
     @Override
@@ -58,14 +64,18 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByUserLoginId(loginId).get();
 
         // 기존 비밀번호가 일치하지 않을 때
-        if (!user.getUserPassword().equals(resetPasswordRequest.getBeforePassword())) throw new NotEqualPasswordException();
+        if (!user.getUserPassword().equals(sha256Util.encrypt(resetPasswordRequest.getBeforePassword())))
+            throw new NotEqualPasswordException();
 
         // 변경할 비밀번호가 기존 비밀번호와 일치할 때
-        if (user.getUserPassword().equals(resetPasswordRequest.getAfterPassword())) throw new PasswordEqualException();
+        if (user.getUserPassword().equals(sha256Util.encrypt(resetPasswordRequest.getAfterPassword())))
+            throw new PasswordEqualException();
 
-        user.setUserPassword(resetPasswordRequest.getAfterPassword());
+        user.setUserPassword(sha256Util.encrypt(resetPasswordRequest.getAfterPassword()));
         return user;
     }
+
+
 
 
 }

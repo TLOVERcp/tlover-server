@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/trover?characterEncoding=utf8
     username: root
-    password: 1234
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mvc:
@@ -22,3 +22,5 @@ spring:
     #open-in-view: false
     database-platform: org.hibernate.dialect.MySQL5Dialect
 
+server:
+  port: 8074
