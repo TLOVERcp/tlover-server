@@ -20,7 +20,7 @@ public class DiaryThema {
     private Long diaryThemaId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annonce_annonceId")
+    @JoinColumn(name = "diary_diaryId")
     private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
