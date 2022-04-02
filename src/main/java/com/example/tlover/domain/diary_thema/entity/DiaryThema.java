@@ -20,14 +20,14 @@ public class DiaryThema {
     private Long diaryThemaId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annonce_annonceId")
+    @JoinColumn(name = "diary_diaryId")
     private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thema_themaId")
     private Thema thema;
 
-    public void setAnnonce(Diary diary) {
+    public void setDiary(Diary diary) {
         this.diary = diary;
         diary.getDiaryThemas().add(this);
     }

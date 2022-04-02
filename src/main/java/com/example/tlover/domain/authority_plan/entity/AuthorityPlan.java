@@ -18,7 +18,7 @@ public class AuthorityPlan {
     @Id
     @GeneratedValue
     private Long authorityPlanId;
-
+//plan으로 바꾸기
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_diaryId")
     private Diary diary;
@@ -31,7 +31,7 @@ public class AuthorityPlan {
         this.user = user;
         user.getAuthorityPlans().add(this);
     }
-
+//plan으로 바꾸기
     public void setAnnonce(Diary diary) {
         this.diary = diary;
         diary.getAuthorityPlans().add(this);
