@@ -1,7 +1,6 @@
 package com.example.tlover.global.exception;
 
-import com.example.tlover.domain.user.exception.InvalidPasswordException;
-import com.example.tlover.domain.user.exception.NotFoundUserException;
+import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.global.dto.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -66,5 +65,27 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
     public final ResponseEntity<Object> handleInvalidPasswordException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.PRECONDITION_FAILED.toString(), Arrays.asList(ex.getMessage()));
         return new ResponseEntity(exceptionResponse, HttpStatus.PRECONDITION_FAILED);
+    }
+
+    /**
+     * OAuth2 User Domain Exception
+     */
+
+    @ExceptionHandler(NaverApiResponseException.class)
+    public final ResponseEntity<Object> handleNaverApiResponseException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.CONFLICT.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NaverApiUrlException.class)
+    public final ResponseEntity<Object> handleNaverApiUrlException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.CONFLICT.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NaverConnectionException.class)
+    public final ResponseEntity<Object> handleNaverConnectionException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.CONFLICT.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
