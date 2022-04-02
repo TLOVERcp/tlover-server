@@ -18,7 +18,7 @@ public class DiaryRegion {
 
     @Id
     @GeneratedValue
-    private Long annonceRegionId;
+    private Long diaryRegionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_diaryId")
@@ -28,7 +28,7 @@ public class DiaryRegion {
     @JoinColumn(name = "region_regionId")
     private Region region;
 
-    public void setAnnonce(Diary diary) {
+    public void setDiary(Diary diary) {
         this.diary = diary;
         diary.getDiaryRegions().add(this);
     }
