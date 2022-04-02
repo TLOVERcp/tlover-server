@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface UserRefreshTokenRepository extends JpaRepository<UserRefreshToken , Long> {
     Optional<UserRefreshToken> findByUserRefreshtokenId(String userRefreshtokenId);
-//    괄호안에가 where절??
 
 }

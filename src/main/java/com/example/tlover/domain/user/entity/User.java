@@ -7,23 +7,29 @@ import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
 import com.example.tlover.domain.report.entity.Report;
 import com.example.tlover.domain.scrap.entity.Scrap;
+
+import com.example.tlover.domain.user.constant.UserConstants.*;
+
+
 import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
 import com.example.tlover.domain.user_region.entity.UserRegion;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue
@@ -45,7 +51,8 @@ public class User {
 
     private String userNickName;
 
-    private String userSocialProvider;
+    @Enumerated(EnumType.STRING)
+    private ESocialProvider userSocialProvider;
 
     @OneToMany(mappedBy = "user")
     private List<Diary> diaries = new ArrayList<>();
@@ -102,4 +109,24 @@ public class User {
         report.setUser(this);
     }
 
+
+    /**
+     * Naver User Update
+     */
+
+    public User updateNaverUser(String userNickName, String userProfileImg) {
+        this.userNickName = userNickName;
+        this.userProfileImg = userProfileImg;
+        return this;
+    }
+
+    public static User toEntityOfNaverUser(HashMap<String, Object> userInfo) {
+        return User.builder()
+                .userLoginId(eNaver + userInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString())
+                .userEmail(userInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString())
+                .userNickName(userInfo.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).toString())
+                .userProfileImg(userInfo.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).toString())
+                .userSocialProvider(eNaver)
+                .build();
+    }
 }

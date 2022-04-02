@@ -3,12 +3,12 @@ package com.example.tlover.domain.user.controller;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +22,7 @@ import javax.validation.Valid;
 public class UserApiController {
 
     private final UserService userService;
+    private final OAuth2UserService oAuth2UserService;
 
 
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
@@ -62,7 +63,6 @@ public class UserApiController {
     @GetMapping("/reset-password")
     public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         return ResponseEntity.ok(userService.resetPassword(resetPasswordRequest));
-
     }
 
     @ApiOperation(value = "사용자 로그아웃", notes = "사용자 로그아웃을 합니다.")
@@ -70,6 +70,20 @@ public class UserApiController {
     public String logoutUser(Model model) {
         return null;
     }
+
+
+    /**
+     * OAuth2
+     */
+
+    @ApiOperation(value = "네이버 로그인", notes = "네이버 로그인을 합니다.")
+    @PostMapping("/naver-login")
+    public ResponseEntity<LoginResponse> loginNaverUser(@Valid @RequestBody NaverLoginRequest naverLoginRequest){
+        LoginResponse loginResponse = oAuth2UserService.validateNaverAccessToken(naverLoginRequest);
+        // 나중에 시큐리티, JWT 구현된다면 HTTP 응답 헤더에 엑세스토큰 추가!
+        return ResponseEntity.ok(loginResponse);
+    }
+
 
 
 }
