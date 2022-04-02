@@ -8,15 +8,15 @@ import javax.validation.Valid;
 public interface UserService {
     User loginUser(@Valid LoginRequest loginRequest);
 
-    SignupResponse insertUser(@Valid SignupRequest signupRequest);
+    User insertUser(@Valid SignupRequest signupRequest);
 
-    DuplicateResponse duplicateCheck(@Valid DuplicateRequest duplicateRequest);
+    void duplicateCheck(@Valid DuplicateRequest duplicateRequest);
 
-    ProfileResponse getUserProfile(String loginId);
+    User getUserProfile(String loginId);
 
-    FindIdResponse findUserId(@Valid FindIdRequest findIdRequest);
+    User findUserId(@Valid FindIdRequest findIdRequest);
 
-    ResetPasswordResponse resetPassword(@Valid ResetPasswordRequest resetPasswordRequest);
+    User resetPassword(@Valid ResetPasswordRequest resetPasswordRequest, String loginId);
 
 
 }

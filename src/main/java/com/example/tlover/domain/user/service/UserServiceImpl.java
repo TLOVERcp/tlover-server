@@ -3,9 +3,7 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
-import com.example.tlover.domain.user.exception.InvalidPasswordException;
-import com.example.tlover.domain.user.exception.NotFoundUserException;
-import com.example.tlover.domain.user.exception.UserIdDuplicateException;
+import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,44 +27,44 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public SignupResponse insertUser(SignupRequest signupRequest) {
+    public User insertUser(SignupRequest signupRequest) {
         userRepository.save(signupRequest.toEntity());
-        return SignupResponse.builder()
-                .message(signupRequest.getUserNickName() + "님, 회원가입이 완료되었습니다.")
-                .build();
+        return signupRequest.toEntity();
     }
 
     @Override
-    public DuplicateResponse duplicateCheck(DuplicateRequest duplicateRequest) {
+    public void duplicateCheck(DuplicateRequest duplicateRequest) {
         Optional<User> user = userRepository.findByUserLoginId(duplicateRequest.getLoginId());
 
         if (!user.isEmpty()) throw new UserIdDuplicateException();
-
-        return DuplicateResponse.builder()
-                .message("사용가능한 아이디입니다.")
-                .build();
     }
 
     @Override
-    public ProfileResponse getUserProfile(String loginId) {
-        Optional<User> user = userRepository.findByUserLoginId(loginId);
-        return null;
+    public User getUserProfile(String loginId) {
+        return userRepository.findByUserLoginId(loginId).get();
     }
 
     @Override
-    public FindIdResponse findUserId(FindIdRequest findIdRequest) {
-        Optional<User> user = userRepository.findByUserLoginId(findIdRequest.getUserPhoneNum());
-        return FindIdResponse.builder()
-                .userId(user.get().getUserId())
-                .build();
+    public User findUserId(FindIdRequest findIdRequest) {
+        Optional<User> user = userRepository.findByUserPhoneNum(findIdRequest.getUserPhoneNum());
+
+        if (user.isEmpty()) throw new NotFoundUserException();
+        return user.get();
     }
 
     @Override
     @Transactional
-    public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        Optional<User> user = userRepository.findByUserLoginId(resetPasswordRequest.getBeforePassword());
-        user.get().setUserPassword(resetPasswordRequest.getAfterPassword());
-        return null;
+    public User resetPassword(ResetPasswordRequest resetPasswordRequest, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).get();
+
+        // 기존 비밀번호가 일치하지 않을 때
+        if (!user.getUserPassword().equals(resetPasswordRequest.getBeforePassword())) throw new NotEqualPasswordException();
+
+        // 변경할 비밀번호가 기존 비밀번호와 일치할 때
+        if (user.getUserPassword().equals(resetPasswordRequest.getAfterPassword())) throw new PasswordEqualException();
+
+        user.setUserPassword(resetPasswordRequest.getAfterPassword());
+        return user;
     }
 
 
