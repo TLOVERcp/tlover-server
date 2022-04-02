@@ -1,7 +1,7 @@
 package com.example.tlover.domain.report.entity;
 
 
-import com.example.tlover.domain.annonce.entity.Annonce;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class Report {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annonce_annonceId")
-    private Annonce annonce;
+    @JoinColumn(name = "diary_diaryId")
+    private Diary diary;
 
 }
