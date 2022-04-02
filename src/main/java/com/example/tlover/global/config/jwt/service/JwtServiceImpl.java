@@ -1,5 +1,6 @@
 package com.example.tlover.global.config.jwt.service;
 
+import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
 import com.example.tlover.global.config.jwt.Secret.SecretKey;
 import com.example.tlover.domain.user_refreshtoken.repository.UserRefreshTokenRepository;
 import com.example.tlover.global.config.jwt.exception.ExpireJwtException;
@@ -115,8 +116,9 @@ public class JwtServiceImpl implements JwtService {
                     throw new NotFoundJwtException("REFRESH-TOKEN이 비어있습니다.");
                 } else {
                     //리프레시토큰 DB에서 가져오기
-                    Optional<String> userRefreshTokenRepo = userRefreshTokenRepository.findUserRefreshTokenBy(refreshTokenIdx);
-                    String userRefreshToken = userRefreshTokenRepo.get();
+                    Optional<UserRefreshToken> userRefreshTokenRepo = userRefreshTokenRepository.findByUserRefreshtokenId(refreshTokenIdx);
+                    String userRefreshToken = userRefreshTokenRepo.get().getUserRefreshtokenToken();
+
                     claims = Jwts.parser()
                             .setSigningKey(SecretKey.JWT_REFRESH_SECRET_KEY)
                             .parseClaimsJws(userRefreshToken);  // 파싱 및 검증, 실패 시 에러
