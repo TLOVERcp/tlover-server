@@ -1,8 +1,8 @@
 package com.example.tlover.domain.user.entity;
 
-import com.example.tlover.domain.annonce.entity.Annonce;
-import com.example.tlover.domain.authority_annonce.entity.AuthorityAnnonce;
+import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
 import com.example.tlover.domain.report.entity.Report;
@@ -48,7 +48,7 @@ public class User {
     private String userSocialProvider;
 
     @OneToMany(mappedBy = "user")
-    private List<Annonce> annonces = new ArrayList<>();
+    private List<Diary> diaries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Plan> plans = new ArrayList<>();
@@ -69,7 +69,7 @@ public class User {
     private List<UserThema> userThemas = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<AuthorityAnnonce> authorityAnnonces = new ArrayList<>();
+    private List<AuthorityDiary> authorityDiaries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<AuthorityPlan> authorityPlans = new ArrayList<>();
@@ -82,9 +82,9 @@ public class User {
      * 연관관계 메서드
      */
 
-    public void addAnnonce(Annonce annonce) {
-        this.annonces.add(annonce);
-        annonce.setUser(this);
+    public void addDiary(Diary diary) {
+        this.diaries.add(diary);
+        diary.setUser(this);
     }
 
     public void addPlan(Plan plan) {
