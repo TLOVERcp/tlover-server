@@ -28,12 +28,12 @@ public class AuthorityDiary {
     @JoinColumn(name = "user_userId")
     private User user;
 
-    // private String authorityAnnonceRole;
+     private String authorityDiaryRole;
 
-//    public void setUser(User user) {
-//        this.user = user;
-//        user.getAuthorityDiaries().add(this);
-//    }
+    public void setUser(User user) {
+        this.user = user;
+        user.getAuthorityDiaries().add(this);
+    }
 
     public void setDiary(Diary diary) {
         this.diary = diary;
