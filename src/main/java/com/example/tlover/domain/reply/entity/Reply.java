@@ -1,6 +1,6 @@
 package com.example.tlover.domain.reply.entity;
 
-import com.example.tlover.domain.annonce.entity.Annonce;
+import com.example.tlover.domain.diary.entity.*;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,16 +31,16 @@ public class Reply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "annonce_annonceId")
-    private Annonce annonce;
+    private Diary diary;
 
     public void setUser(User user) {
         this.user = user;
         user.getReplies().add(this);
     }
 
-    public void setAnnonce(Annonce annonce) {
-        this.annonce = annonce;
-        annonce.getReplies().add(this);
+    public void setAnnonce(Diary diary) {
+        this.diary = diary;
+        diary.getReplies().add(this);
     }
 
 }

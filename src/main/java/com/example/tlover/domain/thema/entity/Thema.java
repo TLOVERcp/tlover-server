@@ -1,6 +1,6 @@
 package com.example.tlover.domain.thema.entity;
 
-import com.example.tlover.domain.annonce_thema.entity.AnnonceThema;
+import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class Thema {
     private Long themaName;
 
     @OneToMany(mappedBy = "thema")
-    private List<AnnonceThema> annonceThemas = new ArrayList<>();
+    private List<DiaryThema> diaryThemas = new ArrayList<>();
 
     @OneToMany(mappedBy = "thema")
     private List<UserThema> userThemas = new ArrayList<>();
