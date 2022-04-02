@@ -1,6 +1,6 @@
-package com.example.tlover.domain.authority_annonce.entity;
+package com.example.tlover.domain.authority_diary.entity;
 
-import com.example.tlover.domain.annonce.entity.Annonce;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,32 +14,29 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorityAnnonce {
+public class AuthorityDiary {
 
     @Id
     @GeneratedValue
-    private Long authorityAnnonceId;
+    private Long authorityDiaryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annonce_annonceId")
-    private Annonce annonce;
+    @JoinColumn(name = "diary_diaryId")
+    private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
     private User user;
 
-   // private String authorityAnnonceRole;
+    // private String authorityAnnonceRole;
 
     public void setUser(User user) {
         this.user = user;
-        user.getAuthorityAnnonces().add(this);
+        user.getAuthorityDiaries().add(this);
     }
 
-    public void setAnnonce(Annonce annonce) {
-        this.annonce = annonce;
-        annonce.getAuthorityAnnonces().add(this);
+    public void setDiary(Diary diary) {
+        this.diary = diary;
+        diary.getAuthoritydiarys().add(this);
     }
-
-
-
 }
