@@ -30,7 +30,7 @@ public class Reply {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annonce_annonceId")
+    @JoinColumn(name = "diary_diaryId")
     private Diary diary;
 
     public void setUser(User user) {
