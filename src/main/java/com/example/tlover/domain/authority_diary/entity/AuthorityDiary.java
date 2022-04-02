@@ -30,10 +30,10 @@ public class AuthorityDiary {
 
     // private String authorityAnnonceRole;
 
-    public void setUser(User user) {
-        this.user = user;
-        user.getAuthorityDiaries().add(this);
-    }
+//    public void setUser(User user) {
+//        this.user = user;
+//        user.getAuthorityDiaries().add(this);
+//    }
 
     public void setDiary(Diary diary) {
         this.diary = diary;
