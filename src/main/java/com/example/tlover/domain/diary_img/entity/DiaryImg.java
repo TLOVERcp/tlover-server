@@ -1,8 +1,6 @@
-package com.example.tlover.domain.report.entity;
-
+package com.example.tlover.domain.diary_img.entity;
 
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,20 +13,25 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Report {
+public class DiaryImg {
 
     @Id
     @GeneratedValue
-    private Long reportId;
-
-    private String reportContext;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_userId")
-    private User user;
+    private Long diaryImgId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_diaryId")
     private Diary diary;
+
+    private String diaryImg;
+
+    public void setAnnonce(Diary diary) {
+        this.diary = diary;
+        diary.getDiaryImgs().add(this);
+    }
+
+
+
+
 
 }

@@ -1,6 +1,6 @@
-package com.example.tlover.domain.annonce_region.entity;
+package com.example.tlover.domain.diary_region.entity;
 
-import com.example.tlover.domain.annonce.entity.Annonce;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.region.entity.Region;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,28 +14,28 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnonceRegion {
+public class DiaryRegion {
 
     @Id
     @GeneratedValue
     private Long annonceRegionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annonce_annonceId")
-    private Annonce annonce;
+    @JoinColumn(name = "diary_diaryId")
+    private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_regionId")
     private Region region;
 
-    public void setAnnonce(Annonce annonce) {
-        this.annonce = annonce;
-        annonce.getAnnonceRegions().add(this);
+    public void setAnnonce(Diary diary) {
+        this.diary = diary;
+        diary.getDiaryRegions().add(this);
     }
 
     public void setRegion(Region region) {
         this.region = region;
-        region.getAnnonceRegions().add(this);
+        region.getDiaryRegions().add(this);
     }
 
 
