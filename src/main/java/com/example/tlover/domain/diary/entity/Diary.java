@@ -55,9 +55,6 @@ public class Diary {
     private List<AuthorityDiary> authoritydiarys = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary")
-    private List<AuthorityPlan> authorityPlans = new ArrayList<>();
-
-    @OneToMany(mappedBy = "diary")
     private List<DiaryImg> diaryImgs = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary")
@@ -69,19 +66,15 @@ public class Diary {
     @OneToMany(mappedBy = "diary")
     private List<Reply> replies = new ArrayList<>();
 
-    /**
-     * 연관관계 메서드
-     */
+    public void setUser(User user) {
+        this.user = user;
+        user.getDiaries().add(this);
+    }
 
-//    public void setUser(User user) {
-//        this.user = user;
-//        user.getDiaries().add(this);
-//    }
-//
-//    public void setPlan(Plan plan) {
-//        this.plan = plan;
-//        plan.getDiaries().add(this);
-//    }
+    public void setPlan(Plan plan) {
+        this.plan = plan;
+        plan.getDiaries().add(this);
+    }
 
 
 
