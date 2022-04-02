@@ -1,6 +1,7 @@
 package com.example.tlover.domain.plan.entity;
 
 
+import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.entity.User;
@@ -45,9 +46,8 @@ public class Plan {
     @OneToMany(mappedBy = "plan")
     private List<Diary> diaries = new ArrayList<>();
 
-    /**
-     * 연관관계 메서드
-     */
+    @OneToMany(mappedBy = "plan")
+    private List<AuthorityPlan> authorityPlans = new ArrayList<>();
 
     public void setUser(User user) {
         this.user = user;
