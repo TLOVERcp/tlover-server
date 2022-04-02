@@ -38,7 +38,7 @@ public class Reply {
         user.getReplies().add(this);
     }
 
-    public void setAnnonce(Diary diary) {
+    public void setDiary(Diary diary) {
         this.diary = diary;
         diary.getReplies().add(this);
     }
