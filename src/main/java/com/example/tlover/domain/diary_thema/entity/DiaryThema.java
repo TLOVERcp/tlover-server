@@ -1,6 +1,6 @@
-package com.example.tlover.domain.annonce_thema.entity;
+package com.example.tlover.domain.diary_thema.entity;
 
-import com.example.tlover.domain.annonce.entity.Annonce;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.thema.entity.Thema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,27 +14,27 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnonceThema {
+public class DiaryThema {
 
     @Id @GeneratedValue
-    private Long annonceThemaId;
+    private Long diaryThemaId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "annonce_annonceId")
-    private Annonce annonce;
+    private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thema_themaId")
     private Thema thema;
 
-    public void setAnnonce(Annonce annonce) {
-        this.annonce = annonce;
-        annonce.getAnnonceThemas().add(this);
+    public void setAnnonce(Diary diary) {
+        this.diary = diary;
+        diary.getDiaryThemas().add(this);
     }
 
     public void setThema(Thema thema) {
         this.thema = thema;
-        thema.getAnnonceThemas().add(this);
+        thema.getDiaryThemas().add(this);
     }
 
 

@@ -1,7 +1,7 @@
 package com.example.tlover.domain.plan.entity;
 
 
-import com.example.tlover.domain.annonce.entity.Annonce;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -43,7 +43,7 @@ public class Plan {
     private List<PlanRegion> planRegions = new ArrayList<>();
 
     @OneToMany(mappedBy = "plan")
-    private List<Annonce> annonces = new ArrayList<>();
+    private List<Diary> diaries = new ArrayList<>();
 
     /**
      * 연관관계 메서드
