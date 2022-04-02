@@ -16,10 +16,12 @@ import lombok.NoArgsConstructor;
 public class LoginResponse {
 
     private Long userId;
+    private String message;
 
     public static LoginResponse from(User user) {
         return LoginResponse.builder()
                 .userId(user.getUserId())
+                .message("로그인에 성공했습니다.")
                 .build();
     }
 
