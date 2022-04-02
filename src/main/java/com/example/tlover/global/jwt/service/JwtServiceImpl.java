@@ -1,10 +1,10 @@
-package com.example.tlover.global.config.jwt.service;
+package com.example.tlover.global.jwt.service;
 
 import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
-import com.example.tlover.global.config.jwt.Secret.SecretKey;
+import com.example.tlover.global.jwt.Secret.SecretKey;
 import com.example.tlover.domain.user_refreshtoken.repository.UserRefreshTokenRepository;
-import com.example.tlover.global.config.jwt.exception.ExpireJwtException;
-import com.example.tlover.global.config.jwt.exception.NotFoundJwtException;
+import com.example.tlover.global.jwt.exception.ExpireJwtException;
+import com.example.tlover.global.jwt.exception.NotFoundJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -28,9 +28,9 @@ public class JwtServiceImpl implements JwtService {
     private final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1 달
 
     /**
-     * 액세스 토큰 생성
-     *
+     * 엑세스 토큰 생성
      * @param userId
+     * @return
      * @author 한규범
      */
     @Override

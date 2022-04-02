@@ -1,4 +1,4 @@
-package com.example.tlover.global.config.jwt.service;
+package com.example.tlover.global.jwt.service;
 
 import javax.validation.Valid;
 
