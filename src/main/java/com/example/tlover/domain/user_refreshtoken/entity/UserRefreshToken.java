@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.AUTO;
+
 @Entity
 @Getter
 @Setter
@@ -16,7 +18,7 @@ import javax.persistence.*;
 public class UserRefreshToken {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = AUTO)
     private Long userRefreshtokenId;
 
     private String userRefreshtokenToken;
