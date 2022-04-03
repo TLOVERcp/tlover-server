@@ -28,7 +28,3 @@ spring:
         provider:
           naver:
             user-info_uri: https://openapi.naver.com/v1/nid/me
-
-
-server:
-  port: 8074
