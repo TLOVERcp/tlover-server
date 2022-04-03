@@ -18,6 +18,7 @@ public class FindIdResponse {
 
     private Long userId;
 
+
     public static FindIdResponse from(User user) {
         return FindIdResponse.builder()
                 .userId(user.getUserId())
