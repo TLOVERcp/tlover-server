@@ -1,6 +1,7 @@
 package com.example.tlover.global.exception;
 
 import com.example.tlover.domain.user.exception.*;
+import com.example.tlover.domain.user.exception.oauth2.*;
 import com.example.tlover.global.dto.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -87,5 +88,23 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
     public final ResponseEntity<Object> handleNaverConnectionException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.CONFLICT.toString(), Arrays.asList(ex.getMessage()));
         return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NaverAuthenticationFailedException.class)
+    public final ResponseEntity<Object> handleNaverAuthenticationFailedException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NaverPermissionException.class)
+    public final ResponseEntity<Object> handleNaverPermissionException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.FORBIDDEN.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NaverNotFoundException.class)
+    public final ResponseEntity<Object> handleNaverNotFoundException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 }
