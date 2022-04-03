@@ -1,6 +1,7 @@
 package com.example.tlover.domain.authority_plan.entity;
 
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +19,10 @@ public class AuthorityPlan {
     @Id
     @GeneratedValue
     private Long authorityPlanId;
-//plan으로 바꾸기
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_diaryId")
-    private Diary diary;
+    @JoinColumn(name = "plan_planId")
+    private Plan plan;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
@@ -31,9 +32,9 @@ public class AuthorityPlan {
         this.user = user;
         user.getAuthorityPlans().add(this);
     }
-//plan으로 바꾸기
-    public void setAnnonce(Diary diary) {
-        this.diary = diary;
-        diary.getAuthorityPlans().add(this);
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
+        plan.getAuthorityPlans().add(this);
     }
 }

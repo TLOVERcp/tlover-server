@@ -28,7 +28,7 @@ public class AuthorityDiary {
     @JoinColumn(name = "user_userId")
     private User user;
 
-    // private String authorityAnnonceRole;
+     private String authorityDiaryRole;
 
     public void setUser(User user) {
         this.user = user;
