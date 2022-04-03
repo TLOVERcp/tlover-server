@@ -6,7 +6,7 @@ import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
-import com.example.tlover.global.config.jwt.service.JwtService;
+import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,9 @@ public class UserApiController {
     private final JwtService jwtService;
     private final OAuth2UserService oAuth2UserService;
 
-
+    /**
+     * 회원 관련 Api
+     */
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
