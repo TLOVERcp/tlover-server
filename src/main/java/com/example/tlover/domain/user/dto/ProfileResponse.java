@@ -17,10 +17,20 @@ import lombok.NoArgsConstructor;
 public class ProfileResponse {
 
     private Long userId;
+    private String loginId;
+    private String password;
+    private String userEmail;
+    private String userPhoneNum;
+    private String userNickName;
 
     public static ProfileResponse from(User user) {
         return ProfileResponse.builder()
                 .userId(user.getUserId())
+                .loginId(user.getUserLoginId())
+                .password(user.getUserPassword())
+                .userEmail(user.getUserEmail())
+                .userNickName(user.getUserNickName())
+                .userPhoneNum(user.getUserPhoneNum())
                 .build();
     }
 
