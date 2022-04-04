@@ -2,6 +2,7 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl;
 import com.example.tlover.domain.user.constant.UserConstants.ESocialProvider;
+import com.example.tlover.domain.user.dto.GoogleLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.dto.NaverLoginRequest;
 import com.example.tlover.domain.user.entity.User;
@@ -84,6 +85,7 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
         userInfo.put(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).getAsString());
         userInfo.put(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).getAsString());
         return userInfo;}
+
     private User saveOrUpdateNaverUser(HashMap<String, Object> naverUserInfo) {
         User user = userRepository.findByUserEmailAndUserSocialProvider(naverUserInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString(), ESocialProvider.eNaver)
                 .map(entity -> entity.updateNaverUser(naverUserInfo.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).toString(),
@@ -91,4 +93,5 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
                 .orElse(User.toEntityOfNaverUser(naverUserInfo));
         return userRepository.save(user);
     }
+
 }
