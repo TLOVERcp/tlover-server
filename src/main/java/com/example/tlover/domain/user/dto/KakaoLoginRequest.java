@@ -11,10 +11,10 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "네이버 로그인을 위한 요청 객체")
-public class NaverLoginRequest {
+@ApiModel(description = "카카오 로그인을 위한 요청 객체")
+public class KakaoLoginRequest {
 
-    @NotBlank(message = "네이버의 accessToken을 입력해 주세요.")
-    @ApiModelProperty(notes = "네이버의 accessToken을 입력해 주세요.")
+    @NotBlank(message = "카카오의 accessToken을 입력해 주세요.")
+    @ApiModelProperty(notes = "카카오의 accessToken을 입력해 주세요.")
     private String accessToken;
 }

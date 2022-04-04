@@ -28,4 +28,5 @@ spring:
         provider:
           naver:
             user-info_uri: https://openapi.naver.com/v1/nid/me
-
+          kakao:
+            user-info-uri: https://kapi.kakao.com/v2/user/me
