@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eKakao;
 import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 
 @Entity
@@ -127,6 +128,23 @@ public class User {
                 .userNickName(userInfo.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).toString())
                 .userProfileImg(userInfo.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).toString())
                 .userSocialProvider(eNaver)
+                .build();
+    }
+
+
+    public User updateKakaoUser(String userNickName, String userProfileImg) {
+        this.userNickName = userNickName;
+        this.userProfileImg = userProfileImg;
+        return this;
+    }
+
+    public static User toEntityOfKakaoUser(HashMap<String, Object> userInfo) {
+        return User.builder()
+                .userLoginId(eKakao + userInfo.get("email").toString())
+                .userEmail(userInfo.get("email").toString())
+                .userNickName(userInfo.get("name").toString())
+                .userProfileImg(userInfo.get("image").toString())
+                .userSocialProvider(eKakao)
                 .build();
     }
 }
