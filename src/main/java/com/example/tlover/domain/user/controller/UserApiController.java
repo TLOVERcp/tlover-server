@@ -4,6 +4,7 @@ package com.example.tlover.domain.user.controller;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.service.OAuth2UserService;
+import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -28,6 +29,8 @@ public class UserApiController {
     private final UserService userService;
     private final JwtService jwtService;
     private final OAuth2UserService oAuth2UserService;
+    private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
+
 
     /**
      * 회원 관련 Api
@@ -115,8 +118,6 @@ public class UserApiController {
         return loginId.toString();
     }
 
-
-
     /**
      * OAuth2
      */
@@ -125,6 +126,14 @@ public class UserApiController {
     @PostMapping("/naver-login")
     public ResponseEntity<LoginResponse> loginNaverUser(@Valid @RequestBody NaverLoginRequest naverLoginRequest){
         LoginResponse loginResponse = oAuth2UserService.validateNaverAccessToken(naverLoginRequest);
+        // 나중에 시큐리티, JWT 구현된다면 HTTP 응답 헤더에 엑세스토큰 추가!
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @ApiOperation(value = "구글 로그인", notes = "구글 로그인을 합니다.")
+    @PostMapping("/google-login")
+    public ResponseEntity<LoginResponse> loginGoogleUser(@Valid @RequestBody GoogleLoginRequest googleLoginRequest){
+        LoginResponse loginResponse = oAuth2UserServiceGoogle.validateGoogleAccessToken(googleLoginRequest);
         // 나중에 시큐리티, JWT 구현된다면 HTTP 응답 헤더에 엑세스토큰 추가!
         return ResponseEntity.ok(loginResponse);
     }

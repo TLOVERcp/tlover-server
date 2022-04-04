@@ -23,7 +23,6 @@ import java.util.Optional;
 public class JwtServiceImpl implements JwtService {
 
     private final UserRefreshTokenRepository userRefreshTokenRepository;
-
     private final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 2 * 1000L;   // 2시간
     private final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1 달
 
