@@ -48,7 +48,11 @@ public class UserApiController {
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
-        return ResponseEntity.ok(LoginResponse.from(user, accessJwt, refreshJwt));
+
+        return ResponseEntity.ok(LoginResponse.builder()
+                .accessJwt(accessJwt)
+                .refreshJwt(refreshJwt)
+                .build());
     }
 
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")

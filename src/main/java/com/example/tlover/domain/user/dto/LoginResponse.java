@@ -20,10 +20,8 @@ public class LoginResponse {
     private String accessJwt;
     private String refreshJwt;
 
-    public static LoginResponse from(User user, String accessJwt, String refreshJwt) {
+    public static LoginResponse from(User user) {
         return LoginResponse.builder()
-                .accessJwt(accessJwt)
-                .refreshJwt(refreshJwt)
                 .message("로그인에 성공했습니다.")
                 .build();
     }
