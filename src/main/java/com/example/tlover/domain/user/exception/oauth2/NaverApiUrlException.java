@@ -1,4 +1,4 @@
-package com.example.tlover.domain.user.exception;
+package com.example.tlover.domain.user.exception.oauth2;
 
 public class NaverApiUrlException extends RuntimeException{
     public NaverApiUrlException(String s) {
