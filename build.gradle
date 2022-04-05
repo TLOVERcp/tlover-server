@@ -37,6 +37,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+
+    implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.32.1'
+
 }
 
 tasks.named('test') {
