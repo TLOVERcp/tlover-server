@@ -1,14 +1,8 @@
 spring:
   datasource:
-<<<<<<< HEAD
-    url: jdbc:mysql://localhost:3306/tlover?characterEncoding=utf8
-    username: tlover
-    password: tlover
-=======
-    url: jdbc:mysql://localhost:3306/trover?characterEncoding=utf8
+    url: jdbc:mysql://localhost:4400/tlover?characterEncoding=utf8
     username: root
     password: root
->>>>>>> 89f3cf49d48a54f43e5c5c124d40d76c432a8c1b
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mvc:
@@ -34,3 +28,5 @@ spring:
         provider:
           naver:
             user-info_uri: https://openapi.naver.com/v1/nid/me
+          kakao:
+            user-info-uri: https://kapi.kakao.com/v2/user/me

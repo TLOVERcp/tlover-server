@@ -4,6 +4,7 @@ package com.example.tlover.domain.user.controller;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.service.OAuth2UserService;
+import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
@@ -29,6 +30,7 @@ public class UserApiController {
     private final UserService userService;
     private final JwtService jwtService;
     private final OAuth2UserService oAuth2UserService;
+    private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
 
 
@@ -138,6 +140,10 @@ public class UserApiController {
         return ResponseEntity.ok(loginResponse);
     }
 
-
-
+    @ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 합니다.")
+    @PostMapping("/kakao-login")
+    public ResponseEntity<LoginResponse> loginKakaoUser(@Valid @RequestBody KakaoLoginRequest kakaoLoginRequest) {
+        LoginResponse loginResponse = oAuth2UserServiceKakao.validateKakaoAccessToken(kakaoLoginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
 }
