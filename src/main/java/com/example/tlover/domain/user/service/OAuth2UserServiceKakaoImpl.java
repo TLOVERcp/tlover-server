@@ -52,19 +52,18 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+//            System.out.println("responseCode : " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
-            String result = "";
+            String responseBody = "";
 
             while ((line = br.readLine()) != null) {
-                result += line;
+                responseBody += line;
             }
-            System.out.println("response body : " + result);
 
             JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
+            JsonElement element = parser.parse(responseBody);
 
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
             JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
