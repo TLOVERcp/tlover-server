@@ -14,7 +14,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,13 +42,17 @@ public class UserApiController {
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
         // 토큰 생성
-        //String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
-        //String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
+        String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
+        String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
 
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
-        return ResponseEntity.ok(LoginResponse.from(user));
+
+        return ResponseEntity.ok(LoginResponse.builder()
+                .accessJwt(accessJwt)
+                .refreshJwt(refreshJwt)
+                .build());
     }
 
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
@@ -88,7 +91,7 @@ public class UserApiController {
         User user = userService.findUserId(findIdRequest);
 
         return ResponseEntity.ok(FindIdResponse.builder()
-                .userId(user.getUserId())
+                .loginId(user.getUserLoginId())
                 .build());
     }
 
