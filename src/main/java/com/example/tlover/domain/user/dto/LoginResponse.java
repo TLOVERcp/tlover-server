@@ -17,8 +17,8 @@ public class LoginResponse {
 
     private String message;
 
-    //private String accessJwt;
-    //private String refreshJwt;
+    private String accessJwt;
+    private String refreshJwt;
 
     public static LoginResponse from(User user) {
         return LoginResponse.builder()
