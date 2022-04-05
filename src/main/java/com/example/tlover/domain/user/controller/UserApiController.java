@@ -7,6 +7,7 @@ import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
+import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
