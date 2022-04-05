@@ -41,7 +41,7 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
         String naverResponseBody = createNaverResponseBody(naverUserInfoUrl, createNaverRequestHeader(naverLoginRequest.getAccessToken()));
         HashMap<String, Object> naverUserInfo = getNaverUserInfo(naverResponseBody);
         // 나중에 시큐리티, JWT 토큰 생성 관련 로직 추가할 예정!
-        return LoginResponse.from(saveOrUpdateNaverUser(naverUserInfo));
+        return LoginResponse.from(saveOrUpdateNaverUser(naverUserInfo), null, null);
     }
     private Map<String, String> createNaverRequestHeader(String accessToken) {
         Map<String, String> requestHeaders = new HashMap<>();
