@@ -1,14 +1,8 @@
 spring:
   datasource:
-<<<<<<< HEAD
-    url: jdbc:mysql://localhost:3306/tlover?characterEncoding=utf8
-    username: tlover
-    password: tlover
-=======
-    url: jdbc:mysql://localhost:3306/trover?characterEncoding=utf8
-    username: root
-    password: root
->>>>>>> 89f3cf49d48a54f43e5c5c124d40d76c432a8c1b
+    url: jdbc:mysql://soldout.cpiugfta2jm5.ap-northeast-2.rds.amazonaws.com:3306/tlover?autoReconnect=true
+    username: admin
+    password: mango1030
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mvc:
@@ -17,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
