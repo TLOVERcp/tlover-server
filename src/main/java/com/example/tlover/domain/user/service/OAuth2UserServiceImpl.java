@@ -2,9 +2,13 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl;
 import com.example.tlover.domain.user.constant.UserConstants.ESocialProvider;
+import com.example.tlover.domain.user.dto.GoogleLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.dto.NaverLoginRequest;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.oauth2.NaverAuthenticationFailedException;
+import com.example.tlover.domain.user.exception.oauth2.NaverNotFoundException;
+import com.example.tlover.domain.user.exception.oauth2.NaverPermissionException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -53,6 +57,9 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
                 con.setRequestProperty(header.getKey(), header.getValue());}
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) return readBody(con.getInputStream());
+            else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) throw new NaverAuthenticationFailedException(EOAuth2UserServiceImpl.eNaverAuthenticationFailedException.getValue());
+            else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN) throw new NaverPermissionException(EOAuth2UserServiceImpl.eNaverPermissionException.getValue());
+            else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND) throw new NaverNotFoundException(EOAuth2UserServiceImpl.eNotFoundException.getValue());
             else return readBody(con.getErrorStream());}
         catch (IOException e) { throw new RuntimeException(EOAuth2UserServiceImpl.eNaverApiResponseException.getValue(), e);}
         finally { con.disconnect();}}
@@ -80,6 +87,7 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
         userInfo.put(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).getAsString());
         userInfo.put(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).getAsString());
         return userInfo;}
+
     private User saveOrUpdateNaverUser(HashMap<String, Object> naverUserInfo) {
         User user = userRepository.findByUserEmailAndUserSocialProvider(naverUserInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString(), ESocialProvider.eNaver)
                 .map(entity -> entity.updateNaverUser(naverUserInfo.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).toString(),
@@ -87,4 +95,5 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
                 .orElse(User.toEntityOfNaverUser(naverUserInfo));
         return userRepository.save(user);
     }
+
 }

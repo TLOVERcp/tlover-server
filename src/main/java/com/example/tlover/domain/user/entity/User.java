@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eKakao;
+import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eGoogle;
 import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 
 @Entity
@@ -147,4 +148,15 @@ public class User {
                 .userSocialProvider(eKakao)
                 .build();
     }
+
+    public static User toEntityOfGoogleUser(HashMap<String, Object> userInfo) {
+        return User.builder()
+                .userLoginId(eGoogle + userInfo.get("email").toString())
+                .userEmail(userInfo.get("email").toString())
+                .userNickName(userInfo.get("name").toString())
+                .userProfileImg(userInfo.get("picture").toString())
+                .userSocialProvider(eGoogle)
+                .build();
+    }
+
 }
