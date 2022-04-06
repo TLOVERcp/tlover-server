@@ -3,15 +3,19 @@ package com.example.tlover.domain.user.controller;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.service.OAuth2UserService;
+import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
+import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +32,8 @@ public class UserApiController {
     private final UserService userService;
     private final JwtService jwtService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
+    private final OAuth2UserService oAuth2UserService;
+    private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
 
 
@@ -39,13 +45,17 @@ public class UserApiController {
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
         // 토큰 생성
-        //String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
-        //String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
+        String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
+        String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
 
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
-        return ResponseEntity.ok(LoginResponse.from(user));
+
+        return ResponseEntity.ok(LoginResponse.builder()
+                .accessJwt(accessJwt)
+                .refreshJwt(refreshJwt)
+                .build());
     }
 
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
@@ -84,7 +94,7 @@ public class UserApiController {
         User user = userService.findUserId(findIdRequest);
 
         return ResponseEntity.ok(FindIdResponse.builder()
-                .userId(user.getUserId())
+                .loginId(user.getUserLoginId())
                 .build());
     }
 
@@ -129,8 +139,6 @@ public class UserApiController {
         return ResponseEntity.ok(loginResponse);
     }
 
-
-
     @ApiOperation(value = "구글 로그인", notes = "구글 로그인을 합니다.")
     @PostMapping("/google-login")
     public ResponseEntity<LoginResponse> loginGoogleUser(@Valid @RequestBody GoogleLoginRequest googleLoginRequest){
@@ -139,6 +147,10 @@ public class UserApiController {
         return ResponseEntity.ok(loginResponse);
     }
 
-
-
+    @ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 합니다.")
+    @PostMapping("/kakao-login")
+    public ResponseEntity<LoginResponse> loginKakaoUser(@Valid @RequestBody KakaoLoginRequest kakaoLoginRequest) {
+        LoginResponse loginResponse = oAuth2UserServiceKakao.validateKakaoAccessToken(kakaoLoginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
 }

@@ -18,6 +18,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -115,7 +116,7 @@ public class User {
      * Naver User Update
      */
 
-    public User updateUser(String userNickName, String userProfileImg) {
+    public User updateNaverUser(String userNickName, String userProfileImg) {
         this.userNickName = userNickName;
         this.userProfileImg = userProfileImg;
         return this;
@@ -128,6 +129,23 @@ public class User {
                 .userNickName(userInfo.get(eNameAttribute.getValue()).toString())
                 .userProfileImg(userInfo.get(eNaverProfileImageAttribute.getValue()).toString())
                 .userSocialProvider(eNaver)
+                .build();
+    }
+
+
+    public User updateKakaoUser(String userNickName, String userProfileImg) {
+        this.userNickName = userNickName;
+        this.userProfileImg = userProfileImg;
+        return this;
+    }
+
+    public static User toEntityOfKakaoUser(HashMap<String, Object> userInfo) {
+        return User.builder()
+                .userLoginId(eKakao + userInfo.get("email").toString())
+                .userEmail(userInfo.get("email").toString())
+                .userNickName(userInfo.get("name").toString())
+                .userProfileImg(userInfo.get("image").toString())
+                .userSocialProvider(eKakao)
                 .build();
     }
 
