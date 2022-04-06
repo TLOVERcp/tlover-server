@@ -18,10 +18,10 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl.*;
 import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eGoogle;
 import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 
@@ -115,7 +115,7 @@ public class User {
      * Naver User Update
      */
 
-    public User updateNaverUser(String userNickName, String userProfileImg) {
+    public User updateUser(String userNickName, String userProfileImg) {
         this.userNickName = userNickName;
         this.userProfileImg = userProfileImg;
         return this;
@@ -123,20 +123,21 @@ public class User {
 
     public static User toEntityOfNaverUser(HashMap<String, Object> userInfo) {
         return User.builder()
-                .userLoginId(eNaver + userInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString())
-                .userEmail(userInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString())
-                .userNickName(userInfo.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).toString())
-                .userProfileImg(userInfo.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).toString())
+                .userLoginId(eNaver + userInfo.get(eEmailAttribute.getValue()).toString())
+                .userEmail(userInfo.get(eEmailAttribute.getValue()).toString())
+                .userNickName(userInfo.get(eNameAttribute.getValue()).toString())
+                .userProfileImg(userInfo.get(eNaverProfileImageAttribute.getValue()).toString())
                 .userSocialProvider(eNaver)
                 .build();
     }
 
+
     public static User toEntityOfGoogleUser(HashMap<String, Object> userInfo) {
         return User.builder()
-                .userLoginId(eGoogle + userInfo.get("email").toString())
-                .userEmail(userInfo.get("email").toString())
-                .userNickName(userInfo.get("name").toString())
-                .userProfileImg(userInfo.get("picture").toString())
+                .userLoginId(eGoogle + userInfo.get(eEmailAttribute.getValue()).toString())
+                .userEmail(userInfo.get(eEmailAttribute.getValue()).toString())
+                .userNickName(userInfo.get(eNameAttribute.getValue()).toString())
+                .userProfileImg(userInfo.get(eGoogleProfileImageAttribute.getValue()).toString())
                 .userSocialProvider(eGoogle)
                 .build();
     }
