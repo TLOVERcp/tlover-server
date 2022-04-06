@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "로그인을 위한 응답 객체")
 public class FindIdResponse {
 
-    private Long userId;
+    private String loginId;
 
 
     public static FindIdResponse from(User user) {
         return FindIdResponse.builder()
-                .userId(user.getUserId())
+                .loginId(user.getUserLoginId())
                 .build();
     }
 
