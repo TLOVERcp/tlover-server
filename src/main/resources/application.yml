@@ -5,6 +5,10 @@ spring:
     username: admin
     password: mango1030
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   mvc:
     pathmatch:
@@ -38,5 +42,14 @@ spring:
     access-key: xlavmfhwprxmzlddhkdHGFDHDFWkGDSHSdsjaHFGDHDnglamfekhgsdfeDFHGEG
     refresh-key: flvmfptlxhgDFSGHSDrzmsanjffhgkfHDFGwlahfmrpTekhDFGERRGVFDSG
 
-
-
+cloud:
+  aws:
+    s3:
+      bucket: tlover-backend-images
+    credentials:
+      access-key: AKIAVKTYRMM6ZHUARZRW
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
