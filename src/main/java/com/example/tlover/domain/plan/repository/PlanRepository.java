@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
+
     List<Plan> findAllByUser(User user);
 
     List<Plan> findAllByUserAndPlanStatus(User user, String status);
 
     Plan findByUserAndPlanTitle(User user, String planTitle);
+
 }
