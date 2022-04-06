@@ -3,6 +3,7 @@ package com.example.tlover.domain.user.entity;
 import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
 import com.example.tlover.domain.report.entity.Report;
@@ -85,6 +86,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Reply> replies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    private List<MyFile> myFiles = new ArrayList<>();
+
 
     /**
      * 연관관계 메서드
@@ -108,6 +112,12 @@ public class User {
     public void addReport(Report report) {
         this.reports.add(report);
         report.setUser(this);
+    }
+
+    public void setMyFiles(List<MyFile> myFiles) {
+        this.myFiles = myFiles;
+        for (MyFile myFile : myFiles) {
+            myFile.setUser(this);}
     }
 
 
