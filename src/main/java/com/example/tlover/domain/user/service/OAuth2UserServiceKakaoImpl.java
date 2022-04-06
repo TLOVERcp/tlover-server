@@ -81,7 +81,7 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+           throw new RuntimeException("잘못된 토큰");
         }
         return userInfo;
     }

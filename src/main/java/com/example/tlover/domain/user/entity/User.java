@@ -23,8 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl.*;
-import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eGoogle;
-import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
+import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.*;
 
 @Entity
 @Getter
@@ -138,6 +137,8 @@ public class User {
         this.userProfileImg = userProfileImg;
         return this;
     }
+
+
 
     public static User toEntityOfKakaoUser(HashMap<String, Object> userInfo) {
         return User.builder()
