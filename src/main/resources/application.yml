@@ -38,5 +38,9 @@ spring:
     access-key: xlavmfhwprxmzlddhkdHGFDHDFWkGDSHSdsjaHFGDHDnglamfekhgsdfeDFHGEG
     refresh-key: flvmfptlxhgDFSGHSDrzmsanjffhgkfHDFGwlahfmrpTekhDFGERRGVFDSG
 
+  sms:
+    service-id: ncp:sms:kr:280044915694:infra-sms
+    access-key: JUARhMRAzpFrstZqd775
+    secret-key: lgiOpHwGvTW5HjcIaCKkhATBHFB3qeRuWzaBOrZZ
 
 
