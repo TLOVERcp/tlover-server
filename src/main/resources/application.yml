@@ -3,7 +3,6 @@ spring:
     url: jdbc:mysql://soldout.cpiugfta2jm5.ap-northeast-2.rds.amazonaws.com:3306/tlover?autoReconnect=true
     username: admin
     password: mango1030
-
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mvc:
@@ -12,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:

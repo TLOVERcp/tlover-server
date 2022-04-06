@@ -3,6 +3,7 @@ package com.example.tlover.domain.plan.entity;
 
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.List;
 public class Plan {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long planId;
 
     private String planTitle;
@@ -35,6 +36,8 @@ public class Plan {
     private LocalDateTime planStartDate;
 
     private LocalDateTime planEndDate;
+
+    private LocalDateTime planWriteDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
@@ -54,4 +57,15 @@ public class Plan {
         user.getPlans().add(this);
     }
 
+    public static Plan toEntity(CreatePlanRequest createPlanRequest, User user) {
+        Plan plan = new Plan();
+        plan.setPlanTitle(createPlanRequest.getPlanTitle());
+        plan.setPlanContext(createPlanRequest.getPlanContext());
+        plan.setPlanStartDate(createPlanRequest.getPlanStartDate());
+        plan.setPlanEndDate(createPlanRequest.getPlanEndDate());
+        plan.setPlanWriteDate(LocalDateTime.now());
+        plan.setPlanStatus("ACTIVE");
+        plan.setUser(user);
+        return plan;
+    }
 }
