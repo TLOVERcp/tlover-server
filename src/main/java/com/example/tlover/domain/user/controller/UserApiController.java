@@ -3,12 +3,10 @@ package com.example.tlover.domain.user.controller;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
-import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
-import com.example.tlover.domain.user.service.OAuth2UserService;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
@@ -32,7 +30,6 @@ public class UserApiController {
     private final UserService userService;
     private final JwtService jwtService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
-    private final OAuth2UserService oAuth2UserService;
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
 

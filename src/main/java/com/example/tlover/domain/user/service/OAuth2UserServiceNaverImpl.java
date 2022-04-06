@@ -89,7 +89,7 @@ public class OAuth2UserServiceNaverImpl implements OAuth2UserServiceNaver {
 
     private User saveOrUpdateNaverUser(HashMap<String, Object> naverUserInfo) {
         User user = userRepository.findByUserEmailAndUserSocialProvider(naverUserInfo.get(EOAuth2UserServiceImpl.eEmailAttribute.getValue()).toString(), ESocialProvider.eNaver)
-                .map(entity -> entity.updateUser(naverUserInfo.get(EOAuth2UserServiceImpl.eNameAttribute.getValue()).toString(),
+                .map(entity -> entity.updateNaverUser(naverUserInfo.get(EOAuth2UserServiceImpl.eNameAttribute.getValue()).toString(),
                         naverUserInfo.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).toString()))
                 .orElse(User.toEntityOfNaverUser(naverUserInfo));
         return userRepository.save(user);

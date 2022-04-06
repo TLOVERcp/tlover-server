@@ -31,7 +31,7 @@ public class OAuth2UserServiceGoogleImpl implements OAuth2UserServiceGoogle {
 
     private User saveOrUpdateGoogleUser(HashMap<String, Object> googleUserInfo) {
         User user = userRepository.findByUserEmailAndUserSocialProvider(googleUserInfo.get(eEmailAttribute.getValue()).toString(), UserConstants.ESocialProvider.eGoogle)
-                .map(entity -> entity.updateUser(googleUserInfo.get(eNameAttribute.getValue()).toString(),
+                .map(entity -> entity.updateNaverUser(googleUserInfo.get(eNameAttribute.getValue()).toString(),
                         googleUserInfo.get(eGoogleProfileImageAttribute.getValue()).toString()))
                 .orElse(User.toEntityOfGoogleUser(googleUserInfo));
         return userRepository.save(user);
@@ -58,7 +58,7 @@ public class OAuth2UserServiceGoogleImpl implements OAuth2UserServiceGoogle {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        String jwtToken = googleLoginRequest.getAccessToken();
+        String jwtToken = googleLoginRequest.getIdToken();
         String requestUri = UriComponentsBuilder.fromHttpUrl(googleUserInfoUrl).queryParam(eGoogleIdToken.getValue(),
                 jwtToken).toUriString();
 
