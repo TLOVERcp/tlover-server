@@ -37,4 +37,12 @@ public class AuthorityPlan {
         this.plan = plan;
         plan.getAuthorityPlans().add(this);
     }
+
+    public static AuthorityPlan toEntity(Plan plan, User user) {
+        AuthorityPlan authorityPlan = new AuthorityPlan();
+        authorityPlan.setPlan(plan);
+        authorityPlan.setUser(user);
+        return authorityPlan;
+
+    }
 }
