@@ -141,25 +141,21 @@ public class User {
                 .build();
     }
 
-
     public User updateKakaoUser(String userNickName, String userProfileImg) {
         this.userNickName = userNickName;
         this.userProfileImg = userProfileImg;
         return this;
     }
 
-
-
     public static User toEntityOfKakaoUser(HashMap<String, Object> userInfo) {
         return User.builder()
-                .userLoginId(eKakao + userInfo.get("email").toString())
-                .userEmail(userInfo.get("email").toString())
-                .userNickName(userInfo.get("name").toString())
-                .userProfileImg(userInfo.get("image").toString())
+                .userLoginId(eKakao + userInfo.get(eEmailAttribute.getValue()).toString())
+                .userEmail(userInfo.get(eEmailAttribute.getValue()).toString())
+                .userNickName(userInfo.get(eNameAttribute.getValue()).toString())
+                .userProfileImg(userInfo.get(eKakaoProfileImageAttribute).toString())
                 .userSocialProvider(eKakao)
                 .build();
     }
-
 
     public static User toEntityOfGoogleUser(HashMap<String, Object> userInfo) {
         return User.builder()
