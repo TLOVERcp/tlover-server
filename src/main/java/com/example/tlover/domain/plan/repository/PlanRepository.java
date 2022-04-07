@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
+
     List<Plan> findAllByUser(User user);
 
     List<Plan> findAllByUserAndPlanStatus(User user, String status);
@@ -16,5 +17,5 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     Plan findByPlanId(Long planId);
 
-    //List<Plan> findAllByUserAndPlanStatusNotIn(User user, String delete);
+    //List<Plan> findAllByUserAndPlanStatusNotIn(User user, String delete);   
 }
