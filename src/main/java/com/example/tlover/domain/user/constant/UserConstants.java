@@ -18,6 +18,10 @@ public class UserConstants {
         eEmailAttribute("email"),
         eNaverProfileImageAttribute("profile_image"),
         eGoogleProfileImageAttribute("picture"),
+        eKakaoProfileImageAttribute("profile_image"),
+        eKakaoProperties("properties"),
+        eKakaoAcount("kakao_account"),
+
         eNaverApiResponseException("NAVER API 응답을 읽는데 실패했습니다."),
         eNaverAuthenticationFailedException("Naver 인증에 실패했습니다."),
         eNaverPermissionException("Naver API 호출 권한이 없습니다."),
