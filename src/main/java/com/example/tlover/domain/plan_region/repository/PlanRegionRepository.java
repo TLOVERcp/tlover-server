@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface PlanRegionRepository extends JpaRepository<PlanRegion, Long> {
     List<PlanRegion> findAllByPlan(Plan plan);
+    void deleteAllByPlan(Plan plan);
 }
