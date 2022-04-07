@@ -1,9 +1,9 @@
 package com.example.tlover.domain.plan.controller;
 
-import com.example.tlover.domain.plan.dto.CreatePlanRequest;
-import com.example.tlover.domain.plan.dto.CreatePlanResponse;
-import com.example.tlover.domain.plan.dto.PlanDetailResponse;
-import com.example.tlover.domain.plan.dto.PlanListResponse;
+import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
+import com.example.tlover.domain.authority_plan.dto.SharePlanResponse;
+import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
+import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
@@ -26,11 +26,12 @@ public class PlanApiController {
 
     private final PlanService planService;
     private final PlanRegionService planRegionService;
+    private final AuthorityPlanService authorityPlanService;
     private final UserApiController userApiController;
 
     /**
      * 계획 작성 API
-     * [POST] api/v1/plans/createPlan
+     * [POST] api/v1/plans/create-plan
      * @param createPlanRequest
      * @param request
      * @return ResponseEntity
@@ -44,7 +45,7 @@ public class PlanApiController {
         Plan plan = planService.createPlan(createPlanRequest, loginId);
         planRegionService.createPlanRegion(createPlanRequest, plan);
         return ResponseEntity.ok(CreatePlanResponse.builder()
-                .message("계획 작성 완료")
+                .message("계획 작성을 성공하였습니다.")
                 .build());
 
     }
@@ -74,19 +75,78 @@ public class PlanApiController {
 
     /**
      * 계획내용 상세 조회 API
-     * [GET] api/v1/plans/plan-list?status=
-     * @param planTitle
+     * [GET] api/v1/plans/plan-detail/:planId
+     * @param planId
      * @param request
      * @return ResponseEntity
      * @author 류민아
      */
     @ApiOperation(value = "계획 내용 상세 조회", notes = "계획 내용을 상세 조회 합니다.")
-    @GetMapping("/plan-detail/{planTitle}")
-    public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable String planTitle, HttpServletRequest request) {
+    @GetMapping("/plan-detail/{planId}")
+    public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable Long planId, HttpServletRequest request) {
         String loginId = userApiController.getLoginIdFromSession(request);
-        PlanDetailResponse planDetailResponse = planService.getPlanDetail(planTitle, loginId);
+        PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId, loginId);
         return ResponseEntity.ok(planDetailResponse);
         }
+
+    /**
+     * 계획 삭제 API
+     * [GET] api/v1/plans/delete-plan:planId
+     * @param planId
+     * @param request
+     * @return ResponseEntity
+     * @author 류민아
+     */
+    @ApiOperation(value = "계획 삭제", notes = "계획을 삭제합니다.")
+    @PostMapping("/delete-plan/{planId}")
+    public ResponseEntity<DeletePlanResponse> deletePlan(@PathVariable Long planId, HttpServletRequest request){
+        String loginId = userApiController.getLoginIdFromSession(request);
+        planService.deletePlan(planId, loginId);
+        return ResponseEntity.ok(DeletePlanResponse.builder()
+                .message("삭제를 성공하였습니다.")
+                .build());
     }
+
+    /**
+     * 계획 수정 API
+     * [POST] api/v1/plans/update-plan:planId
+     * @param planId
+     * @param createPlanRequest
+     * @param request
+     * @return ResponseEntity
+     * @author 류민아
+     */
+    @ApiOperation(value = "계획 수정", notes = "계획을 수정합니다.")
+    @PostMapping("/update-plan/{planId}")
+    public ResponseEntity<UpdatePlanResponse> updatePlan(@PathVariable Long planId,
+                                             @Valid @RequestBody CreatePlanRequest createPlanRequest,
+                                             HttpServletRequest request){
+        String loginId = userApiController.getLoginIdFromSession(request);
+        Plan plan = planService.updatePlan(createPlanRequest, planId, loginId);
+        planRegionService.updatePlanRegion(createPlanRequest, plan);
+        return ResponseEntity.ok(UpdatePlanResponse.builder()
+                .message("게획 수정을 성공하였습니다.")
+                .build());
+    }
+    /**
+     * 계획 권한 공유 API
+     * [POST] api/v1/plans/share-plan/:planId
+     * @param sharePlanRequest
+     * @param request
+     * @return ResponseEntity
+     * @author 류민아
+     */
+    @ApiOperation(value = "계획 권한 공유", notes = "계획 권한을 공유합니다.")
+    @PostMapping("/share-plan/{planId}")
+    public ResponseEntity<SharePlanResponse> SharePlan(@PathVariable Long planId,
+                                                       @Valid @RequestBody SharePlanRequest sharePlanRequest,
+                                                       HttpServletRequest request){
+        String loginId = userApiController.getLoginIdFromSession(request);
+        authorityPlanService.sharePlan(planId, sharePlanRequest);
+        return ResponseEntity.ok(SharePlanResponse.builder()
+                .message("계획 권한 공유를 성공하였습니다.")
+                .build());
+    }
+}
 
 
