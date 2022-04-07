@@ -24,6 +24,7 @@ public class UserConstants {
         eNotFoundException("Naver API 검색 결과가 없습니다."),
         eNaverApiUrlException("NAVER API URL이 잘못되었습니다. : "),
         eNaverConnectionException("NAVER와의 연결이 실패했습니다. : "),
+        eKakaoLoginFailException("Kakao 로그인에 실패했습니다."),
         eGoogleTokenInvalid("잘못된 토큰입니다.");
         private final String value;
     }
