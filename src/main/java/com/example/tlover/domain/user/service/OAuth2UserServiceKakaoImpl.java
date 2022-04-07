@@ -1,6 +1,5 @@
 package com.example.tlover.domain.user.service;
 
-import com.example.tlover.domain.user.constant.UserConstants;
 import com.example.tlover.domain.user.dto.KakaoLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.entity.User;
@@ -20,6 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+
+import static com.example.tlover.domain.user.constant.UserConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,9 +48,9 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
         try {
             URL url = new URL(kakaoUserInfoUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod(EOAuth2UserServiceImpl.eGetMethod.getValue());
 
-            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty(EOAuth2UserServiceImpl.eAuthorization.getValue(), EOAuth2UserServiceImpl.eBearer + accessToken);
 
             int responseCode = conn.getResponseCode();
 
@@ -65,20 +66,20 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
                 JsonParser parser = new JsonParser();
                 JsonElement element = parser.parse(responseBody);
 
-                JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-                JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+                JsonObject properties = element.getAsJsonObject().get(EOAuth2UserServiceImpl.eKakaoProperties.getValue()).getAsJsonObject();
+                JsonObject kakaoAccount = element.getAsJsonObject().get(EOAuth2UserServiceImpl.eKakaoAcount.getValue()).getAsJsonObject();
 
-                String name = kakaoAccount.getAsJsonObject().get("name").getAsString();
-                String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-                String image = properties.getAsJsonObject().get("profile_image").getAsString();
+                String name = kakaoAccount.getAsJsonObject().get(EOAuth2UserServiceImpl.eNameAttribute.getValue()).getAsString();
+                String email = kakaoAccount.getAsJsonObject().get(EOAuth2UserServiceImpl.eEmailAttribute.getValue()).getAsString();
+                String profileImage = properties.getAsJsonObject().get(EOAuth2UserServiceImpl.eKakaoProfileImageAttribute.getValue()).getAsString();
 
-                kakaoUserInfo.put("name", name);
-                kakaoUserInfo.put("email", email);
-                kakaoUserInfo.put("image", image);
+                kakaoUserInfo.put(EOAuth2UserServiceImpl.eNameAttribute.getValue(), name);
+                kakaoUserInfo.put(EOAuth2UserServiceImpl.eEmailAttribute.getValue(), email);
+                kakaoUserInfo.put(EOAuth2UserServiceImpl.eKakaoProfileImageAttribute.getValue(), profileImage);
 
                 br.close();
             } else {
-                throw new KakaoFailException(UserConstants.EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
+                throw new KakaoFailException(EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
             }
             conn.disconnect();
         } catch (MalformedURLException e) {
@@ -90,9 +91,9 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
     }
 
     private User saveOrUpdateKakaoUser(HashMap<String, Object> kakaoUserInfo) {
-        User user = userRepository.findByUserEmailAndUserSocialProvider(kakaoUserInfo.get("email").toString(), UserConstants.ESocialProvider.eKakao)
-                .map(entity -> entity.updateKakaoUser(kakaoUserInfo.get(kakaoUserInfo.get("name")).toString(),
-                        kakaoUserInfo.get("image").toString()))
+        User user = userRepository.findByUserEmailAndUserSocialProvider(kakaoUserInfo.get(EOAuth2UserServiceImpl.eEmailAttribute).toString(), ESocialProvider.eKakao)
+                .map(entity -> entity.updateKakaoUser(kakaoUserInfo.get(kakaoUserInfo.get(EOAuth2UserServiceImpl.eNameAttribute)).toString(),
+                        kakaoUserInfo.get(EOAuth2UserServiceImpl.eKakaoProfileImageAttribute.getValue()).toString()))
                 .orElse(User.toEntityOfKakaoUser(kakaoUserInfo));
         return userRepository.save(user);
     }
