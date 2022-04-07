@@ -2,7 +2,6 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl;
 import com.example.tlover.domain.user.constant.UserConstants.ESocialProvider;
-import com.example.tlover.domain.user.dto.GoogleLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.dto.NaverLoginRequest;
 import com.example.tlover.domain.user.entity.User;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OAuth2UserServiceImpl implements OAuth2UserService{
+public class OAuth2UserServiceNaverImpl implements OAuth2UserServiceNaver {
 
     private final UserRepository userRepository;
 
@@ -83,14 +82,14 @@ public class OAuth2UserServiceImpl implements OAuth2UserService{
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(naverResponseBody);
         JsonObject jsonContent = element.getAsJsonObject().get(EOAuth2UserServiceImpl.eResponse.getValue()).getAsJsonObject();
-        userInfo.put(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).getAsString());
+        userInfo.put(EOAuth2UserServiceImpl.eNameAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNameAttribute.getValue()).getAsString());
         userInfo.put(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).getAsString());
-        userInfo.put(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).getAsString());
+        userInfo.put(EOAuth2UserServiceImpl.eEmailAttribute.getValue(), jsonContent.get(EOAuth2UserServiceImpl.eEmailAttribute.getValue()).getAsString());
         return userInfo;}
 
     private User saveOrUpdateNaverUser(HashMap<String, Object> naverUserInfo) {
-        User user = userRepository.findByUserEmailAndUserSocialProvider(naverUserInfo.get(EOAuth2UserServiceImpl.eNaverEmailAttribute.getValue()).toString(), ESocialProvider.eNaver)
-                .map(entity -> entity.updateNaverUser(naverUserInfo.get(EOAuth2UserServiceImpl.eNaverNameAttribute.getValue()).toString(),
+        User user = userRepository.findByUserEmailAndUserSocialProvider(naverUserInfo.get(EOAuth2UserServiceImpl.eEmailAttribute.getValue()).toString(), ESocialProvider.eNaver)
+                .map(entity -> entity.updateNaverUser(naverUserInfo.get(EOAuth2UserServiceImpl.eNameAttribute.getValue()).toString(),
                         naverUserInfo.get(EOAuth2UserServiceImpl.eNaverProfileImageAttribute.getValue()).toString()))
                 .orElse(User.toEntityOfNaverUser(naverUserInfo));
         return userRepository.save(user);
