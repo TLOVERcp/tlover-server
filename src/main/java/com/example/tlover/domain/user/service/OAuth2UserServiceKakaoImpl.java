@@ -4,6 +4,7 @@ import com.example.tlover.domain.user.constant.UserConstants;
 import com.example.tlover.domain.user.dto.KakaoLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.oauth2.KakaoFailException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -42,48 +42,51 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
 
     private HashMap<String, Object> getKakaoUserInfo(KakaoLoginRequest kakaoLoginRequest) {
         String accessToken = kakaoLoginRequest.getAccessToken();
-        HashMap<String, Object> userInfo = new HashMap<>();
+        HashMap<String, Object> kakaoUserInfo = new HashMap<>();
 
         try {
             URL url = new URL(kakaoUserInfoUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
 
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
             int responseCode = conn.getResponseCode();
-//            System.out.println("responseCode : " + responseCode);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String responseBody = "";
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line = "";
+                String responseBody = "";
 
-            while ((line = br.readLine()) != null) {
-                responseBody += line;
+                while ((line = br.readLine()) != null) {
+                    responseBody += line;
+                }
+
+                JsonParser parser = new JsonParser();
+                JsonElement element = parser.parse(responseBody);
+
+                JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+                JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+
+                String name = kakaoAccount.getAsJsonObject().get("name").getAsString();
+                String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+                String image = properties.getAsJsonObject().get("profile_image").getAsString();
+
+                kakaoUserInfo.put("name", name);
+                kakaoUserInfo.put("email", email);
+                kakaoUserInfo.put("image", image);
+
+                br.close();
+            } else {
+                throw new KakaoFailException(UserConstants.EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
             }
-
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(responseBody);
-
-            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-            JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-
-            String name = kakaoAccount.getAsJsonObject().get("name").getAsString();
-            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-            String image = properties.getAsJsonObject().get("profile_image").getAsString();
-
-            userInfo.put("name", name);
-            userInfo.put("email", email);
-            userInfo.put("image", image);
-
+            conn.disconnect();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return userInfo;
+        return kakaoUserInfo;
     }
 
     private User saveOrUpdateKakaoUser(HashMap<String, Object> kakaoUserInfo) {
