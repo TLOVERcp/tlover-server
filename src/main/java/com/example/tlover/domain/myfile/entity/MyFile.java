@@ -24,6 +24,8 @@ public class MyFile extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private boolean isDeleted;
+
     public static MyFile from(String key) {
         return MyFile.builder()
                 .fileKey(key)
