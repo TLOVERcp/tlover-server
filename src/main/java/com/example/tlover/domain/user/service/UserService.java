@@ -18,5 +18,10 @@ public interface UserService {
 
     User resetPassword(@Valid ResetPasswordRequest resetPasswordRequest, String loginId);
 
+    void updateUserProfile(@Valid UserProfileRequest userProfileRequest);
+
+    void findPassword(@Valid FindPasswordRequest findPasswordRequest);
+
+    void withdrawUser(@Valid WithdrawUserRequest withdrawUserRequest);
 
 }

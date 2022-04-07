@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,7 +36,10 @@ public class UserApiController {
 
 
     /**
-     * 회원 관련 Api
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
      */
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
@@ -55,6 +59,12 @@ public class UserApiController {
                 .build());
     }
 
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signupUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -65,6 +75,12 @@ public class UserApiController {
                 .build());
     }
 
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
     @ApiOperation(value = "아이디 중복확인", notes = "아이디 중복확인을 합니다.")
     @PostMapping("/duplicate-check")
     public ResponseEntity<DuplicateResponse> duplicateCheckUser(@Valid @RequestBody DuplicateRequest duplicateRequest) {
@@ -76,8 +92,13 @@ public class UserApiController {
                 .build());
     }
 
-
-    @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보 조회를 합니다.")
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
+    @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보를 조회합니다.")
     @GetMapping("/profile")
     public ResponseEntity<ProfileResponse> getUserProfile(HttpServletRequest request) {
         String loginId = getLoginIdFromSession(request);
@@ -85,6 +106,28 @@ public class UserApiController {
         return ResponseEntity.ok(ProfileResponse.from(user));
     }
 
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
+    @ApiOperation(value = "사용자 정보 수정", notes = "사용자 정보를 수정합니다.", produces = "multipart/form-data")
+    @PostMapping("/update-profile")
+    public ResponseEntity<String> updateUserProfile(@ModelAttribute UserProfileRequest userProfileRequest, @RequestParam MultipartFile file) {
+        //userService.updateUserProfile(userProfileRequest);
+
+        System.out.println(file.getOriginalFilename());
+
+        return ResponseEntity.ok("완료");
+    }
+
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
     @ApiOperation(value = "아이디 찾기", notes = "아이디 찾기를 합니다.")
     @PostMapping("/find-id")
     public ResponseEntity<FindIdResponse> findUserId(@Valid @RequestBody FindIdRequest findIdRequest) {
@@ -95,6 +138,26 @@ public class UserApiController {
                 .build());
     }
 
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
+    @ApiOperation(value = "비밀번호 찾기", notes = "비밀번호 찾기를 합니다.")
+    @PostMapping("/find-password")
+    public ResponseEntity<String> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
+        userService.findPassword(findPasswordRequest);
+
+        return ResponseEntity.ok("");
+    }
+
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
     @ApiOperation(value = "비밀번호 재설정", notes = "비밀번호를 재설정 합니다.")
     @PostMapping("/reset-password")
     public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest,
@@ -107,6 +170,12 @@ public class UserApiController {
                 .build());
     }
 
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
     @ApiOperation(value = "사용자 로그아웃", notes = "사용자 로그아웃을 합니다.")
     @GetMapping("/logout")
     public ResponseEntity<String> logoutUser(HttpServletRequest request) {
@@ -116,6 +185,26 @@ public class UserApiController {
         return ResponseEntity.ok("로그아웃에 성공했습니다.");
     }
 
+    /**
+     * 엑세스 토큰 생성
+     * @param loginRequest, request
+     * @return
+     * @author 윤여찬
+     */
+    @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴를 합니다.")
+    @PostMapping("/withdraw")
+    public ResponseEntity<String> withdrawUser(@Valid @RequestBody WithdrawUserRequest withdrawUserRequest) {
+        userService.withdrawUser(withdrawUserRequest);
+
+        return ResponseEntity.ok("");
+    }
+
+    /**
+     * 엑세스 토큰 생성
+     * @param request
+     * @return
+     * @author 윤여찬
+     */
     // 세션에 저장된 로그인 아이디 얻기
     public String getLoginIdFromSession(HttpServletRequest request) {
         Object loginId = request.getSession().getAttribute("loginId");
