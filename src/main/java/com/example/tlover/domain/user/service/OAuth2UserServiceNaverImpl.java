@@ -54,18 +54,18 @@ public class OAuth2UserServiceNaverImpl implements OAuth2UserServiceNaver {
                 con.setRequestProperty(header.getKey(), header.getValue());}
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) return readBody(con.getInputStream());
-            else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) throw new NaverAuthenticationFailedException(EOAuth2UserServiceImpl.eNaverAuthenticationFailedException.getValue());
-            else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN) throw new NaverPermissionException(EOAuth2UserServiceImpl.eNaverPermissionException.getValue());
-            else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND) throw new NaverNotFoundException(EOAuth2UserServiceImpl.eNotFoundException.getValue());
+            else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) throw new NaverAuthenticationFailedException();
+            else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN) throw new NaverPermissionException();
+            else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND) throw new NaverNotFoundException();
             else return readBody(con.getErrorStream());}
-        catch (IOException e) { throw new NaverApiResponseException(EOAuth2UserServiceImpl.eNaverApiResponseException.getValue());}
+        catch (IOException e) { throw new NaverApiResponseException();}
         finally { con.disconnect();}}
     private static HttpURLConnection connect(String apiUrl){
         try {
             URL url = new URL(apiUrl);
             return (HttpURLConnection)url.openConnection();}
-        catch (MalformedURLException e) {throw new NaverApiUrlException(EOAuth2UserServiceImpl.eNaverApiUrlException.getValue());}
-        catch (IOException e) { throw new NaverConnectionException(EOAuth2UserServiceImpl.eNaverConnectionException.getValue());}}
+        catch (MalformedURLException e) {throw new NaverApiUrlException();}
+        catch (IOException e) { throw new NaverConnectionException();}}
     private static String readBody(InputStream body){
         InputStreamReader streamReader = new InputStreamReader(body);
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {
@@ -74,7 +74,7 @@ public class OAuth2UserServiceNaverImpl implements OAuth2UserServiceNaver {
             while ((line = lineReader.readLine()) != null)
                 responseBody.append(line);
             return responseBody.toString();}
-        catch (IOException e) { throw new NaverApiResponseException(EOAuth2UserServiceImpl.eNaverApiResponseException.getValue());}}
+        catch (IOException e) { throw new NaverApiResponseException();}}
     private HashMap<String, Object> getNaverUserInfo(String naverResponseBody) {
         HashMap<String, Object> userInfo = new HashMap<>();
         JsonParser parser = new JsonParser();
