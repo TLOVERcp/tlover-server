@@ -22,7 +22,7 @@ public class Thema {
     @GeneratedValue
     private Long themaId;
 
-    private Long themaName;
+    private String themaName;
 
     @OneToMany(mappedBy = "thema")
     private List<DiaryThema> diaryThemas = new ArrayList<>();
