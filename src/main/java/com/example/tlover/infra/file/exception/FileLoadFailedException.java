@@ -1,6 +1,6 @@
 package com.example.tlover.infra.file.exception;
+import com.example.tlover.infra.file.constant.FileConstants.EFileExceptionMessage;
 
 public class FileLoadFailedException extends IllegalArgumentException {
-    private static final String MESSAGE = "파일 불러오기에 실패했습니다.";
-    public FileLoadFailedException() {super(MESSAGE);}
+    public FileLoadFailedException() {super(EFileExceptionMessage.eFileLoadFailedExceptionMessage.getValue());}
 }
