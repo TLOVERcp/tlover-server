@@ -18,6 +18,8 @@ public class UserConstants {
         eEmailAttribute("email"),
         eNaverProfileImageAttribute("profile_image"),
         eGoogleProfileImageAttribute("picture"),
+<<<<<<< HEAD
+=======
         eKakaoProfileImageAttribute("profile_image"),
         eKakaoProperties("properties"),
         eKakaoAcount("kakao_account"),
@@ -29,6 +31,7 @@ public class UserConstants {
         eNaverApiUrlException("NAVER API URL이 잘못되었습니다. : "),
         eNaverConnectionException("NAVER와의 연결이 실패했습니다. : "),
         eKakaoLoginFailException("Kakao 로그인에 실패했습니다."),
+>>>>>>> 167628786061ef759e2498d7a972b53fa67c3401
         eGoogleTokenInvalid("잘못된 토큰입니다.");
         private final String value;
     }
@@ -40,5 +43,17 @@ public class UserConstants {
         eNaver,
         eKakao,
         eApp;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum ENaverExceptionMessage {
+        eNaverApiResponseExceptionMessage("NAVER API 응답을 읽는데 실패했습니다."),
+        eNaverAuthenticationFailedExceptionMessage("Naver 인증에 실패했습니다."),
+        eNaverPermissionExceptionMessage("Naver API 호출 권한이 없습니다."),
+        eNaverNotFoundExceptionMessage("Naver API 검색 결과가 없습니다."),
+        eNaverApiUrlExceptionMessage("NAVER API URL이 잘못되었습니다. : "),
+        eNaverConnectionExceptionMessage("NAVER와의 연결이 실패했습니다. : ");
+        private final String value;
     }
 }
