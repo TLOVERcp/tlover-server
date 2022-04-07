@@ -23,7 +23,7 @@ public class Region {
     @GeneratedValue
     private Long regionId;
 
-    private Long regionName;
+    private String regionName;
 
     @OneToMany(mappedBy = "region")
     private List<UserRegion> userRegions = new ArrayList<>();
