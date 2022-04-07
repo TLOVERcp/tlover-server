@@ -32,13 +32,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SmsServiceImpl implements SmsService{
 
-    @Value("${spring.sms.service-id}")
+    @Value("${sms.service-id}")
     private String serviceId;
 
-    @Value("${spring.sms.access-key}")
+    @Value("${sms.access-key}")
     private String accessKey;
 
-    @Value("${spring.sms.secret-key}")
+    @Value("${sms.secret-key}")
     private String secretKey;
 
     @Override
