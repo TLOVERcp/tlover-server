@@ -12,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -35,5 +35,3 @@ spring:
   jwt:
     access-key: xlavmfhwprxmzlddhkdHGFDHDFWkGDSHSdsjaHFGDHDnglamfekhgsdfeDFHGEG
     refresh-key: flvmfptlxhgDFSGHSDrzmsanjffhgkfHDFGwlahfmrpTekhDFGERRGVFDSG
-
-

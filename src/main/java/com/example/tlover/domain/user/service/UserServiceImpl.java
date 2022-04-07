@@ -75,7 +75,29 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    @Override
+    @Transactional
+    public void updateUserProfile(UserProfileRequest userProfileRequest) {
+        //User user = this.getUserProfile(userProfileRequest.getLoginId());
+        //user.setUserLoginId(userProfileRequest.getLoginId());
+        //user.setUserEmail(userProfileRequest.getUserEmail());
+        //user.setUserNickName(userProfileRequest.getUserNickName());
 
+        //user.setUserProfileImg(userProfileRequest);
+
+    }
+
+    @Override
+    public void findPassword(FindPasswordRequest findPasswordRequest) {
+
+    }
+
+    @Override
+    @Transactional
+    public void withdrawUser(WithdrawUserRequest withdrawUserRequest) {
+        User user = this.getUserProfile("dd");
+        user.setUserState("deleted");
+    }
 
 
 }
