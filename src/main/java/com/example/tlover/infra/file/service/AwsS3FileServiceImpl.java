@@ -75,4 +75,6 @@ public class AwsS3FileServiceImpl implements FileService {
         request.setKeys(keys.stream().map(DeleteObjectsRequest.KeyVersion::new).collect(Collectors.toList()));
         this.amazonS3Client.deleteObjects(request);
     }
+
+
 }

@@ -13,12 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(description = "계획 작성을 위한 응답 객체")
 public class CreatePlanResponse {
-
     private String message;
-
-    public static CreatePlanResponse from(Plan plan) {
-        return CreatePlanResponse.builder()
-                .message("계획 작성에 성공했습니다.")
-                .build();
-    }
 }

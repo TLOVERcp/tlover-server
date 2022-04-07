@@ -53,3 +53,10 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+sms:
+  service-id: ncp:sms:kr:280044915694:infra-sms
+  access-key: JUARhMRAzpFrstZqd775
+  secret-key: lgiOpHwGvTW5HjcIaCKkhATBHFB3qeRuWzaBOrZZ
+
+

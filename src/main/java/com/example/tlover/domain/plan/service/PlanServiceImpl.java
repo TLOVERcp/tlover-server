@@ -12,8 +12,10 @@ import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class PlanServiceImpl implements PlanService{
     private final PlanRegionRepository planRegionRepository;
     private final UserRepository userRepository;
 
+
     @Override
     public Plan createPlan(CreatePlanRequest createPlanRequest, String loginId){
         User user = userRepository.findByUserLoginId(loginId).get();
@@ -37,6 +40,7 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public List<PlanListResponse> getAllPlans(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
+
         List<Plan> plans = planRepository.findAllByUser(user);
         List<PlanListResponse> planList = new ArrayList<>();
         for(Plan p : plans){
@@ -58,10 +62,26 @@ public class PlanServiceImpl implements PlanService{
     }
 
     @Override
-    public PlanDetailResponse getPlanDetail(String planTitle, String loginId) {
+    public PlanDetailResponse getPlanDetail(Long planId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Plan plan = planRepository.findByUserAndPlanTitle(user, planTitle);
+        Plan plan = planRepository.findByUserAndPlanId(user, planId);
         List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan);
         return PlanDetailResponse.from(plan, planRegion);
+    }
+
+    @Override
+    @Transactional
+    public void deletePlan(Long planId, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).get();
+        Plan plan = planRepository.findByUserAndPlanId(user, planId);
+        plan.setPlanStatus("DELETE");
+    }
+
+    @Override
+    public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).get();
+        Plan plan = planRepository.findByUserAndPlanId(user, planId);
+        plan.updatePlan(createPlanRequest, plan);
+        return plan;
     }
 }

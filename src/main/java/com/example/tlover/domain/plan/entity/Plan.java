@@ -57,6 +57,7 @@ public class Plan {
         user.getPlans().add(this);
     }
 
+
     public static Plan toEntity(CreatePlanRequest createPlanRequest, User user) {
         Plan plan = new Plan();
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
@@ -66,6 +67,16 @@ public class Plan {
         plan.setPlanWriteDate(LocalDateTime.now());
         plan.setPlanStatus("ACTIVE");
         plan.setUser(user);
+        return plan;
+    }
+
+    public static Plan updatePlan(CreatePlanRequest createPlanRequest, Plan plan) {
+        plan.setPlanTitle(createPlanRequest.getPlanTitle());
+        plan.setPlanContext(createPlanRequest.getPlanContext());
+        plan.setPlanStartDate(createPlanRequest.getPlanStartDate());
+        plan.setPlanEndDate(createPlanRequest.getPlanEndDate());
+        plan.setPlanWriteDate(LocalDateTime.now());
+        plan.setPlanStatus("ACTIVE");
         return plan;
     }
 }

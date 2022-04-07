@@ -1,9 +1,9 @@
 package com.example.tlover.domain.user.service;
 
-import com.example.tlover.domain.user.constant.UserConstants;
 import com.example.tlover.domain.user.dto.KakaoLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.oauth2.KakaoFailException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
+
+import static com.example.tlover.domain.user.constant.UserConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,54 +43,57 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
 
     private HashMap<String, Object> getKakaoUserInfo(KakaoLoginRequest kakaoLoginRequest) {
         String accessToken = kakaoLoginRequest.getAccessToken();
-        HashMap<String, Object> userInfo = new HashMap<>();
+        HashMap<String, Object> kakaoUserInfo = new HashMap<>();
 
         try {
             URL url = new URL(kakaoUserInfoUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(EOAuth2UserServiceImpl.eGetMethod.getValue());
 
-            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty(EOAuth2UserServiceImpl.eAuthorization.getValue(), EOAuth2UserServiceImpl.eBearer + accessToken);
 
             int responseCode = conn.getResponseCode();
-//            System.out.println("responseCode : " + responseCode);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String responseBody = "";
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line = "";
+                String responseBody = "";
 
-            while ((line = br.readLine()) != null) {
-                responseBody += line;
+                while ((line = br.readLine()) != null) {
+                    responseBody += line;
+                }
+
+                JsonParser parser = new JsonParser();
+                JsonElement element = parser.parse(responseBody);
+
+                JsonObject properties = element.getAsJsonObject().get(EOAuth2UserServiceImpl.eKakaoProperties.getValue()).getAsJsonObject();
+                JsonObject kakaoAccount = element.getAsJsonObject().get(EOAuth2UserServiceImpl.eKakaoAcount.getValue()).getAsJsonObject();
+
+                String name = kakaoAccount.getAsJsonObject().get(EOAuth2UserServiceImpl.eNameAttribute.getValue()).getAsString();
+                String email = kakaoAccount.getAsJsonObject().get(EOAuth2UserServiceImpl.eEmailAttribute.getValue()).getAsString();
+                String profileImage = properties.getAsJsonObject().get(EOAuth2UserServiceImpl.eKakaoProfileImageAttribute.getValue()).getAsString();
+
+                kakaoUserInfo.put(EOAuth2UserServiceImpl.eNameAttribute.getValue(), name);
+                kakaoUserInfo.put(EOAuth2UserServiceImpl.eEmailAttribute.getValue(), email);
+                kakaoUserInfo.put(EOAuth2UserServiceImpl.eKakaoProfileImageAttribute.getValue(), profileImage);
+
+                br.close();
+            } else {
+                throw new KakaoFailException(EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
             }
-
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(responseBody);
-
-            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-            JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-
-            String name = kakaoAccount.getAsJsonObject().get("name").getAsString();
-            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-            String image = properties.getAsJsonObject().get("profile_image").getAsString();
-
-            userInfo.put("name", name);
-            userInfo.put("email", email);
-            userInfo.put("image", image);
-
+            conn.disconnect();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
            throw new RuntimeException("잘못된 토큰");
         }
-        return userInfo;
+        return kakaoUserInfo;
     }
 
     private User saveOrUpdateKakaoUser(HashMap<String, Object> kakaoUserInfo) {
-        User user = userRepository.findByUserEmailAndUserSocialProvider(kakaoUserInfo.get("email").toString(), UserConstants.ESocialProvider.eKakao)
-                .map(entity -> entity.updateKakaoUser(kakaoUserInfo.get(kakaoUserInfo.get("name")).toString(),
-                        kakaoUserInfo.get("image").toString()))
+        User user = userRepository.findByUserEmailAndUserSocialProvider(kakaoUserInfo.get(EOAuth2UserServiceImpl.eEmailAttribute).toString(), ESocialProvider.eKakao)
+                .map(entity -> entity.updateKakaoUser(kakaoUserInfo.get(kakaoUserInfo.get(EOAuth2UserServiceImpl.eNameAttribute)).toString(),
+                        kakaoUserInfo.get(EOAuth2UserServiceImpl.eKakaoProfileImageAttribute.getValue()).toString()))
                 .orElse(User.toEntityOfKakaoUser(kakaoUserInfo));
         return userRepository.save(user);
     }
