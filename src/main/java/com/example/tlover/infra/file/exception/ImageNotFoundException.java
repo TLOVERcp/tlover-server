@@ -1,6 +1,6 @@
 package com.example.tlover.infra.file.exception;
+import com.example.tlover.infra.file.constant.FileConstants.EFileExceptionMessage;
 
 public class ImageNotFoundException extends IllegalArgumentException {
-    private static final String MESSAGE = "해당 이미지가 존재하지 않습니다.";
-    public ImageNotFoundException() {super(MESSAGE);}
+    public ImageNotFoundException() {super(EFileExceptionMessage.eImageNotFoundExceptionMessage.getValue());}
 }
