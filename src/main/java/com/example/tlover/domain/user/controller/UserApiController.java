@@ -140,6 +140,13 @@ public class UserApiController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    /**
+     * 카카오 로그인 API
+     * [POST] api/v1/users/kakao-login
+     * @param kakaoLoginRequest
+     * @return ResponseEntity
+     * @author hyeseon
+     */
     @ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 합니다.")
     @PostMapping("/kakao-login")
     public ResponseEntity<LoginResponse> loginKakaoUser(@Valid @RequestBody KakaoLoginRequest kakaoLoginRequest) {
