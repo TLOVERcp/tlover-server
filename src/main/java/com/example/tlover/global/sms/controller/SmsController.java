@@ -27,6 +27,12 @@ public class SmsController {
 
     private final SmsService smsService;
 
+    /**
+     * 문자 발송 기능입니다.
+     * @param smsSendRequest
+     * @return
+     * @author 한규범
+     */
     @ApiOperation(value = "문자발송", notes = "문자를 발송합니다.")
     @PostMapping("/send")
     public ResponseEntity<SmsSendResponse> smsSend(@Valid @RequestBody SmsSendRequest smsSendRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
