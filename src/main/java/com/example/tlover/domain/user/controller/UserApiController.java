@@ -3,18 +3,19 @@ package com.example.tlover.domain.user.controller;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
-import com.example.tlover.domain.user.exception.NotCertifiedValueException;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
+import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
 import com.example.tlover.global.jwt.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,7 @@ public class UserApiController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final UserRefreshTokenService userRefreshTokenService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
@@ -56,6 +58,9 @@ public class UserApiController {
 
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
+
+        //유저 리프레시 토큰 저장
+        userRefreshTokenService.insertRefreshToken(refreshJwt, user);
 
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessJwt(accessJwt)
