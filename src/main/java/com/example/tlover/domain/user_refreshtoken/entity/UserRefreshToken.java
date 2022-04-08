@@ -1,18 +1,20 @@
 package com.example.tlover.domain.user_refreshtoken.entity;
 
 import com.example.tlover.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
+import java.util.HashMap;
+
+import static com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl.*;
+import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRefreshToken {
