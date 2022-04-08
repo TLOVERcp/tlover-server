@@ -1,5 +1,6 @@
 package com.example.tlover.global.exception;
 
+import com.example.tlover.domain.myfile.exception.NotFoundMyFileException;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.exception.oauth2.*;
 import com.example.tlover.global.dto.ExceptionResponse;
@@ -150,5 +151,15 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
     public final ResponseEntity<Object> handleImageNotFoundException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), Arrays.asList(ex.getMessage()));
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * MyFile Domain Exception
+     */
+
+    @ExceptionHandler(NotFoundMyFileException.class)
+    public final ResponseEntity<Object> handleNotFoundMyFileException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 }
