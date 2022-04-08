@@ -9,6 +9,8 @@ import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 
@@ -20,7 +22,20 @@ public class PlanRegionServiceImpl implements PlanRegionService {
     private final RegionRepository regionRepository;
 
     @Override
-    public void createPlanRegion(@Valid CreatePlanRequest createPlanRequest, Plan plan) {
+    public void createPlanRegion(CreatePlanRequest createPlanRequest, Plan plan) {
+        String[] regionName = createPlanRequest.getRegionName();
+        for(String i : regionName) {
+            Region region = regionRepository.findByRegionName(i).get();
+            PlanRegion planRegion = PlanRegion.toEntity(region, plan);
+            planRegionRepository.save(planRegion);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updatePlanRegion(CreatePlanRequest createPlanRequest, Plan plan) {
+        planRegionRepository.deleteAllByPlan(plan);
+
         String[] regionName = createPlanRequest.getRegionName();
         for(String i : regionName) {
             Region region = regionRepository.findByRegionName(i).get();

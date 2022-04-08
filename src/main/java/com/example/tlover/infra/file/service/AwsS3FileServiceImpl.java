@@ -32,10 +32,6 @@ public class AwsS3FileServiceImpl implements FileService {
 
     @Override
     public String saveImage(MultipartFile file) {
-        /**
-         * 여기서 validateImageExtension을 통해서 확장자를 검증한다 .
-         * 그리고 키(UUID)를 받아서 값을 가져옴 key를 리턴
-         */
         ImageExtension.validateImageExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
         final String key = UUID.randomUUID().toString();
         this.amazonS3Client.putObject(this.putObjectRequest(file, key));
@@ -50,10 +46,6 @@ public class AwsS3FileServiceImpl implements FileService {
             throw new FileSaveFailedException();
         }
     }
-
-    /**
-     * objectMetadata 이거 왜함?? //이미지
-     */
 
     private ObjectMetadata objectMetadata(MultipartFile file) {
         final ObjectMetadata metadata = new ObjectMetadata();
