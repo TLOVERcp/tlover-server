@@ -47,7 +47,7 @@ public class UserApiController {
      * 사용자 로그인
      * @param loginRequest, request
      * @return ResponseEntity<LoginResponse>
-     * @author 윤여찬
+     * @author 윤여찬, 토큰관련 : 한규범
      */
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
