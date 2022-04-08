@@ -3,6 +3,7 @@ package com.example.tlover.domain.user.controller;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.NotCertifiedValueException;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
@@ -52,19 +53,19 @@ public class UserApiController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
-        // 토큰 생성
-        String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
-        String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
 
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
+        // 토큰 생성
+        String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
+        String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
         //유저 리프레시 토큰 저장
-        userRefreshTokenService.insertRefreshToken(refreshJwt, user);
+        long refreshJwtIdx = userRefreshTokenService.insertRefreshToken(refreshJwt, user);
 
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessJwt(accessJwt)
-                .refreshJwt(refreshJwt)
+                .refreshJwtIdx(refreshJwtIdx)
                 .message("로그인에 성공하였습니다.")
                 .build());
     }
