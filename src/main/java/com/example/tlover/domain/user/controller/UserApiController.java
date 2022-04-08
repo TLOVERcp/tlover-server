@@ -3,12 +3,16 @@ package com.example.tlover.domain.user.controller;
 
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.NotCertifiedValueException;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.global.jwt.service.JwtService;
+import com.example.tlover.global.sms.dto.SmsSendRequest;
+import com.example.tlover.global.sms.service.SmsService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 
 @RestController
@@ -36,7 +44,7 @@ public class UserApiController {
 
 
     /**
-     * 엑세스 토큰 생성
+     * 사용자 로그인
      * @param loginRequest, request
      * @return
      * @author 윤여찬
@@ -52,16 +60,16 @@ public class UserApiController {
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
-
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessJwt(accessJwt)
                 .refreshJwt(refreshJwt)
+                .message("로그인에 성공하였습니다.")
                 .build());
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 사용자 회원가입
+     * @param signUpRequest
      * @return
      * @author 윤여찬
      */
@@ -76,8 +84,8 @@ public class UserApiController {
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 아이디 중복확인
+     * @param duplicateRequest
      * @return
      * @author 윤여찬
      */
@@ -85,7 +93,7 @@ public class UserApiController {
     @PostMapping("/duplicate-check")
     public ResponseEntity<DuplicateResponse> duplicateCheckUser(@Valid @RequestBody DuplicateRequest duplicateRequest) {
 
-        userService.duplicateCheck(duplicateRequest);
+        userService.loginIdDuplicateCheck(duplicateRequest.getLoginId());
 
         return ResponseEntity.ok(DuplicateResponse.builder()
                 .message("사용가능한 아이디입니다.")
@@ -93,8 +101,8 @@ public class UserApiController {
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 사용자 정보 조회
+     * @param request
      * @return
      * @author 윤여찬
      */
@@ -107,54 +115,52 @@ public class UserApiController {
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 사용자 정보 수정
+     * @param userProfileRequest
      * @return
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 정보 수정", notes = "사용자 정보를 수정합니다.", produces = "multipart/form-data")
     @PostMapping("/update-profile")
-    public ResponseEntity<String> updateUserProfile(@ModelAttribute UserProfileRequest userProfileRequest, @RequestParam MultipartFile file) {
-        //userService.updateUserProfile(userProfileRequest);
+    public ResponseEntity<String> updateUserProfile(@Valid @ModelAttribute UserProfileRequest userProfileRequest,
+                                                    @RequestParam(required = false) MultipartFile file,
+                                                    HttpServletRequest request) {
+        String loginId = this.getLoginIdFromSession(request);
+        User user = userService.updateUserProfile(loginId, userProfileRequest, file);
+        request.getSession().setAttribute("loginId", user.getUserLoginId());
 
-        System.out.println(file.getOriginalFilename());
-
-        return ResponseEntity.ok("완료");
+        return ResponseEntity.ok("사용자 정보가 수정되었습니다.");
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 아이디 찾기
+     * @param findIdRequest
      * @return
      * @author 윤여찬
      */
     @ApiOperation(value = "아이디 찾기", notes = "아이디 찾기를 합니다.")
     @PostMapping("/find-id")
-    public ResponseEntity<FindIdResponse> findUserId(@Valid @RequestBody FindIdRequest findIdRequest) {
-        User user = userService.findUserId(findIdRequest);
-
-        return ResponseEntity.ok(FindIdResponse.builder()
-                .loginId(user.getUserLoginId())
-                .build());
+    public ResponseEntity<FindIdResponse> findUserId(@Valid @RequestBody FindIdRequest findIdRequest,
+                                                     HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+        CertifiedValue certifiedValue = getCertifiedValueFromSession(request);
+        return ResponseEntity.ok(userService.findUserId(findIdRequest, certifiedValue));
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 비밀번호 찾기
+     * @param findPasswordRequest
      * @return
      * @author 윤여찬
      */
     @ApiOperation(value = "비밀번호 찾기", notes = "비밀번호 찾기를 합니다.")
     @PostMapping("/find-password")
-    public ResponseEntity<String> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
-        userService.findPassword(findPasswordRequest);
-
-        return ResponseEntity.ok("");
+    public ResponseEntity<FindPasswordResponse> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+        return ResponseEntity.ok(userService.findPassword(findPasswordRequest));
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 비밀번호 재설정
+     * @param resetPasswordRequest, request
      * @return
      * @author 윤여찬
      */
@@ -171,8 +177,8 @@ public class UserApiController {
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 사용자 로그아웃
+     * @param request
      * @return
      * @author 윤여찬
      */
@@ -186,31 +192,39 @@ public class UserApiController {
     }
 
     /**
-     * 엑세스 토큰 생성
-     * @param loginRequest, request
+     * 회원 탈퇴
+     * @param withdrawUserRequest
      * @return
      * @author 윤여찬
      */
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴를 합니다.")
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdrawUser(@Valid @RequestBody WithdrawUserRequest withdrawUserRequest) {
-        userService.withdrawUser(withdrawUserRequest);
+    public ResponseEntity<String> withdrawUser(@Valid @RequestBody WithdrawUserRequest withdrawUserRequest,
+                                               HttpServletRequest request) {
+        String loginId = getLoginIdFromSession(request);
+        userService.withdrawUser(withdrawUserRequest, loginId);
 
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 
     /**
-     * 엑세스 토큰 생성
+     * 세션에 저장된 로그인 아이디 얻기
      * @param request
      * @return
      * @author 윤여찬
      */
-    // 세션에 저장된 로그인 아이디 얻기
     public String getLoginIdFromSession(HttpServletRequest request) {
         Object loginId = request.getSession().getAttribute("loginId");
         if (loginId == null) throw new DeniedAccessExceptioin();
 
         return loginId.toString();
+    }
+
+    public CertifiedValue getCertifiedValueFromSession(HttpServletRequest request) {
+        Object certifiedValue = request.getSession().getAttribute("certifiedValue");
+        if (certifiedValue == null) throw new NotCertifiedValueException();
+
+        return (CertifiedValue) certifiedValue;
     }
 
     /**

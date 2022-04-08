@@ -12,7 +12,9 @@ public enum UserExceptionMessage {
     USER_ID_DUPLICATE_EXCEPTION_MASSAGE("해당 아이디는 이미 존재하는 아이디입니다."),
     DENIED_ACCESS_EXCEPTION_MASSAGE("잘못된 접근입니다."),
     NOT_EQUAL_PASSWORD_MASSAGE("입력하신 비밀번호가 기존의 비밀번호와 일치하지 않습니다."),
-    PASSWORD_EQUAL_EXCEPTION_MASSAGE("변경할 비밀번호가 기존의 비밀번호와 동일합니다.");
+    PASSWORD_EQUAL_EXCEPTION_MASSAGE("변경할 비밀번호가 기존의 비밀번호와 동일합니다."),
+    NOT_CERTIFIED_EXCEPTION_MASSAGE("인증 코드가 일치하지 않습니다."),
+    PHONE_NUM_DUPLICATE_EXCEPTION_MASSAGE("해당 전화번호는 이미 존재하는 전화번호입니다.");
 
 
     private final String message;

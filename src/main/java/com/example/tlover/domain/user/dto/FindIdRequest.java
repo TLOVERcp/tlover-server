@@ -20,4 +20,6 @@ public class FindIdRequest {
     @ApiModelProperty(notes = "회원의 전화번호를 입력해주세요.")
     private String userPhoneNum;
 
+    private String certifiedValue;
+
 }
