@@ -1,10 +1,8 @@
 package com.example.tlover.domain.user_refreshtoken.entity;
 
 import com.example.tlover.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -15,6 +13,7 @@ import static javax.persistence.GenerationType.AUTO;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserRefreshToken {
 
     @Id
@@ -31,5 +30,4 @@ public class UserRefreshToken {
         this.user = user;
         user.getUserRefreshTokens().add(this);
     }
-
 }

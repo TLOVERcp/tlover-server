@@ -5,6 +5,8 @@ import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
+import com.example.tlover.domain.user_refreshtoken.repository.UserRefreshTokenRepository;
 import com.example.tlover.global.encryption.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
