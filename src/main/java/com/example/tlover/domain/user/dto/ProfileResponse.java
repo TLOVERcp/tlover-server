@@ -22,6 +22,7 @@ public class ProfileResponse {
     private String userEmail;
     private String userPhoneNum;
     private String userNickName;
+    private String profileImg;
 
     public static ProfileResponse from(User user) {
         return ProfileResponse.builder()
@@ -31,6 +32,7 @@ public class ProfileResponse {
                 .userEmail(user.getUserEmail())
                 .userNickName(user.getUserNickName())
                 .userPhoneNum(user.getUserPhoneNum())
+                .profileImg(user.getUserProfileImg())
                 .build();
     }
 

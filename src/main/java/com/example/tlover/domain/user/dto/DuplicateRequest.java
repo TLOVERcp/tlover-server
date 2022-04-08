@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "아이디 중복 확인을 위한 요청 객체")
@@ -23,10 +22,5 @@ public class DuplicateRequest {
     @ApiModelProperty(notes = "로그인 Id를 입력해 주세요.")
     private String loginId;
 
-    public static DuplicateRequest from(User user) {
-        return DuplicateRequest.builder()
-                .loginId(user.getUserLoginId())
-                .build();
-    }
 
 }
