@@ -28,7 +28,7 @@ public interface UserService {
 
     User updateUserProfile(String loginId, @Valid UserProfileRequest userProfileRequest, MultipartFile file);
 
-    FindPasswordResponse findPassword(@Valid FindPasswordRequest findPasswordRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException;
+    FindPasswordResponse findPassword(@Valid FindPasswordRequest findPasswordRequest, CertifiedValue certifiedValue) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException;
 
     void withdrawUser(@Valid WithdrawUserRequest withdrawUserRequest, String loginId);
 
