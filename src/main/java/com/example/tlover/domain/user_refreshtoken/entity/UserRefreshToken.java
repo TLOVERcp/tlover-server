@@ -14,9 +14,9 @@ import static javax.persistence.GenerationType.AUTO;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserRefreshToken {
 
     @Id

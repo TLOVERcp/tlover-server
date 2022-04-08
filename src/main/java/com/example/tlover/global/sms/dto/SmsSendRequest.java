@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 public class SmsSendRequest {
 
     @NotBlank(message = "전화번호를 입력해 주세요.")
-    @Size(min = 11, max = 11, message = "전화번호를 확인하여 주세요.")
+    @Size(min = 11, max = 13, message = "전화번호를 확인하여 주세요.")
     @ApiModelProperty(notes = "전화번호를 입력해 주세요.")
     private String phoneNum;
 
