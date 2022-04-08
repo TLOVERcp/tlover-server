@@ -18,7 +18,7 @@ public class LoginResponse {
     private String message;
 
     private String accessJwt;
-    private String refreshJwt;
+    private Long refreshJwtIdx;
 
     public static LoginResponse from(User user) {
         return LoginResponse.builder()
