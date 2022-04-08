@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 public class FindPasswordRequest {
 
     @NotBlank(message = "회원의 로그인Id를 입력해주세요.")
-    @Size(min = 5, max = 18, message = "로그인 Id는 크기가 5에서 18사이여야 합니다.")
+    @Size(min = 6, max = 18, message = "로그인 Id는 크기가 5에서 18사이여야 합니다.")
     @ApiModelProperty(notes = "로그인 Id를 입력해 주세요.")
     private String loginId;
 
@@ -24,4 +24,8 @@ public class FindPasswordRequest {
     @Size(min = 7, max = 16, message = "패스워드는 7글자 이상 20글자 이하여야 합니다.")
     @ApiModelProperty(notes = "회원의 비밀번호를 입력해 주세요.")
     private String password;
+
+    private String userPhoneNum;
+
+    private String certifiedValue;
 }

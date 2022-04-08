@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class FindIdResponse {
 
     private String loginId;
+    private String message;
 
 
     public static FindIdResponse from(User user) {

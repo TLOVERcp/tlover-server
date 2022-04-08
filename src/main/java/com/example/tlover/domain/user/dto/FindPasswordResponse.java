@@ -1,6 +1,7 @@
 package com.example.tlover.domain.user.dto;
 
 
+
 import com.example.tlover.domain.user.entity.User;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -13,15 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "로그인을 위한 응답 객체")
-public class LoginResponse {
+public class FindPasswordResponse {
 
     private String message;
 
-    private String accessJwt;
-    private String refreshJwt;
 
-    public static LoginResponse from(User user) {
-        return LoginResponse.builder()
+    public static FindPasswordResponse from(User user) {
+        return FindPasswordResponse.builder()
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.example.tlover.global.sms.controller;
 
+import com.example.tlover.domain.user.dto.CertifiedValue;
 import com.example.tlover.global.sms.dto.SmsSendRequest;
 import com.example.tlover.global.sms.dto.SmsSendResponse;
 import com.example.tlover.global.sms.service.SmsService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -30,6 +32,32 @@ public class SmsController {
     @ApiOperation(value = "문자발송", notes = "문자를 발송합니다.")
     @PostMapping("/send")
     public ResponseEntity<SmsSendResponse> smsSend(@Valid @RequestBody SmsSendRequest smsSendRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+
+        String value = smsService.sendSms(smsSendRequest);
+
+        return ResponseEntity.ok(SmsSendResponse.builder()
+                .value(value)
+                .build());
+    }
+
+    @ApiOperation(value = "아이디 찾기 인증문자 발송", notes = "문자를 발송합니다.")
+    @PostMapping("/find-id")
+    public ResponseEntity<SmsSendResponse> smsSendFindId(@Valid @RequestBody SmsSendRequest smsSendRequest,
+                                                   HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+
+        String value = smsService.sendSms(smsSendRequest);
+        CertifiedValue certifiedValue = new CertifiedValue();
+        certifiedValue.setFindLoginId(value);
+        request.getSession().setAttribute("certifiedValue", certifiedValue);
+
+        return ResponseEntity.ok(SmsSendResponse.builder()
+                .value(value)
+                .build());
+    }
+
+    @ApiOperation(value = "문자발송", notes = "문자를 발송합니다.")
+    @PostMapping("/find-password")
+    public ResponseEntity<SmsSendResponse> smsSendFindPassword(@Valid @RequestBody SmsSendRequest smsSendRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         String value = smsService.sendSms(smsSendRequest);
 
