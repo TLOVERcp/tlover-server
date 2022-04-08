@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "문자인증 값 반환을 위한 객체")
 public class SmsSendResponse {
     private String value;
+    private String message;
 }

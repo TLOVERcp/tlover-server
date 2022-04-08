@@ -2,10 +2,13 @@ package com.example.tlover.domain.user_refreshtoken.entity;
 
 import com.example.tlover.domain.user.entity.User;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
+import java.util.HashMap;
+
+import static com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl.*;
+import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
@@ -30,4 +33,5 @@ public class UserRefreshToken {
         this.user = user;
         user.getUserRefreshTokens().add(this);
     }
+
 }
