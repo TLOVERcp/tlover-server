@@ -8,18 +8,10 @@ import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.global.encryption.SHA256Util;
-import com.example.tlover.global.sms.dto.SmsSendRequest;
-import com.example.tlover.global.sms.service.SmsService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
@@ -28,13 +20,12 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final SHA256Util sha256Util;
-    private final SmsService smsService;
     private final MyFileService myFileService;
 
     /**
      * 로그인
      * @param loginRequest
-     * @return
+     * @return User
      * @author 윤여찬
      */
     @Override
@@ -49,7 +40,7 @@ public class UserServiceImpl implements UserService{
     /**
      * 회원가입
      * @param signupRequest
-     * @return
+     * @return User
      * @author 윤여찬
      */
     @Override
@@ -91,24 +82,13 @@ public class UserServiceImpl implements UserService{
     }
 
     /**
-     * 사용자 정보 조회
-     * @param loginId
-     * @return
-     * @author 윤여찬
-     */
-    @Override
-    public User getUserProfile(String loginId) {
-        return userRepository.findByUserLoginId(loginId).get();
-    }
-
-    /**
      * 아이디 찾기
-     * @param findIdRequest
-     * @return
+     * @param findIdRequest, certifiedValue
+     * @return FindIdResponse
      * @author 윤여찬
      */
     @Override
-    public FindIdResponse findUserId(FindIdRequest findIdRequest, CertifiedValue certifiedValue) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public FindIdResponse findUserId(FindIdRequest findIdRequest, CertifiedValue certifiedValue) {
 
         if ( !certifiedValue.getFindLoginId().equals(findIdRequest.getCertifiedValue()) )throw new NotCertifiedValueException();
 
@@ -125,9 +105,38 @@ public class UserServiceImpl implements UserService{
     }
 
     /**
+     * 비밀번호 찾기
+     * @param findPasswordRequest, certifiedValue
+     * @return FindPasswordResponse
+     * @author 윤여찬
+     */
+    @Override
+    @Transactional
+    public FindPasswordResponse findPassword(FindPasswordRequest findPasswordRequest, CertifiedValue certifiedValue) {
+
+        // 인증 코드 확인
+        if ( !certifiedValue.getFindPassword().equals(findPasswordRequest.getCertifiedValue()) )throw new NotCertifiedValueException();
+
+        // 인증 코드가 일치할 경우
+        Optional<User> user = this.userRepository.findByUserLoginId(findPasswordRequest.getLoginId());
+        if (user.isEmpty()) throw new NotFoundUserException();
+
+        // 변경할 비밀번호가 기존 비밀번호와 일치할 때
+        if (user.get().getUserPassword().equals(sha256Util.encrypt(findPasswordRequest.getPassword())))
+            throw new PasswordEqualException();
+
+        user.get().setUserPassword(sha256Util.encrypt(findPasswordRequest.getPassword()));
+
+        return FindPasswordResponse.builder()
+                .message("비밀번호 재설정이 완료되었습니다.")
+                .build();
+
+    }
+
+    /**
      * 비밀번호 재설정
-     * @param resetPasswordRequest
-     * @return
+     * @param resetPasswordRequest, loginId
+     * @return User
      * @author 윤여찬
      */
     @Override
@@ -148,9 +157,20 @@ public class UserServiceImpl implements UserService{
     }
 
     /**
+     * 사용자 정보 조회
+     * @param loginId
+     * @return User
+     * @author 윤여찬
+     */
+    @Override
+    public User getUserProfile(String loginId) {
+        return userRepository.findByUserLoginId(loginId).get();
+    }
+
+    /**
      * 사용자 정보 수정
-     * @param userProfileRequest
-     * @return
+     * @param loginId, userProfileRequest, file
+     * @return User
      * @author 윤여찬
      */
     @Override
@@ -168,37 +188,11 @@ public class UserServiceImpl implements UserService{
 
     }
 
-    /**
-     * 비밀번호 찾기
-     * @param findPasswordRequest
-     * @return
-     * @author 윤여찬
-     */
-    @Override
-    @Transactional
-    public FindPasswordResponse findPassword(FindPasswordRequest findPasswordRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
-
-
-        // 인증 코드가 일치할 경우
-        Optional<User> user = this.userRepository.findByUserLoginId(findPasswordRequest.getLoginId());
-        if (user.isEmpty()) throw new NotFoundUserException();
-
-        // 변경할 비밀번호가 기존 비밀번호와 일치할 때
-        if (user.get().getUserPassword().equals(sha256Util.encrypt(findPasswordRequest.getPassword())))
-            throw new PasswordEqualException();
-
-        user.get().setUserPassword(sha256Util.encrypt(findPasswordRequest.getPassword()));
-
-        return FindPasswordResponse.builder()
-                .message("비밀번호 재설정이 완료되었습니다.")
-                .build();
-
-    }
 
     /**
      * 회원 탈퇴
-     * @param withdrawUserRequest
+     * @param withdrawUserRequest, loginId
      * @return
      * @author 윤여찬
      */

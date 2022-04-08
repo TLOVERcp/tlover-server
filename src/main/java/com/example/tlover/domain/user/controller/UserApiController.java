@@ -10,14 +10,11 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.global.jwt.service.JwtService;
-import com.example.tlover.global.sms.dto.SmsSendRequest;
-import com.example.tlover.global.sms.service.SmsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,7 +43,7 @@ public class UserApiController {
     /**
      * 사용자 로그인
      * @param loginRequest, request
-     * @return
+     * @return ResponseEntity<LoginResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
@@ -70,7 +67,7 @@ public class UserApiController {
     /**
      * 사용자 회원가입
      * @param signUpRequest
-     * @return
+     * @return ResponseEntity<SignupResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
@@ -86,7 +83,7 @@ public class UserApiController {
     /**
      * 아이디 중복확인
      * @param duplicateRequest
-     * @return
+     * @return ResponseEntity<DuplicateResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "아이디 중복확인", notes = "아이디 중복확인을 합니다.")
@@ -116,8 +113,8 @@ public class UserApiController {
 
     /**
      * 사용자 정보 수정
-     * @param userProfileRequest
-     * @return
+     * @param userProfileRequest, file, request
+     * @return ResponseEntity<String>
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 정보 수정", notes = "사용자 정보를 수정합니다.", produces = "multipart/form-data")
@@ -134,8 +131,8 @@ public class UserApiController {
 
     /**
      * 아이디 찾기
-     * @param findIdRequest
-     * @return
+     * @param findIdRequest, request
+     * @return ResponseEntity<FindIdResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "아이디 찾기", notes = "아이디 찾기를 합니다.")
@@ -143,25 +140,31 @@ public class UserApiController {
     public ResponseEntity<FindIdResponse> findUserId(@Valid @RequestBody FindIdRequest findIdRequest,
                                                      HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
         CertifiedValue certifiedValue = getCertifiedValueFromSession(request);
-        return ResponseEntity.ok(userService.findUserId(findIdRequest, certifiedValue));
+        FindIdResponse response = userService.findUserId(findIdRequest, certifiedValue);
+        request.getSession().invalidate();
+        return ResponseEntity.ok(response);
     }
 
     /**
-     * 비밀번호 찾기
-     * @param findPasswordRequest
-     * @return
+     * 비밀번호 찾기(재설정)
+     * @param findPasswordRequest, request
+     * @return ResponseEntity<FindPasswordResponse>
      * @author 윤여찬
      */
-    @ApiOperation(value = "비밀번호 찾기", notes = "비밀번호 찾기를 합니다.")
+    @ApiOperation(value = "비밀번호 찾기(재설정)", notes = "비밀번호 찾기를 합니다.")
     @PostMapping("/find-password")
-    public ResponseEntity<FindPasswordResponse> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
-        return ResponseEntity.ok(userService.findPassword(findPasswordRequest));
+    public ResponseEntity<FindPasswordResponse> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest,
+                                                             HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+        CertifiedValue certifiedValue = getCertifiedValueFromSession(request);
+        FindPasswordResponse response = userService.findPassword(findPasswordRequest, certifiedValue);
+        request.getSession().invalidate();
+        return ResponseEntity.ok(response);
     }
 
     /**
      * 비밀번호 재설정
      * @param resetPasswordRequest, request
-     * @return
+     * @return ResponseEntity<ResetPasswordResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "비밀번호 재설정", notes = "비밀번호를 재설정 합니다.")
@@ -179,7 +182,7 @@ public class UserApiController {
     /**
      * 사용자 로그아웃
      * @param request
-     * @return
+     * @return ResponseEntity<String>
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 로그아웃", notes = "사용자 로그아웃을 합니다.")
@@ -193,8 +196,8 @@ public class UserApiController {
 
     /**
      * 회원 탈퇴
-     * @param withdrawUserRequest
-     * @return
+     * @param withdrawUserRequest, request
+     * @return ResponseEntity<String>
      * @author 윤여찬
      */
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴를 합니다.")
@@ -210,7 +213,7 @@ public class UserApiController {
     /**
      * 세션에 저장된 로그인 아이디 얻기
      * @param request
-     * @return
+     * @return String
      * @author 윤여찬
      */
     public String getLoginIdFromSession(HttpServletRequest request) {
