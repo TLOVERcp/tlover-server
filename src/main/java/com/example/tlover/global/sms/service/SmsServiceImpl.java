@@ -5,6 +5,7 @@ import com.example.tlover.global.sms.dto.MessageModel;
 import com.example.tlover.global.sms.dto.SmsNaverRequest;
 import com.example.tlover.global.sms.dto.SmsSendRequest;
 import com.example.tlover.global.sms.dto.SmsSendResponse;
+import com.example.tlover.global.sms.exception.HyphenPhoneNumException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,8 @@ public class SmsServiceImpl implements SmsService{
 
     @Override
     public String sendSms(SmsSendRequest smsSendRequest) throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, URISyntaxException {
+        if(smsSendRequest.getPhoneNum().contains("-")) throw new HyphenPhoneNumException();
+
         String certification = Integer.toString((int)(Math.random() * (99999 - 10000 + 1)) + 10000);
 
 
