@@ -8,6 +8,7 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
+import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,7 @@ public class UserApiController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final UserRefreshTokenService userRefreshTokenService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
@@ -41,13 +43,16 @@ public class UserApiController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
-        // 토큰 생성
-        String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
-        String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
 
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
+        // 토큰 생성
+        String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
+        String refreshJwt = jwtService.createRefreshJwt(loginRequest.getLoginId());
+
+        //유저 리프레시 토큰 저장
+        userRefreshTokenService.insertRefreshToken(refreshJwt, user);
 
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessJwt(accessJwt)

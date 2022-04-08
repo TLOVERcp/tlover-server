@@ -23,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 @RequestMapping("api/v1/sms")
 @RequiredArgsConstructor
 @Api(tags = "SMS API")
-public class SmsController {
+public class SmsApiController {
 
     private final SmsService smsService;
 

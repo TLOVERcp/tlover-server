@@ -18,5 +18,4 @@ public interface UserService {
 
     User resetPassword(@Valid ResetPasswordRequest resetPasswordRequest, String loginId);
 
-
 }
