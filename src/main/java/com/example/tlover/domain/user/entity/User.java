@@ -33,6 +33,7 @@ import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvi
 @AllArgsConstructor
 @Builder
 public class User {
+
     @Id
     @GeneratedValue
     private Long userId;
@@ -88,7 +89,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<MyFile> myFiles = new ArrayList<>();
-
 
     /**
      * 연관관계 메서드

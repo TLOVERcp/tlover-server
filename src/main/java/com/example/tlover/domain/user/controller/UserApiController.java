@@ -37,7 +37,8 @@ public class UserApiController {
 
     private final UserService userService;
     private final JwtService jwtService;
-    private final UserRefreshTokenService userRefreshTokenService;
+    private final UserRefreshTokenService
+            userRefreshTokenService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
@@ -224,6 +225,7 @@ public class UserApiController {
      */
     public String getLoginIdFromSession(HttpServletRequest request) {
         Object loginId = request.getSession().getAttribute("loginId");
+
         if (loginId == null) throw new DeniedAccessExceptioin();
 
         return loginId.toString();
