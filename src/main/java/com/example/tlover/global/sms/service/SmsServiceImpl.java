@@ -48,9 +48,7 @@ public class SmsServiceImpl implements SmsService{
 
         String certification = Integer.toString((int)(Math.random() * (99999 - 10000 + 1)) + 10000);
 
-
         Long time = System.currentTimeMillis();
-
 
         List<MessageModel> messages = new ArrayList<>();
         messages.add(new MessageModel(smsSendRequest.getPhoneNum(), "TLOVER \n 인증번호: "+certification));

@@ -20,3 +20,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserNickName(String userNickName);
 
 }
+
