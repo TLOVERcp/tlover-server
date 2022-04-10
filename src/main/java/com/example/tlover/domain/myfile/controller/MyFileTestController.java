@@ -25,6 +25,7 @@ public class MyFileTestController {
         return ResponseEntity.ok(myFile.getFileKey());
     }
 
+
     @ApiOperation(value = "파일 여러장 저장 TEST", notes = "파일 여러장 저장 TEST")
     @PostMapping("/multi")
     public ResponseEntity<String> createFiles(@RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles){

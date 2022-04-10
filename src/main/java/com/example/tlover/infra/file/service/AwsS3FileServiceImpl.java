@@ -76,5 +76,4 @@ public class AwsS3FileServiceImpl implements FileService {
         this.amazonS3Client.deleteObjects(request);
     }
 
-
 }
