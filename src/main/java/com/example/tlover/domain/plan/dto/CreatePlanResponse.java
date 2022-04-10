@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "계획 작성을 위한 응답 객체")
 public class CreatePlanResponse {
     private String message;
+
 }
