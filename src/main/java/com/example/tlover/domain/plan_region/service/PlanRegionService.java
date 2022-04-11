@@ -10,4 +10,6 @@ public interface PlanRegionService {
     void createPlanRegion(@Valid CreatePlanRequest createPlanRequest, Plan plan);
 
     void updatePlanRegion(@Valid CreatePlanRequest createPlanRequest, Plan plan);
+
+    void deletePlanRegion(@Valid Plan plan);
 }

@@ -1,18 +1,17 @@
 package com.example.tlover.domain.plan.service;
 
+import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
+import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.dto.PlanDetailResponse;
 import com.example.tlover.domain.plan.dto.PlanListResponse;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan_region.dto.CreatePlanRegionRequest;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.plan_region.repository.PlanRegionRepository;
-import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,6 +25,7 @@ public class PlanServiceImpl implements PlanService{
 
     private final PlanRepository planRepository;
     private final PlanRegionRepository planRegionRepository;
+    private final AuthorityPlanRepository authorityPlanRepository;
     private final UserRepository userRepository;
 
 
@@ -40,47 +40,70 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public List<PlanListResponse> getAllPlans(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-
-        List<Plan> plans = planRepository.findAllByUser(user);
+        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUser(user).get();
+        authorityPlans = checkDelete(authorityPlans);
         List<PlanListResponse> planList = new ArrayList<>();
-        for(Plan p : plans){
-            planList.add(PlanListResponse.from(p));
-        }
+        for(int i=0; i<authorityPlans.size(); i++)
+            planList.add(PlanListResponse.from(authorityPlans.get(i).getPlan()));
         return planList;
+    }
+
+    private  List<AuthorityPlan> checkDelete(List<AuthorityPlan> authorityPlans) {
+        for(int i=0; i<authorityPlans.size(); i++) {
+            if (authorityPlans.get(i).getPlan().getPlanStatus().equals("DELETE")) {
+                authorityPlans.remove(i);
+            }
+        }
+     return authorityPlans;
     }
 
     @Override
     public List<PlanListResponse> getPlansByState(String loginId, String status) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        List<Plan> plans = planRepository.findAllByUserAndPlanStatus(user, status);
+        List<AuthorityPlan> plans = authorityPlanRepository.findAllByUser(user).get();
+        plans = checkStatus(plans, status);
         List<PlanListResponse> planList = new ArrayList<>();
-        for(Plan p : plans){
-            planList.add(PlanListResponse.from(p));
-        }
+        for(int i=0; i<plans.size(); i++)
+            planList.add(PlanListResponse.from(plans.get(i).getPlan()));
         return planList;
+    }
 
+    private  List<AuthorityPlan> checkStatus(List<AuthorityPlan> authorityPlans, String status) {
+        for(int i=0; i<authorityPlans.size(); i++) {
+            if (!authorityPlans.get(i).getPlan().getPlanStatus().equals(status)) {
+                authorityPlans.remove(i);
+            }
+        }
+        return authorityPlans;
     }
 
     @Override
-    public PlanDetailResponse getPlanDetail(Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        Plan plan = planRepository.findByUserAndPlanId(user, planId);
-        List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan);
-        return PlanDetailResponse.from(plan, planRegion);
+    public PlanDetailResponse getPlanDetail(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
+        List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan).get();
+        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).get();
+        return PlanDetailResponse.from(plan, planRegion, authorityPlans);
     }
 
     @Override
     @Transactional
-    public void deletePlan(Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        Plan plan = planRepository.findByUserAndPlanId(user, planId);
+    public Plan deletePlan(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
         plan.setPlanStatus("DELETE");
+        return plan;
+    }
+
+    @Override
+    @Transactional
+    public void finishPlan(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
+        plan.setPlanStatus("FINISH");
     }
 
     @Override
     public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Plan plan = planRepository.findByUserAndPlanId(user, planId);
+        Plan plan = planRepository.findByUserAndPlanId(user, planId).get();
         plan.updatePlan(createPlanRequest, plan);
         return plan;
     }
