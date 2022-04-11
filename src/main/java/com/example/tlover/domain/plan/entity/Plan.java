@@ -68,6 +68,8 @@ public class Plan {
         plan.setPlanStatus("ACTIVE");
         plan.setUser(user);
         return plan;
+
+
     }
 
     public static Plan updatePlan(CreatePlanRequest createPlanRequest, Plan plan) {
