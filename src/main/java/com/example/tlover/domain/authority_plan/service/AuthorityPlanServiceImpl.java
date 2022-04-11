@@ -10,6 +10,8 @@ import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthorityPlanServiceImpl implements AuthorityPlanService{
@@ -19,9 +21,22 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
 
     @Override
     public void sharePlan(Long planId, SharePlanRequest sharePlanRequest) {
-        Plan plan = planRepository.findByPlanId(planId);
+        Plan plan = planRepository.findByPlanId(planId).get();
         User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName());
         AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user);
         authorityPlanRepository.save(authorityPlan);
+    }
+
+    @Override
+    public void addPlanUser(Plan plan, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).get();
+        AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user);
+        authorityPlanRepository.save(authorityPlan);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAuthorityPlan(Plan plan) {
+        authorityPlanRepository.deleteAllByPlan(plan);
     }
 }
