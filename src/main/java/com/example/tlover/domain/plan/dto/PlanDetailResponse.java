@@ -1,5 +1,6 @@
 package com.example.tlover.domain.plan.dto;
 
+import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.entity.User;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,13 +27,18 @@ public class PlanDetailResponse {
     private LocalDateTime planStartDate;
     private LocalDateTime planEndDate;
     private LocalDateTime planWriteDate;
-    private String userNickName;
+    //private String userNickName;
     private String[] regionName;
+    private String[] users;
 
-    public static PlanDetailResponse from(Plan plan, List<PlanRegion> planRegions){
+    public static PlanDetailResponse from(Plan plan, List<PlanRegion> planRegions, List<AuthorityPlan> authorityPlans){
         String[] regionName = new String[planRegions.size()];
         for(int i=0; i< regionName.length; i++){
             regionName[i] = planRegions.get(i).getRegion().getRegionName();
+        }
+        String[] users = new String[authorityPlans.size()];
+        for(int i=0; i< authorityPlans.size(); i++){
+            users[i] = authorityPlans.get(i).getUser().getUserNickName();
         }
         return PlanDetailResponse.builder()
                 .planId(plan.getPlanId())
@@ -41,8 +48,9 @@ public class PlanDetailResponse {
                 .planStartDate(plan.getPlanStartDate())
                 .planEndDate(plan.getPlanEndDate())
                 .planWriteDate(plan.getPlanWriteDate())
-                .userNickName(plan.getUser().getUserNickName())
+                //.userNickName(plan.getUser().getUserNickName())
                 .regionName(regionName)
+                .users(users)
                 .build();
     }
 }

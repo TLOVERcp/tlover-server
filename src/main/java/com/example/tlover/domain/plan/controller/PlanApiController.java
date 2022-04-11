@@ -44,6 +44,7 @@ public class PlanApiController {
         String loginId = userApiController.getLoginIdFromSession(request);
         Plan plan = planService.createPlan(createPlanRequest, loginId);
         planRegionService.createPlanRegion(createPlanRequest, plan);
+        authorityPlanService.addPlanUser(plan, loginId);
         return ResponseEntity.ok(CreatePlanResponse.builder()
                 .message("계획 작성을 성공하였습니다.")
                 .build());
@@ -86,13 +87,13 @@ public class PlanApiController {
     @GetMapping("/plan-detail/{planId}")
     public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable Long planId, HttpServletRequest request) {
         String loginId = userApiController.getLoginIdFromSession(request);
-        PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId, loginId);
+        PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId);
         return ResponseEntity.ok(planDetailResponse);
         }
 
     /**
      * 계획 삭제 API
-     * [GET] api/v1/plans/delete-plan:planId
+     * [POST] api/v1/plans/delete-plan:planId
      * @param planId
      * @param request
      * @return ResponseEntity
@@ -102,7 +103,9 @@ public class PlanApiController {
     @PostMapping("/delete-plan/{planId}")
     public ResponseEntity<DeletePlanResponse> deletePlan(@PathVariable Long planId, HttpServletRequest request){
         String loginId = userApiController.getLoginIdFromSession(request);
-        planService.deletePlan(planId, loginId);
+        Plan plan = planService.deletePlan(planId);
+        planRegionService.deletePlanRegion(plan);
+        authorityPlanService.deleteAuthorityPlan(plan);
         return ResponseEntity.ok(DeletePlanResponse.builder()
                 .message("삭제를 성공하였습니다.")
                 .build());
