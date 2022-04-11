@@ -37,7 +37,8 @@ public class UserApiController {
 
     private final UserService userService;
     private final JwtService jwtService;
-    private final UserRefreshTokenService userRefreshTokenService;
+    private final UserRefreshTokenService
+            userRefreshTokenService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
@@ -47,7 +48,7 @@ public class UserApiController {
      * 사용자 로그인
      * @param loginRequest, request
      * @return ResponseEntity<LoginResponse>
-     * @author 윤여찬
+     * @author 윤여찬, 토큰관련 : 한규범
      */
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
@@ -224,6 +225,7 @@ public class UserApiController {
      */
     public String getLoginIdFromSession(HttpServletRequest request) {
         Object loginId = request.getSession().getAttribute("loginId");
+
         if (loginId == null) throw new DeniedAccessExceptioin();
 
         return loginId.toString();

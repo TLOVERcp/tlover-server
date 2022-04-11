@@ -2,18 +2,18 @@ package com.example.tlover.domain.diary.entity;
 
 import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
+import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
+import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
 import com.example.tlover.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +23,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Diary {
+
     @Id
     @GeneratedValue
     private Long diaryId;
 
     private String diaryTitle;
 
-    private String  diaryPublicStatus;
+    private String diaryPublicStatus;
 
     private String diaryStatus;
 
@@ -74,6 +75,20 @@ public class Diary {
     public void setPlan(Plan plan) {
         this.plan = plan;
         plan.getDiaries().add(this);
+    }
+
+    public static Diary toEntity(CreateDiaryRequest createDiaryRequest , User user , Plan plan){
+
+        Diary diary = new Diary();
+           diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
+           diary.setDiaryContext(createDiaryRequest.getDiaryContext());
+           diary.setDiaryStartDate(createDiaryRequest.getDiaryStartDate().toString());
+           diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate().toString());
+           diary.setDiaryWriteDate(LocalDateTime.now().toString());
+           diary.setUser(user);
+           diary.setPlan(plan);
+
+        return diary;
     }
 
 
