@@ -1,14 +1,10 @@
 package com.example.tlover.domain.diary.service;
 
+import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
-import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
-import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary.repository.DiaryRepository;
-import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,8 +31,6 @@ public class DiaryServiceImpl implements DiaryService{
         return null;
 
     }
-
-    private final DiaryRepository diaryRepository;
 
     @Override
     public List<DiaryInquiryResponse> getDiary() {
