@@ -229,6 +229,7 @@ public class UserApiController {
         if (loginId == null) throw new DeniedAccessExceptioin();
 
         return loginId.toString();
+
     }
 
     public CertifiedValue getCertifiedValueFromSession(HttpServletRequest request) {

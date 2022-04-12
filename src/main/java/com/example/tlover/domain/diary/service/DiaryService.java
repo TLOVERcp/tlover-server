@@ -10,4 +10,6 @@ public interface DiaryService {
 
     List<DiaryInquiryResponse> getDiary();
     Diary createDiary(CreateDiaryRequest createDiaryRequest, String loginId);
+
+    Diary deleteDiary(Long diaryId, String loginId);
 }
