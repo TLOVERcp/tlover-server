@@ -2,10 +2,7 @@ package com.example.tlover.domain.diary_region.entity;
 
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.region.entity.Region;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -36,6 +33,13 @@ public class DiaryRegion {
     public void setRegion(Region region) {
         this.region = region;
         region.getDiaryRegions().add(this);
+    }
+
+    public static DiaryRegion toEntity(Region region , Diary diary) {
+        DiaryRegion diaryRegion = new DiaryRegion();
+        diaryRegion.setDiary(diary);
+        diaryRegion.setRegion(region);
+        return diaryRegion;
     }
 
 

@@ -17,6 +17,5 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     Plan findByPlanId(Long planId);
 
-
-    //List<Plan> findAllByUserAndPlanStatusNotIn(User user, String delete);   
+    //List<Plan> findAllByUserAndPlanStatusNotIn(User user, String delete);
 }
