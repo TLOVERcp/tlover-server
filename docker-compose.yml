@@ -1,0 +1,13 @@
+services:
+  application:
+    image: rbqja123/tlover-server
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://soldout.cpiugfta2jm5.ap-northeast-2.rds.amazonaws.com:3306/tlover?
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: mango1030
+      TZ: Asia/Seoul
+    ports:
+      - 8080:8080
+    container_name: tlover-server
+networks:
+  - tlover-network:

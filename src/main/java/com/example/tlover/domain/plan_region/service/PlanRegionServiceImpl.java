@@ -43,4 +43,10 @@ public class PlanRegionServiceImpl implements PlanRegionService {
             planRegionRepository.save(planRegion);
         }
     }
+
+    @Override
+    @Transactional
+    public void deletePlanRegion(Plan plan) {
+        planRegionRepository.deleteAllByPlan(plan);
+    }
 }
