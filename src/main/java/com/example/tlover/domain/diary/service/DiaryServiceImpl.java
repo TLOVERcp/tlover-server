@@ -44,7 +44,7 @@ public class DiaryServiceImpl implements DiaryService{
     public Diary createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
 
             User user = userRepository.findByUserLoginId(loginId).get();
-            Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId());
+            Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
             Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, user, plan));
 
             for(MultipartFile diaryImgFileName :createDiaryRequest.getDiaryImages()) {
@@ -71,7 +71,6 @@ public class DiaryServiceImpl implements DiaryService{
         }
         return diaryInquiryResponseList;
     }
-}
 
     @Override
     @Transactional
