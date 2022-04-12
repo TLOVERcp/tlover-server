@@ -1,8 +1,8 @@
 package com.example.tlover.domain.diary.service;
 
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
+import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary.exception.NoSuchElementException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_img.repository.DiaryImgRepository;
@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,6 +60,17 @@ public class DiaryServiceImpl implements DiaryService{
 
             return diary;
 
+    }
+
+    @Override
+    public List<DiaryInquiryResponse> getDiary() {
+        List<Diary> diaries = diaryRepository.findBy();
+        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
+        for(Diary d : diaries){
+            diaryInquiryResponseList.add(DiaryInquiryResponse.from(d));
+        }
+        return diaryInquiryResponseList;
+    }
 }
 
     @Override
