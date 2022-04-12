@@ -1,18 +1,20 @@
 package com.example.tlover.domain.diary_img.entity;
 
+import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.user.entity.User;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class DiaryImg {
 
     @Id
@@ -30,8 +32,11 @@ public class DiaryImg {
         diary.getDiaryImgs().add(this);
     }
 
-
-
-
+    public static DiaryImg toEntity(String diaryImgFileName , Diary diary){
+        DiaryImg diaryImg = DiaryImg.builder()
+                .diaryImg(diaryImgFileName).build();
+        diaryImg.setDiary(diary);
+        return diaryImg;
+    }
 
 }
