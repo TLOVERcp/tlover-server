@@ -82,15 +82,14 @@ public class Diary {
         Diary diary = new Diary();
            diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
            diary.setDiaryContext(createDiaryRequest.getDiaryContext());
+           diary.setDiaryWriteDate(LocalDateTime.now().toString());
            diary.setDiaryStartDate(createDiaryRequest.getDiaryStartDate().toString());
            diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate().toString());
            diary.setDiaryWriteDate(LocalDateTime.now().toString());
+           diary.setDiaryStatus("ACTIVE");
            diary.setUser(user);
            diary.setPlan(plan);
-
         return diary;
     }
-
-
 
 }
