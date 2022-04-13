@@ -2,6 +2,7 @@ package com.example.tlover.domain.plan.service;
 
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
+import com.example.tlover.domain.authority_plan.service.AuthorityPlanServiceImpl;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.dto.PlanDetailResponse;
 import com.example.tlover.domain.plan.dto.PlanListResponse;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class PlanServiceImpl implements PlanService{
         return planList;
     }
 
-    private  List<AuthorityPlan> checkDelete(List<AuthorityPlan> authorityPlans) {
+    public static List<AuthorityPlan> checkDelete(List<AuthorityPlan> authorityPlans) {
         for(int i=0; i<authorityPlans.size(); i++) {
             if (authorityPlans.get(i).getPlan().getPlanStatus().equals("DELETE")) {
                 authorityPlans.remove(i);
@@ -68,7 +70,7 @@ public class PlanServiceImpl implements PlanService{
         return planList;
     }
 
-    private  List<AuthorityPlan> checkStatus(List<AuthorityPlan> authorityPlans, String status) {
+    private List<AuthorityPlan> checkStatus(List<AuthorityPlan> authorityPlans, String status) {
         for(int i=0; i<authorityPlans.size(); i++) {
             if (!authorityPlans.get(i).getPlan().getPlanStatus().equals(status)) {
                 authorityPlans.remove(i);
@@ -82,6 +84,7 @@ public class PlanServiceImpl implements PlanService{
         Plan plan = planRepository.findByPlanId(planId).get();
         List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan).get();
         List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).get();
+        AuthorityPlanServiceImpl.checkStatus(authorityPlans,"ACCEPT");
         return PlanDetailResponse.from(plan, planRegion, authorityPlans);
     }
 
@@ -101,9 +104,8 @@ public class PlanServiceImpl implements PlanService{
     }
 
     @Override
-    public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        Plan plan = planRepository.findByUserAndPlanId(user, planId).get();
+    public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
         plan.updatePlan(createPlanRequest, plan);
         return plan;
     }
