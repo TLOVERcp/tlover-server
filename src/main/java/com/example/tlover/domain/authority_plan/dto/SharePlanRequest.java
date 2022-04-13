@@ -19,4 +19,5 @@ public class SharePlanRequest {
     @NotBlank(message = "공유할 유저 닉네임을 입력해주세요.")
     @ApiModelProperty(notes = "공유할 유저 닉네임을 입력해 주세요.")
     private String userNickName;
+
 }
