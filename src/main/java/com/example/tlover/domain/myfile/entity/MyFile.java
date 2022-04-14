@@ -26,7 +26,7 @@ public class MyFile extends BaseTimeEntity {
 
     private boolean isDeleted;
 
-    public static MyFile from(String key) {
+    public static MyFile toEntity(String key) {
         return MyFile.builder()
                 .fileKey(key)
                 .build();
