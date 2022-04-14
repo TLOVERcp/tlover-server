@@ -10,6 +10,8 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
+import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
+import com.example.tlover.domain.user_thema.service.UserThemaService;
 import com.example.tlover.global.jwt.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
@@ -27,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 
 @RestController
@@ -37,11 +40,11 @@ public class UserApiController {
 
     private final UserService userService;
     private final JwtService jwtService;
-    private final UserRefreshTokenService
-            userRefreshTokenService;
+    private final UserRefreshTokenService userRefreshTokenService;
     private final OAuth2UserServiceNaver oAuth2UserServiceNaver;
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
+    private final UserThemaService userThemaService;
 
 
     /**
@@ -81,6 +84,7 @@ public class UserApiController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signupUser(@Valid @RequestBody SignupRequest signUpRequest) {
         User user = userService.insertUser(signUpRequest);
+        userThemaService.insertUserThema(signUpRequest.getUserThemaName(), user);
 
         return ResponseEntity.ok(SignupResponse.builder()
                 .message(user.getUserNickName() + "님, 회원가입이 완료되었습니다.")
@@ -115,7 +119,9 @@ public class UserApiController {
     public ResponseEntity<ProfileResponse> getUserProfile(HttpServletRequest request) {
         String loginId = getLoginIdFromSession(request);
         User user = userService.getUserProfile(loginId);
-        return ResponseEntity.ok(ProfileResponse.from(user));
+        List<String> userThemaName = userThemaService.getUserThemaName(user.getUserId());
+
+        return ResponseEntity.ok(ProfileResponse.from(user, userThemaName));
     }
 
     /**
@@ -131,6 +137,7 @@ public class UserApiController {
                                                     HttpServletRequest request) {
         String loginId = this.getLoginIdFromSession(request);
         User user = userService.updateUserProfile(loginId, userProfileRequest, file);
+        userThemaService.updateUserThema(userProfileRequest.getUserThemaName(), user);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
         return ResponseEntity.ok("사용자 정보가 수정되었습니다.");
@@ -232,6 +239,12 @@ public class UserApiController {
 
     }
 
+    /**
+     * 세션에 저장된 인증코드 얻기
+     * @param request
+     * @return CertifiedValue
+     * @author 윤여찬
+     */
     public CertifiedValue getCertifiedValueFromSession(HttpServletRequest request) {
         Object certifiedValue = request.getSession().getAttribute("certifiedValue");
         if (certifiedValue == null) throw new NotCertifiedValueException();

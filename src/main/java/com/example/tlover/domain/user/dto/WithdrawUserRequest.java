@@ -15,6 +15,5 @@ import javax.validation.constraints.Size;
 @ApiModel(description = "회원 탈퇴를 위한 요청 객체")
 public class WithdrawUserRequest {
 
-    private String loginId;
     private String password;
 }
