@@ -285,4 +285,6 @@ public class UserApiController {
         LoginResponse loginResponse = oAuth2UserServiceKakao.validateKakaoAccessToken(kakaoLoginRequest);
         return ResponseEntity.ok(loginResponse);
     }
+
+
 }
