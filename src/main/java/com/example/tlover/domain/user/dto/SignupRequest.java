@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -40,6 +42,10 @@ public class SignupRequest {
     @Size(min = 4, max = 16, message = "패스워드는 4글자 이상 16글자 이하여야 합니다.")
     @ApiModelProperty(notes = "회원의 닉네임을 입력해 주세요.")
     private String userNickName;
+
+    @NotNull(message = "유제 테마가 null 입니다.")
+    @ApiModelProperty(notes = "유제 테마가 null 입니다.")
+    private List<String> userThemaName;
 
     public User toEntity(String encodePassword) {
         User user = new User();
