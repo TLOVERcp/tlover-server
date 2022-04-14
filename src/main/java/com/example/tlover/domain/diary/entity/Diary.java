@@ -9,6 +9,7 @@ import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
+import com.example.tlover.domain.scrap.entity.Scrap;
 import com.example.tlover.domain.user.entity.User;
 import lombok.*;
 
@@ -66,6 +67,9 @@ public class Diary {
 
     @OneToMany(mappedBy = "diary")
     private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary")
+    private List<Scrap> scraps = new ArrayList<>();
 
     public void setUser(User user) {
         this.user = user;
