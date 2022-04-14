@@ -36,8 +36,9 @@ public class PlanDetailResponse {
         for(int i=0; i< regionName.length; i++){
             regionName[i] = planRegions.get(i).getRegion().getRegionName();
         }
-        String[] users = new String[authorityPlans.size()];
-        for(int i=0; i< authorityPlans.size(); i++){
+        String[] users = new String[authorityPlans.size()+1];
+        users[1] = plan.getUser().getUserNickName();
+        for(int i=1; i< authorityPlans.size()+1; i++){
             users[i] = authorityPlans.get(i).getUser().getUserNickName();
         }
         return PlanDetailResponse.builder()
