@@ -207,5 +207,9 @@ public class UserServiceImpl implements UserService{
         user.setUserState("deleted");
     }
 
+    public User getUserByUserId(Long userId) {
+        return this.userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
+    }
+
 
 }
