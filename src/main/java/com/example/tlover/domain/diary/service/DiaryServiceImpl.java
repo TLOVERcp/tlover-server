@@ -4,6 +4,7 @@ import com.example.tlover.domain.authority_diary.repository.AuthorityDiaryReposi
 import com.example.tlover.domain.authority_diary.service.AuthorityDiaryService;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
+import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
