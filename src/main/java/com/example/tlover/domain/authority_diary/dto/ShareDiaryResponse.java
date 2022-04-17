@@ -1,7 +1,6 @@
-package com.example.tlover.domain.authority_plan.dto;
+package com.example.tlover.domain.authority_diary.dto;
 
-import com.example.tlover.domain.plan.dto.CreatePlanResponse;
-import com.example.tlover.domain.plan.entity.Plan;
+
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "계획 권한 공유을 위한 응답 객체")
-public class SharePlanResponse {
+public class ShareDiaryResponse {
     private String message;
 }
-
