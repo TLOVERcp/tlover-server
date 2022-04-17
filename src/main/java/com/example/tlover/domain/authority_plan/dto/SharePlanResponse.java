@@ -16,3 +16,4 @@ import lombok.NoArgsConstructor;
 public class SharePlanResponse {
     private String message;
 }
+

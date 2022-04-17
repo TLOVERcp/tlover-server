@@ -21,7 +21,7 @@ public interface PlanService {
 
     void finishPlan(@Valid Long planId);
 
-    Plan updatePlan(@Valid CreatePlanRequest createPlanRequest, Long planId, String loginId);
+    Plan updatePlan(@Valid CreatePlanRequest createPlanRequest, Long planId);
 
 
 }

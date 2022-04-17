@@ -11,9 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorityPlanRepository extends JpaRepository<AuthorityPlan , Long> {
+
     Optional<List<AuthorityPlan>> findAllByUser(User user);
 
     Optional<List<AuthorityPlan>> findAllByPlan(Plan plan);
 
     void deleteAllByPlan(Plan plan);
+
+    Optional<AuthorityPlan> findByAuthorityPlanId(Long authorityPlanId);
+
 }

@@ -47,8 +47,12 @@ public class CreateDiaryRequest {
     @ApiModelProperty(notes = "여행 지역을  입력해 주세요.")
     private String[] regionName;
 
+    @NotNull
+    @ApiModelProperty(notes = "여행 테마를 입력해주세요.")
+    private String[] themaName;
 
     @ApiModelProperty(notes = "계획의 Id를 입력해주세요.")
     private Long planId;
+
 
 }

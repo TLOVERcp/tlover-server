@@ -1,4 +1,4 @@
-package com.example.tlover.domain.plan.dto;
+package com.example.tlover.domain.authority_diary.dto;
 
 
 import io.swagger.annotations.ApiModel;
@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "계획 수정을 위한 응답 객체")
-public class UpdatePlanResponse {
+@ApiModel(description = "계획 권한 공유을 위한 응답 객체")
+public class ShareDiaryResponse {
     private String message;
-
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,6 +20,10 @@ public class AuthorityPlan {
     @Id
     @GeneratedValue
     private Long authorityPlanId;
+
+    private LocalDateTime authorityPlanShareDate;
+
+    private String authorityPlanStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_planId")
@@ -38,10 +43,12 @@ public class AuthorityPlan {
         plan.getAuthorityPlans().add(this);
     }
 
-    public static AuthorityPlan toEntity(Plan plan, User user) {
+    public static AuthorityPlan toEntity(Plan plan, User user, String status) {
         AuthorityPlan authorityPlan = new AuthorityPlan();
         authorityPlan.setPlan(plan);
         authorityPlan.setUser(user);
+        authorityPlan.setAuthorityPlanStatus(status);
+        authorityPlan.setAuthorityPlanShareDate(LocalDateTime.now());
         return authorityPlan;
 
     }
