@@ -80,6 +80,13 @@ public class DiaryApiController {
                 .message(diary.getUser().getUserNickName() + "님이 작성하신 다이어리 삭제가 완료 되었습니다.").build());
     }
 
+    /**
+     * 다이어리 수정 API
+     * @param modifyDiaryRequest
+     * @param request
+     * @return ResponseEntity<String>
+     * @author 한규범
+     */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
     @PostMapping(value = "/modify-diary/{diaryId}")
     public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request){
@@ -89,10 +96,4 @@ public class DiaryApiController {
 
         return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
     }
-
-
-
-
-
-
 }
