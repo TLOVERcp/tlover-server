@@ -41,6 +41,10 @@ public class SignupRequest {
     @ApiModelProperty(notes = "회원의 닉네임을 입력해 주세요.")
     private String userNickName;
 
+    @Size(min = 0, max = 3, message = "관심 지역은 0개 이상 3개 이하로 선택해야 합니다.")
+    @ApiModelProperty(notes = "사용자 관심 지역을 입력해주세요")
+    private String[] userRegions;
+
     public User toEntity(String encodePassword) {
         User user = new User();
         user.setUserLoginId(this.loginId);
