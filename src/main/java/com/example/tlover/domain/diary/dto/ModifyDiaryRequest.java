@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @ApiModel(description = "다이어리 수정을 위한 요청 객체")
 public class ModifyDiaryRequest {
-    @NotBlank(message = "다이어리 고유 번호를 입력해주세요.")
+//    @NotBlank(message = "다이어리 고유 번호를 입력해주세요.")
     @ApiModelProperty(notes = "다이어리 키 값을 입력해주세요.")
     private Long diaryId;
 
@@ -31,7 +31,7 @@ public class ModifyDiaryRequest {
     @ApiModelProperty(notes = "여행 내용을 입력해 주세요.")
     private String diaryContext;
 
-    @NotNull(message = "여행시에 찍었던 사진들")
+//    @NotNull(message = "여행시에 찍었던 사진들")
     @ApiModelProperty(notes = "여행시에 찍었던 사진들")
     private List<MultipartFile> diaryImages;
 

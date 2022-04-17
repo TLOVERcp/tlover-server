@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -87,14 +88,22 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
+    @Transactional
     public Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(modifyDiaryRequest.getPlanId()).get();
         Diary diary = diaryRepository.findByUserAndDiaryId(user,modifyDiaryRequest.getDiaryId());
-        diary.updateDiary(modifyDiaryRequest, plan);
+
+        diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
+        diary.setDiaryContext(modifyDiaryRequest.getDiaryContext());
+        diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
+        diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
+        diary.setDiaryWriteDate(LocalDateTime.now().toString());
+        diary.setPlan(plan);
 
         return diary;
     }
 
 }
+
 
