@@ -2,6 +2,7 @@ package com.example.tlover.domain.diary.service;
 
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
+import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
@@ -81,6 +82,16 @@ public class DiaryServiceImpl implements DiaryService{
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
         diaryImgRepository.deleteByDiary_DiaryId(diaryId);
+
+        return diary;
+    }
+
+    @Override
+    public Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).get();
+        Plan plan = planRepository.findByPlanId(modifyDiaryRequest.getPlanId()).get();
+        Diary diary = diaryRepository.findByUserAndDiaryId(user,modifyDiaryRequest.getDiaryId());
+        diary.updateDiary(modifyDiaryRequest, plan);
 
         return diary;
     }

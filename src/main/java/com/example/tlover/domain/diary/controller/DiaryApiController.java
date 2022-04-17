@@ -3,6 +3,7 @@ package com.example.tlover.domain.diary.controller;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.CreateDiaryResponse;
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
+import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.plan.dto.CreatePlanResponse;
@@ -79,8 +80,15 @@ public class DiaryApiController {
                 .message(diary.getUser().getUserNickName() + "님이 작성하신 다이어리 삭제가 완료 되었습니다.").build());
     }
 
+    @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
+    @PostMapping(value = "/modify-diary/{diaryId}")
+    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request){
+        String loginId = userApiController.getLoginIdFromSession(request);
+        Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
 
 
+        return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
+    }
 
 
 
