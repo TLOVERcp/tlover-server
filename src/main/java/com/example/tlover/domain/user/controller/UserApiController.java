@@ -10,13 +10,13 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
+import com.example.tlover.domain.user_region.service.UserRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +35,7 @@ import java.security.NoSuchAlgorithmException;
 @Api(tags = "User API")
 public class UserApiController {
 
+    private final UserRegionService userRegionService;
     private final UserService userService;
     private final JwtService jwtService;
     private final UserRefreshTokenService
@@ -75,13 +76,13 @@ public class UserApiController {
      * 사용자 회원가입
      * @param signUpRequest
      * @return ResponseEntity<SignupResponse>
-     * @author 윤여찬
+     * @author 윤여찬 , 사용자 관심지역 관련: 정혜선
      */
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signupUser(@Valid @RequestBody SignupRequest signUpRequest) {
         User user = userService.insertUser(signUpRequest);
-
+        userRegionService.createUserRegion(signUpRequest, user.getUserId());
         return ResponseEntity.ok(SignupResponse.builder()
                 .message(user.getUserNickName() + "님, 회원가입이 완료되었습니다.")
                 .build());
