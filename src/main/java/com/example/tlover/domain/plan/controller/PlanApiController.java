@@ -126,31 +126,13 @@ public class PlanApiController {
                                              @Valid @RequestBody CreatePlanRequest createPlanRequest,
                                              HttpServletRequest request){
         String loginId = userApiController.getLoginIdFromSession(request);
-        Plan plan = planService.updatePlan(createPlanRequest, planId, loginId);
+        Plan plan = planService.updatePlan(createPlanRequest, planId);
         planRegionService.updatePlanRegion(createPlanRequest, plan);
         return ResponseEntity.ok(UpdatePlanResponse.builder()
-                .message("게획 수정을 성공하였습니다.")
+                .message("계획 수정을 성공하였습니다.")
                 .build());
     }
-    /**
-     * 계획 권한 공유 API
-     * [POST] api/v1/plans/share-plan/:planId
-     * @param sharePlanRequest
-     * @param request
-     * @return ResponseEntity
-     * @author 류민아
-     */
-    @ApiOperation(value = "계획 권한 공유", notes = "계획 권한을 공유합니다.")
-    @PostMapping("/share-plan/{planId}")
-    public ResponseEntity<SharePlanResponse> SharePlan(@PathVariable Long planId,
-                                                       @Valid @RequestBody SharePlanRequest sharePlanRequest,
-                                                       HttpServletRequest request){
-        String loginId = userApiController.getLoginIdFromSession(request);
-        authorityPlanService.sharePlan(planId, sharePlanRequest);
-        return ResponseEntity.ok(SharePlanResponse.builder()
-                .message("계획 권한 공유를 성공하였습니다.")
-                .build());
-    }
+
 }
 
 

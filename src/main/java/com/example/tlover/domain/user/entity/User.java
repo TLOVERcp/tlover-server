@@ -104,10 +104,10 @@ public class User {
         plan.setUser(this);
     }
 
-    public void addScrap(Scrap scrap) {
-        this.scraps.add(scrap);
-        scrap.setUser(this);
-    }
+//    public void addScrap(Scrap scrap) {
+//        this.scraps.add(scrap);
+//        scrap.setUser(this);
+//    }
 
     public void addReport(Report report) {
         this.reports.add(report);

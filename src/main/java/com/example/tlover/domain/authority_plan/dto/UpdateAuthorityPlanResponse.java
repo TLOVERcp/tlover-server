@@ -1,5 +1,4 @@
-package com.example.tlover.domain.plan.dto;
-
+package com.example.tlover.domain.authority_plan.dto;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -11,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "계획 수정을 위한 응답 객체")
-public class UpdatePlanResponse {
+@ApiModel(description = "계획 공유 요청 응답을 위한 응답 객체")
+public class UpdateAuthorityPlanResponse {
     private String message;
-
 }
