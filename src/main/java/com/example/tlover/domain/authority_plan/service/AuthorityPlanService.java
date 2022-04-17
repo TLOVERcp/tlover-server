@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface AuthorityPlanService {
+
     void sharePlan(@Valid Long planId, SharePlanRequest sharePlanRequest);
 
     void addPlanUser(@Valid Plan plan, String loginId);
@@ -20,4 +21,5 @@ public interface AuthorityPlanService {
     void updateAcceptAuthorityPlan(@Valid Long authorityPlanId);
 
     void updateRejectAuthorityPlan(@Valid Long authorityPlanId);
+
 }

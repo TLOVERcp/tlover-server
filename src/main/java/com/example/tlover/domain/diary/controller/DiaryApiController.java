@@ -28,15 +28,6 @@ public class DiaryApiController {
     private final DiaryService diaryService;
 
     /**
-     * 다이어리 작성 api
-     * swagger url => [post]  api/v1/plans/create-diary
-     * @param createDiaryRequest
-     * @param request
-     * @return ResponseEntity<CreateDiaryResponse>
-     * author => 신동민
-     */
-
-    /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
      * @param request
      * @return
@@ -49,7 +40,14 @@ public class DiaryApiController {
         return ResponseEntity.ok(diaryInquiryResponse);
     }
 
-
+    /**
+     * 다이어리 작성 api
+     * swagger url => [post]  api/v1/plans/create-diary
+     * @param createDiaryRequest
+     * @param request
+     * @return ResponseEntity<CreateDiaryResponse>
+     * author => 신동민
+     */
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성을 합니다.")
     @PostMapping(value = "/create-diary")
     public ResponseEntity<CreateDiaryResponse> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest , HttpServletRequest request) {
@@ -68,6 +66,7 @@ public class DiaryApiController {
      * @return ResponseEntity<CreateDiaryResponse>
      * author => 신동민
      */
+
     @ApiOperation(value = "다이어리 삭제", notes = "다이어리를 삭제합니다.")
     @PostMapping(value = "/delete-diary/{diaryId}")
     public ResponseEntity<CreateDiaryResponse> DeleteDiary(@PathVariable Long diaryId , HttpServletRequest request) {
