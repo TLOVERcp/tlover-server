@@ -10,6 +10,7 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
+import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.domain.user_thema.service.UserThemaService;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -18,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +85,9 @@ public class UserApiController {
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signupUser(@Valid @RequestBody SignupRequest signUpRequest) {
+
+        userThemaService.checkUserThema(signUpRequest.getUserThemaName());
+
         User user = userService.insertUser(signUpRequest);
         userThemaService.insertUserThema(signUpRequest.getUserThemaName(), user);
 
