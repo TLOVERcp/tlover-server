@@ -12,4 +12,7 @@ public interface DiaryService {
     Diary createDiary(CreateDiaryRequest createDiaryRequest, String loginId);
 
     Diary deleteDiary(Long diaryId, String loginId);
+
+    Diary getDiaryByDiaryId(Long diaryId);
+
 }

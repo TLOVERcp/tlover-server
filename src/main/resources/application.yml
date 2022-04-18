@@ -45,10 +45,10 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: tlover-backend-images
+      bucket: tlover-bucket
     credentials:
-      access-key: AKIAVKTYRMM6ZHUARZRW
-      secret-key: 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
+      access-key: AKIATHDBPLGZL6TVERDA
+      secret-key: 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
     region:
       static: ap-northeast-2
     stack:

@@ -13,6 +13,7 @@ import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenServi
 import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.domain.user_thema.service.UserThemaService;
+import com.example.tlover.domain.user_region.service.UserRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
@@ -40,6 +41,7 @@ import java.util.List;
 @Api(tags = "User API")
 public class UserApiController {
 
+    private final UserRegionService userRegionService;
     private final UserService userService;
     private final JwtService jwtService;
     private final UserRefreshTokenService userRefreshTokenService;
@@ -80,7 +82,7 @@ public class UserApiController {
      * 사용자 회원가입
      * @param signUpRequest
      * @return ResponseEntity<SignupResponse>
-     * @author 윤여찬
+     * @author 윤여찬 , 사용자 관심지역 관련: 정혜선
      */
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
@@ -89,6 +91,7 @@ public class UserApiController {
         userThemaService.checkUserThema(signUpRequest.getUserThemaName());
 
         User user = userService.insertUser(signUpRequest);
+        userRegionService.createUserRegion(signUpRequest, user.getUserId());
         userThemaService.insertUserThema(signUpRequest.getUserThemaName(), user);
 
         return ResponseEntity.ok(SignupResponse.builder()
