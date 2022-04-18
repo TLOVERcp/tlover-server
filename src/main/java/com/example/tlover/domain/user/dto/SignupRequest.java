@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -44,6 +46,11 @@ public class SignupRequest {
     @Size(min = 0, max = 3, message = "관심 지역은 0개 이상 3개 이하로 선택해야 합니다.")
     @ApiModelProperty(notes = "사용자 관심 지역을 입력해주세요")
     private String[] userRegions;
+
+    @NotNull(message = "유제 테마가 null 입니다.")
+    @Size(min = 0, max = 3, message = "관심 테마는 0개 이상 3개 이하로 선택해야 합니다.")
+    @ApiModelProperty(notes = "사용자 관심 테마를 입력해주세요.")
+    private List<String> userThemaName;
 
     public User toEntity(String encodePassword) {
         User user = new User();

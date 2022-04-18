@@ -3,17 +3,20 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.service.MyFileService;
+import com.example.tlover.domain.thema.entity.Thema;
+import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
-import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
-import com.example.tlover.domain.user_refreshtoken.repository.UserRefreshTokenRepository;
+import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
+import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.global.encryption.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Optional;
 
 @Service
@@ -46,6 +49,7 @@ public class UserServiceImpl implements UserService{
      * @author 윤여찬
      */
     @Override
+    @Transactional(rollbackFor = {NotFoundUserThemaException.class})
     public User insertUser(SignupRequest signupRequest) {
 
         User user = signupRequest.toEntity(sha256Util.encrypt(signupRequest.getPassword()));
@@ -54,7 +58,8 @@ public class UserServiceImpl implements UserService{
 
         user.setUserState("active");
         userRepository.save(user);
-        return user;
+
+        return userRepository.findByUserLoginId(user.getUserLoginId()).get();
     }
 
     /**
@@ -165,9 +170,7 @@ public class UserServiceImpl implements UserService{
      * @author 윤여찬
      */
     @Override
-    public User getUserProfile(String loginId) {
-        return userRepository.findByUserLoginId(loginId).get();
-    }
+    public User getUserProfile(String loginId) { return userRepository.findByUserLoginId(loginId).get();}
 
     /**
      * 사용자 정보 수정
@@ -178,19 +181,22 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public User updateUserProfile(String loginId, UserProfileRequest userProfileRequest, MultipartFile file) {
-        this.loginIdDuplicateCheck(userProfileRequest.getLoginId());
-        MyFile profileImg = myFileService.saveImage(file);
+
+        if (!loginId.equals(userProfileRequest.getLoginId())) this.loginIdDuplicateCheck(userProfileRequest.getLoginId());
 
         User user = this.getUserProfile(loginId);
         user.setUserLoginId(userProfileRequest.getLoginId());
         user.setUserEmail(userProfileRequest.getUserEmail());
         user.setUserNickName(userProfileRequest.getUserNickName());
-        user.setUserProfileImg(profileImg.getFileKey());
+
+        if (file != null) {
+            MyFile profileImg = myFileService.saveImage(file);
+            user.setUserProfileImg(profileImg.getFileKey());
+        }
+
         return user;
 
     }
-
-
 
     /**
      * 회원 탈퇴
