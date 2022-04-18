@@ -4,6 +4,7 @@ import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.scrap.constant.ScrapConstants.EScrapResponseMessage;
 import com.example.tlover.domain.scrap.dto.ScrapChangeRequest;
+import com.example.tlover.domain.scrap.dto.ScrapChangeResponse;
 import com.example.tlover.domain.scrap.dto.ScrapCountResponse;
 import com.example.tlover.domain.scrap.entity.Scrap;
 import com.example.tlover.domain.scrap.repository.ScrapRepository;
@@ -32,18 +33,18 @@ public class ScrapServiceImpl implements ScrapService{
 
     @Override
     @Transactional
-    public ResponseDto changeScrap(ScrapChangeRequest scrapChangeRequest) {
+    public ScrapChangeResponse changeScrap(ScrapChangeRequest scrapChangeRequest) {
         User user = this.userService.getUserByUserId(scrapChangeRequest.getUserId());
         Diary diary = this.diaryService.getDiaryByDiaryId(scrapChangeRequest.getDiaryId());
         Optional<Scrap> scrap = this.scrapRepository.findByUserAndDiary(user, diary);
         if(scrap.isEmpty()) {
             this.scrapRepository.save(Scrap.toEntity(user, diary));
-            return ResponseDto.create(EScrapResponseMessage.eCreateScrapMessage.getMessage());}
+            return ScrapChangeResponse.from(scrap.get().getScrapId(), true);}
         else if(scrap.get().isDeleted()) {
             scrap.get().setDeleted(false);
-            return ResponseDto.create(EScrapResponseMessage.eCreateScrapMessage.getMessage());}
+            return ScrapChangeResponse.from(scrap.get().getScrapId(), true); }
         else if(!scrap.get().isDeleted())
             scrap.get().setDeleted(true);
-            return ResponseDto.create(EScrapResponseMessage.eDeleteScrapMessage.getMessage());
+            return ScrapChangeResponse.from(scrap.get().getScrapId(), false);
     }
 }
