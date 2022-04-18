@@ -90,7 +90,7 @@ public class UserThemaServiceImpl implements UserThemaService {
 
     /**
      * 유저 테마 확인
-     * @param themaNameList, user
+     * @param themaNameList
      * @return
      * @author 윤여찬
      */

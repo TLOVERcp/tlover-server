@@ -24,18 +24,18 @@ public class MyFileServiceImpl implements MyFileService {
         List<MyFile> myFiles = new ArrayList<>();
         if(multipartFiles!=null)
             for (MultipartFile multipartFile : multipartFiles)
-                myFiles.add(this.myFileRepository.save(MyFile.from(this.fileService.saveImage(multipartFile))));
+                myFiles.add(this.myFileRepository.save(MyFile.toEntity(this.fileService.saveImage(multipartFile))));
         return myFiles;
     }
 
     @Override
     public MyFile saveImage(MultipartFile multipartFile) {
-        return this.myFileRepository.save(MyFile.from(this.fileService.saveImage(multipartFile)));
+        return this.myFileRepository.save(MyFile.toEntity(this.fileService.saveImage(multipartFile)));
     }
 
     @Override
     public MyFile getFile(Long fileId) {
-        return this.myFileRepository.findNotDeletedByFileId(fileId).orElseThrow(NotFoundMyFileException::new);
+        return this.myFileRepository.findOneNotDeletedByFileId(fileId).orElseThrow(NotFoundMyFileException::new);
     }
 
     @Override

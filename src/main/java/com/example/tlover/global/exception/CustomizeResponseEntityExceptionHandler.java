@@ -1,5 +1,6 @@
 package com.example.tlover.global.exception;
 
+import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.myfile.exception.NotFoundMyFileException;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.exception.oauth2.*;
@@ -125,6 +126,12 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(KakaoUnAuthorizedFaildException.class)
+    public final ResponseEntity<Object> handleKakaoAuthenticationFailedException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
     /**
      * AWS File Domain Exception
      */
@@ -153,12 +160,23 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
+
     /**
      * MyFile Domain Exception
      */
 
     @ExceptionHandler(NotFoundMyFileException.class)
     public final ResponseEntity<Object> handleNotFoundMyFileException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Diary Domain Exception
+     */
+
+    @ExceptionHandler(NotFoundDiaryException.class)
+    public final ResponseEntity<Object> handleNotFoundDiaryException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND.toString(), Arrays.asList(ex.getMessage()));
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
