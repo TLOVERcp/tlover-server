@@ -10,8 +10,5 @@ import java.util.Optional;
 public interface ThemaRepository extends JpaRepository<Thema, Long> {
 
     Optional<Thema> findByThemaId(Long themaId);
-
-    Optional<Thema> findByThemaName(String themaName);
-
     Thema findByThemaName(String themaName);
 }
