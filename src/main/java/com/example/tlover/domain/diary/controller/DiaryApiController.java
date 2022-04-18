@@ -31,12 +31,14 @@ public class DiaryApiController {
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
      * @param request
-     * @return
+     * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 조회",notes = "다이어를 조호합니다.")
     @GetMapping("/get-diary")
     public ResponseEntity<List<DiaryInquiryResponse>> getDiary(HttpServletRequest request){
+        String loginId = userApiController.getLoginIdFromSession(request);
+
         List<DiaryInquiryResponse> diaryInquiryResponse = diaryService.getDiary();
         return ResponseEntity.ok(diaryInquiryResponse);
     }
@@ -91,8 +93,6 @@ public class DiaryApiController {
     public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request){
         String loginId = userApiController.getLoginIdFromSession(request);
         Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
-
-
         return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
     }
 }
