@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,6 +35,10 @@ public class UserProfileRequest {
     @Size(min = 5, max = 18, message = "로그인 Id는 크기가 5에서 18사이여야 합니다.")
     @ApiModelProperty(notes = "닉네임을 입력해 주세요.")
     private String userNickName;
+
+    @NotNull(message = "유제 테마가 null 입니다.")
+    @ApiModelProperty(notes = "유제 테마가 null 입니다.")
+    private List<String> userThemaName;
 
 
 }

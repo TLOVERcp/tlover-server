@@ -3,10 +3,7 @@ package com.example.tlover.domain.user_region.entity;
 
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -15,6 +12,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserRegion {
 
     @Id
@@ -38,4 +36,12 @@ public class UserRegion {
         this.region = region;
         region.getUserRegions().add(this);
     }
+
+    public static UserRegion toEntityOfUserRegion(User user, Region region) {
+        return UserRegion.builder()
+                .user(user)
+                .region(region)
+                .build();
+    }
+
 }

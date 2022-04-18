@@ -83,9 +83,9 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
 
                     br.close();
                 } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    throw new KakaoUnAuthorizedFaildException(responseCode, EOAuth2UserServiceImpl.eKakaoAutenticationFailedException.getValue());
+                    throw new KakaoUnAuthorizedFaildException(EOAuth2UserServiceImpl.eKakaoAutenticationFailedException.getValue());
             } else {
-                throw new KakaoFailException(responseCode, EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
+                throw new KakaoFailException(EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
                 }
             }catch (IOException e) {
                 throw new RuntimeException(EOAuth2UserServiceImpl.eKakaoApiResponseException.getValue() + kakaoUserInfoUrl, e);
