@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -23,8 +25,9 @@ public class ProfileResponse {
     private String userPhoneNum;
     private String userNickName;
     private String profileImg;
+    private List<String> userThemaName;
 
-    public static ProfileResponse from(User user) {
+    public static ProfileResponse from(User user, List<String> userThemaName) {
         return ProfileResponse.builder()
                 .userId(user.getUserId())
                 .loginId(user.getUserLoginId())
@@ -33,6 +36,7 @@ public class ProfileResponse {
                 .userNickName(user.getUserNickName())
                 .userPhoneNum(user.getUserPhoneNum())
                 .profileImg(user.getUserProfileImg())
+                .userThemaName(userThemaName)
                 .build();
     }
 

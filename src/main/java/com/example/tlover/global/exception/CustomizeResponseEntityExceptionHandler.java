@@ -126,6 +126,12 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(KakaoUnAuthorizedFaildException.class)
+    public final ResponseEntity<Object> handleKakaoAuthenticationFailedException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
     /**
      * AWS File Domain Exception
      */
