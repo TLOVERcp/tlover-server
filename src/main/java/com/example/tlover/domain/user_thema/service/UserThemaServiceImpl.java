@@ -60,7 +60,7 @@ public class UserThemaServiceImpl implements UserThemaService {
             for (String themaName : themaNameList) {
                 UserThema userThema = new UserThema();
                 userThema.setUser(user);
-                userThema.setThema(themaRepository.findByThemaName(themaName).get());
+                userThema.setThema(themaRepository.findByThemaName(themaName));
                 em.persist(userThema);
             }
         }
@@ -97,9 +97,9 @@ public class UserThemaServiceImpl implements UserThemaService {
     public void checkUserThema(List<String> themaNameList) {
 
         for (String themaName : themaNameList) {
-            Optional<Thema> thema = themaRepository.findByThemaName(themaName);
+            Thema thema = themaRepository.findByThemaName(themaName);
 
-            if (thema.isEmpty()) throw new NotFoundUserThemaException();
+            if (thema == null) throw new NotFoundUserThemaException();
         }
     }
 }
