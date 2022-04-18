@@ -3,6 +3,7 @@ package com.example.tlover.domain.diary.entity;
 import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
+import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
@@ -95,5 +96,19 @@ public class Diary {
            diary.setPlan(plan);
         return diary;
     }
+
+    public static Diary updateDiary(ModifyDiaryRequest modifyDiaryRequest, Plan plan){
+        Diary diary = new Diary();
+            diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
+            diary.setDiaryContext(modifyDiaryRequest.getDiaryContext());
+            diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
+            diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
+            diary.setDiaryWriteDate(LocalDateTime.now().toString());
+            diary.setDiaryStatus("ACTIVE");
+            diary.setPlan(plan);
+        return diary;
+    }
+
+
 
 }

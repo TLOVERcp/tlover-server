@@ -1,5 +1,6 @@
 package com.example.tlover.domain.authority_diary.entity;
 
+import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,7 +30,9 @@ public class AuthorityDiary {
     @JoinColumn(name = "user_userId")
     private User user;
 
-     private String authorityDiaryRole;
+     private String authorityDiaryStatus;
+
+     private LocalDateTime authorityDiaryShareDate;
 
     public void setUser(User user) {
         this.user = user;
@@ -39,4 +43,15 @@ public class AuthorityDiary {
         this.diary = diary;
         diary.getAuthoritydiarys().add(this);
     }
+
+    public static AuthorityDiary toEntity(User user , Diary diary , String status) {
+        AuthorityDiary authorityDiary = new AuthorityDiary();
+        authorityDiary.setAuthorityDiaryStatus(status);
+        authorityDiary.setAuthorityDiaryShareDate(LocalDateTime.now());
+        authorityDiary.setUser(user);
+        authorityDiary.setDiary(diary);
+        return authorityDiary;
+    }
+
+
 }
