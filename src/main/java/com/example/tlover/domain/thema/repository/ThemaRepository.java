@@ -13,4 +13,5 @@ public interface ThemaRepository extends JpaRepository<Thema, Long> {
 
     Optional<Thema> findByThemaName(String themaName);
 
+    Thema findByThemaName(String themaName);
 }

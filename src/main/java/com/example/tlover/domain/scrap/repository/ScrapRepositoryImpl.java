@@ -29,7 +29,9 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
     }
 
     private BooleanExpression isDeletedCheck() {
+
         return scrap.isDeleted.eq(false);
+//        return scrap.isNull();
     }
 
     private BooleanExpression diaryEq(Diary diary) {return diary != null ? scrap.diary.eq(diary) : null;}
