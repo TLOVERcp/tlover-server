@@ -5,6 +5,7 @@ import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
+import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -84,5 +86,20 @@ public class UserThemaServiceImpl implements UserThemaService {
         if (!themaNameList.isEmpty()) this.insertUserThema(themaNameList, user);
 
 
+    }
+
+    /**
+     * 유저 테마 확인
+     * @param themaNameList, user
+     * @return
+     * @author 윤여찬
+     */
+    public void checkUserThema(List<String> themaNameList) {
+
+        for (String themaName : themaNameList) {
+            Optional<Thema> thema = themaRepository.findByThemaName(themaName);
+
+            if (thema.isEmpty()) throw new NotFoundUserThemaException();
+        }
     }
 }

@@ -44,6 +44,7 @@ public class SignupRequest {
     private String userNickName;
 
     @NotNull(message = "유제 테마가 null 입니다.")
+    @Size(min = 0, max = 3, message = "관심 테마는 0개 이상 3개 이하로 선택해야 합니다.")
     @ApiModelProperty(notes = "유제 테마가 null 입니다.")
     private List<String> userThemaName;
 

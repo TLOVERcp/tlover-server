@@ -9,6 +9,7 @@ import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.global.encryption.SHA256Util;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService{
      * @author 윤여찬
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {NotFoundUserThemaException.class})
     public User insertUser(SignupRequest signupRequest) {
 
         User user = signupRequest.toEntity(sha256Util.encrypt(signupRequest.getPassword()));
