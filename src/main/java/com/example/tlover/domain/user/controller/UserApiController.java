@@ -143,6 +143,9 @@ public class UserApiController {
     public ResponseEntity<String> updateUserProfile(@Valid @ModelAttribute UserProfileRequest userProfileRequest,
                                                     @RequestParam(required = false) MultipartFile file,
                                                     HttpServletRequest request) {
+
+        userThemaService.checkUserThema(userProfileRequest.getUserThemaName());
+
         String loginId = this.getLoginIdFromSession(request);
         User user = userService.updateUserProfile(loginId, userProfileRequest, file);
         userThemaService.updateUserThema(userProfileRequest.getUserThemaName(), user);

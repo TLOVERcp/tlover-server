@@ -2,9 +2,7 @@ package com.example.tlover.domain.authority_diary.controller;
 
 import com.example.tlover.domain.authority_diary.dto.ShareDiaryResponse;
 import com.example.tlover.domain.authority_diary.service.AuthorityDiaryService;
-import com.example.tlover.domain.authority_plan.dto.AuthorityPlanListResponse;
 import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
-import com.example.tlover.domain.authority_plan.dto.SharePlanResponse;
 import com.example.tlover.domain.user.controller.UserApiController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/authority-diarys")
