@@ -88,6 +88,7 @@ public class PlanApiController {
     public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable Long planId, HttpServletRequest request) {
         String loginId = userApiController.getLoginIdFromSession(request);
         PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId);
+        // 유저 확인
         return ResponseEntity.ok(planDetailResponse);
         }
 

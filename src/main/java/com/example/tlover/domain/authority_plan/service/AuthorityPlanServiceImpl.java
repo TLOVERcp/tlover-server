@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -50,22 +51,26 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     @Override
     public List<AuthorityPlanListResponse> getSharePlanList(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUser(user).get();
-        authorityPlans = checkStatus(authorityPlans,"REQUEST");
+        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user,
+                "REQUEST").get();
+        //authorityPlans = checkStatus(authorityPlans,"REQUEST");
+        System.out.println(authorityPlans.size());
         List<AuthorityPlanListResponse> authorityPlanList = new ArrayList<>();
-         // 빈경우 어케 처리?
         for(int i=0; i<authorityPlans.size(); i++)
             authorityPlanList.add(AuthorityPlanListResponse.from(authorityPlans.get(i)));
         return authorityPlanList;
     }
 
     public static List<AuthorityPlan> checkStatus(List<AuthorityPlan> authorityPlans, String status) {
-        for(int i=0; i<authorityPlans.size(); i++) {
-            if (!authorityPlans.get(i).getAuthorityPlanStatus().equals(status)) {
-                authorityPlans.remove(i);
+        List<AuthorityPlan> plans = new ArrayList<>();
+        plans.addAll(authorityPlans);
+        for(int i=0; i<plans.size(); i++) {
+            if (!plans.get(i).getAuthorityPlanStatus().equals(status)) {
+                plans.remove(i);
             }
         }
-        return authorityPlans;
+
+        return plans;
     }
 
     @Override

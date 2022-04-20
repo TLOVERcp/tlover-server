@@ -18,4 +18,8 @@ public interface AuthorityPlanRepository extends JpaRepository<AuthorityPlan , L
     void deleteAllByPlan(Plan plan);
 
     Optional<AuthorityPlan> findByAuthorityPlanId(Long authorityPlanId);
+
+    Optional<List<AuthorityPlan>> findAllByUserAndAuthorityPlanStatus(User user, String status);
+
+    Optional<List<AuthorityPlan>> findAllByPlanAndAuthorityPlanStatus(Plan plan, String accept);
 }
