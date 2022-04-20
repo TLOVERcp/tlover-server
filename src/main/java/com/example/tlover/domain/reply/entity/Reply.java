@@ -21,6 +21,8 @@ public class Reply {
     @GeneratedValue
     private Long replyId;
 
+    private String replyContext;
+
     private LocalDateTime replyTime;
 
     private String replyState;

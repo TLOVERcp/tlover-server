@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorityPlanRepository extends JpaRepository<AuthorityPlan , Long> {
+
     Optional<List<AuthorityPlan>> findAllByUser(User user);
 
     Optional<List<AuthorityPlan>> findAllByPlan(Plan plan);
@@ -22,4 +23,5 @@ public interface AuthorityPlanRepository extends JpaRepository<AuthorityPlan , L
     Optional<List<AuthorityPlan>> findAllByUserAndAuthorityPlanStatus(User user, String status);
 
     Optional<List<AuthorityPlan>> findAllByPlanAndAuthorityPlanStatus(Plan plan, String accept);
+
 }

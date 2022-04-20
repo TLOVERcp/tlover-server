@@ -40,7 +40,7 @@ public class AuthorityPlanController {
     @PostMapping("/share-plan/{planId}")
     public ResponseEntity<SharePlanResponse> SharePlan(@PathVariable Long planId,
                                                        @Valid @RequestBody SharePlanRequest sharePlanRequest,
-                                                       HttpServletRequest request){
+    HttpServletRequest request){
         String loginId = userApiController.getLoginIdFromSession(request);
         authorityPlanService.sharePlan(planId, sharePlanRequest);
         return ResponseEntity.ok(SharePlanResponse.builder()

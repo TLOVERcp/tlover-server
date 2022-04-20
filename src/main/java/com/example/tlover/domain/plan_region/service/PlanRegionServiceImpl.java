@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 
 @Service
@@ -35,7 +34,6 @@ public class PlanRegionServiceImpl implements PlanRegionService {
     @Transactional
     public void updatePlanRegion(CreatePlanRequest createPlanRequest, Plan plan) {
         planRegionRepository.deleteAllByPlan(plan);
-
         String[] regionName = createPlanRequest.getRegionName();
         for(String i : regionName) {
             Region region = regionRepository.findByRegionName(i).get();

@@ -20,7 +20,7 @@ public class MyFileRepositoryImpl implements MyFileRepositoryCustom{
     }
 
     @Override
-    public Optional<MyFile> findNotDeletedByFileId(Long fileId) {
+    public Optional<MyFile> findOneNotDeletedByFileId(Long fileId) {
         return Optional.ofNullable(queryFactory.selectFrom(myFile)
                 .from(myFile)
                 .where(myFileIdEq(fileId),

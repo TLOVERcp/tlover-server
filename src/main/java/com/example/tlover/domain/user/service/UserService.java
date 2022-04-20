@@ -32,4 +32,6 @@ public interface UserService {
 
     void withdrawUser(@Valid WithdrawUserRequest withdrawUserRequest, String loginId);
 
+    User getUserByUserId(Long userId);
+
 }

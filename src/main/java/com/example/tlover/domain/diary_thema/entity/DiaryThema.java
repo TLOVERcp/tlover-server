@@ -1,6 +1,8 @@
 package com.example.tlover.domain.diary_thema.entity;
 
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.diary_region.entity.DiaryRegion;
+import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.thema.entity.Thema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +38,14 @@ public class DiaryThema {
         this.thema = thema;
         thema.getDiaryThemas().add(this);
     }
+
+    public static DiaryThema toEntity(Thema thema , Diary diary) {
+        DiaryThema diaryThema = new DiaryThema();
+        diaryThema.setDiary(diary);
+        diaryThema.setThema(thema);
+        return diaryThema;
+    }
+
 
 
 
