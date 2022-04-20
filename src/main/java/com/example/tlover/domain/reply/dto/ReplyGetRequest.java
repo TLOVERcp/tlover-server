@@ -17,26 +17,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "댓글을 위한 요청 객체")
-public class ReplyUpdateRequest {
-
-    @NotBlank(message = "댓글 내용을 입력해주세요.")
-    @ApiModelProperty(notes = "댓글 내용을 입력해주세요.")
-    private String replyContext;
+public class ReplyGetRequest {
 
     @NotNull(message = "다이어리의 id를 입력해주세요.")
     @ApiModelProperty(notes = "다이어리의 id를 입력해주세요.")
-    private Long replyId;
+    private Long diaryId;
 
-    private String replyState;
-
-    public Reply toEntity(Diary diary, User user) {
-        Reply reply = new Reply();
-        reply.setReplyContext(this.replyContext);
-        reply.setDiary(diary);
-        reply.setUser(user);
-        reply.setReplyTime(LocalDateTime.now());
-        reply.setReplyState(this.replyState);
-        return reply;
-    }
 
 }

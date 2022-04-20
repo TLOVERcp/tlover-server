@@ -1,7 +1,5 @@
 package com.example.tlover.domain.plan.controller;
 
-import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
-import com.example.tlover.domain.authority_plan.dto.SharePlanResponse;
 import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;

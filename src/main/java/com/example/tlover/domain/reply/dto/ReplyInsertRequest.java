@@ -11,21 +11,20 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "댓글을 위한 요청 객체")
-public class ReplyRequest {
+public class ReplyInsertRequest {
 
     @NotBlank(message = "댓글 내용을 입력해주세요.")
     @ApiModelProperty(notes = "댓글 내용을 입력해주세요.")
     private String replyContext;
 
-    @NotNull(message = "댓글 내용을 입력해주세요.")
-    @ApiModelProperty(notes = "댓글 내용을 입력해주세요.")
+    @NotNull(message = "다이어리의 id를 입력해주세요.")
+    @ApiModelProperty(notes = "다이어리의 id를 입력해주세요.")
     private Long diaryId;
 
     private String replyState;
@@ -37,6 +36,7 @@ public class ReplyRequest {
         reply.setUser(user);
         reply.setReplyTime(LocalDateTime.now());
         reply.setReplyState(this.replyState);
+        reply.setDeleted(false);
         return reply;
     }
 
