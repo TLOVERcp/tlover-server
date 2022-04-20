@@ -43,10 +43,17 @@ public class PlanServiceImpl implements PlanService{
     public List<PlanListResponse> getAllPlans(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
         List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUser(user).get();
+        /*List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, "ACTIVE").get();
+        List<AuthorityPlan> plans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, "HOST").get();
+        authorityPlans.addAll(plans);*/
+
         authorityPlans = checkDelete(authorityPlans);
+        List<AuthorityPlan> plans = authorityPlans;
+        plans = AuthorityPlanServiceImpl.checkStatus(authorityPlans, "HOST");
+        plans.addAll(AuthorityPlanServiceImpl.checkStatus(authorityPlans, "ACCEPT"));
         List<PlanListResponse> planList = new ArrayList<>();
-        for(int i=0; i<authorityPlans.size(); i++)
-            planList.add(PlanListResponse.from(authorityPlans.get(i).getPlan()));
+        for(int i=0; i<plans.size(); i++)
+            planList.add(PlanListResponse.from(plans.get(i).getPlan()));
         return planList;
     }
 
@@ -62,8 +69,9 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public List<PlanListResponse> getPlansByState(String loginId, String status) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        List<AuthorityPlan> plans = authorityPlanRepository.findAllByUser(user).get();
+        List<AuthorityPlan> plans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, "ACTIVE").get();
         plans = checkStatus(plans, status);
+       // plans = AuthorityPlanServiceImpl.checkStatus(plans, "ACTIVE");
         List<PlanListResponse> planList = new ArrayList<>();
         for(int i=0; i<plans.size(); i++)
             planList.add(PlanListResponse.from(plans.get(i).getPlan()));
@@ -84,7 +92,6 @@ public class PlanServiceImpl implements PlanService{
         Plan plan = planRepository.findByPlanId(planId).get();
         List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan).get();
         List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).get();
-        AuthorityPlanServiceImpl.checkStatus(authorityPlans,"ACCEPT");
         return PlanDetailResponse.from(plan, planRegion, authorityPlans);
     }
 

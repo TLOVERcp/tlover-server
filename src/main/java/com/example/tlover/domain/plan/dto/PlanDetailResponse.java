@@ -37,10 +37,10 @@ public class PlanDetailResponse {
             regionName[i] = planRegions.get(i).getRegion().getRegionName();
         }
         String[] users = new String[authorityPlans.size()+1];
-        users[1] = plan.getUser().getUserNickName();
         for(int i=1; i< authorityPlans.size()+1; i++){
             users[i] = authorityPlans.get(i).getUser().getUserNickName();
         }
+        users[1] = plan.getUser().getUserNickName();
         return PlanDetailResponse.builder()
                 .planId(plan.getPlanId())
                 .planTitle(plan.getPlanTitle())
