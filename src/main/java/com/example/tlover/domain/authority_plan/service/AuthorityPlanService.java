@@ -2,7 +2,6 @@ package com.example.tlover.domain.authority_plan.service;
 
 import com.example.tlover.domain.authority_plan.dto.AuthorityPlanListResponse;
 import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
-import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.plan.entity.Plan;
 
 import javax.validation.Valid;
@@ -21,5 +20,6 @@ public interface AuthorityPlanService {
     void updateAcceptAuthorityPlan(@Valid Long authorityPlanId);
 
     void updateRejectAuthorityPlan(@Valid Long authorityPlanId);
+
 
 }
