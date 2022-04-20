@@ -6,9 +6,9 @@ import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan.service.PlanServiceImpl;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,11 +24,12 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     private final UserRepository userRepository;
     private final AuthorityPlanRepository authorityPlanRepository;
 
+
     //공유 요청
     @Override
     public void sharePlan(Long planId, SharePlanRequest sharePlanRequest) {
         Plan plan = planRepository.findByPlanId(planId).get();
-        User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName());
+        User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName()).get();
         AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
         authorityPlanRepository.save(authorityPlan);
     }
@@ -36,8 +37,7 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     //원글쓴이 권한 저장
     @Override
     public void addPlanUser(Plan plan, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user, "HOST");
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);        AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user, "HOST");
         authorityPlanRepository.save(authorityPlan);
     }
 
@@ -49,23 +49,25 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
 
     @Override
     public List<AuthorityPlanListResponse> getSharePlanList(String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUser(user).get();
-        authorityPlans = checkStatus(authorityPlans,"REQUEST");
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user,
+                "REQUEST").get();
+        System.out.println(authorityPlans.size());
         List<AuthorityPlanListResponse> authorityPlanList = new ArrayList<>();
-         // 빈경우 어케 처리?
         for(int i=0; i<authorityPlans.size(); i++)
             authorityPlanList.add(AuthorityPlanListResponse.from(authorityPlans.get(i)));
         return authorityPlanList;
     }
 
     public static List<AuthorityPlan> checkStatus(List<AuthorityPlan> authorityPlans, String status) {
-        for(int i=0; i<authorityPlans.size(); i++) {
-            if (!authorityPlans.get(i).getAuthorityPlanStatus().equals(status)) {
-                authorityPlans.remove(i);
+        List<AuthorityPlan> plans = new ArrayList<>();
+        plans.addAll(authorityPlans);
+        for(int i=0; i<plans.size(); i++) {
+            if (!plans.get(i).getAuthorityPlanStatus().equals(status)) {
+                plans.remove(i);
             }
         }
-        return authorityPlans;
+
+        return plans;
     }
 
     @Override
@@ -81,5 +83,7 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
         AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).get();
         authorityPlan.setAuthorityPlanStatus("REJECT");
     }
+
+
 
 }
