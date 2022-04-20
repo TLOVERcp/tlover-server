@@ -23,5 +23,6 @@ public interface PlanService {
 
     Plan updatePlan(@Valid CreatePlanRequest createPlanRequest, Long planId);
 
+    Boolean checkUser(@Valid Long planId, String loginId );
 
 }
