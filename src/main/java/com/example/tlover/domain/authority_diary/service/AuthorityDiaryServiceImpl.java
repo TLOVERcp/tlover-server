@@ -31,7 +31,7 @@ public class AuthorityDiaryServiceImpl implements AuthorityDiaryService{
 
     @Override
     public void sharePlan(Long diaryId, SharePlanRequest sharePlanRequest) {
-        User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName());
+        User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName()).get();
         Diary diary = diaryRepository.findByDiaryId(diaryId);
         AuthorityDiary authorityDiary = AuthorityDiary.toEntity(user, diary, "REQUEST");
         authorityDiaryRepository.save(authorityDiary);

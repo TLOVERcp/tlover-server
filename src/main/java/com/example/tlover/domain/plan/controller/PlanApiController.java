@@ -3,6 +3,7 @@ package com.example.tlover.domain.plan.controller;
 import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.plan.exception.NoAuthorityUserException;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
 import com.example.tlover.domain.user.controller.UserApiController;
@@ -46,8 +47,6 @@ public class PlanApiController {
         return ResponseEntity.ok(CreatePlanResponse.builder()
                 .message("계획 작성을 성공하였습니다.")
                 .build());
-
-
     }
 
     /**
@@ -85,7 +84,13 @@ public class PlanApiController {
     @GetMapping("/plan-detail/{planId}")
     public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable Long planId, HttpServletRequest request) {
         String loginId = userApiController.getLoginIdFromSession(request);
+        Boolean userAuthority = planService.checkUser(planId, loginId);
+
+        if(userAuthority)
+            throw new NoAuthorityUserException();
+
         PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId);
+        // 유저 확인
         return ResponseEntity.ok(planDetailResponse);
         }
 
@@ -101,6 +106,11 @@ public class PlanApiController {
     @PostMapping("/delete-plan/{planId}")
     public ResponseEntity<DeletePlanResponse> deletePlan(@PathVariable Long planId, HttpServletRequest request){
         String loginId = userApiController.getLoginIdFromSession(request);
+        Boolean userAuthority = planService.checkUser(planId, loginId);
+
+        if(userAuthority)
+           throw new NoAuthorityUserException();
+
         Plan plan = planService.deletePlan(planId);
         planRegionService.deletePlanRegion(plan);
         authorityPlanService.deleteAuthorityPlan(plan);
@@ -124,6 +134,11 @@ public class PlanApiController {
                                              @Valid @RequestBody CreatePlanRequest createPlanRequest,
                                              HttpServletRequest request){
         String loginId = userApiController.getLoginIdFromSession(request);
+        Boolean userAuthority = planService.checkUser(planId, loginId);
+
+        if(userAuthority)
+            throw new NoAuthorityUserException();
+
         Plan plan = planService.updatePlan(createPlanRequest, planId);
         planRegionService.updatePlanRegion(createPlanRequest, plan);
         return ResponseEntity.ok(UpdatePlanResponse.builder()
