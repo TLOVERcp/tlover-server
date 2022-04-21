@@ -1,3 +1,5 @@
+version: "3"
+
 services:
   application:
     image: rbqja123/tlover-server
@@ -9,5 +11,3 @@ services:
     ports:
       - 8080:8080
     container_name: tlover-server
-networks:
-  - tlover-network:

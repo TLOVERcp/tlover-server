@@ -61,7 +61,6 @@ public class UserApiController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
-
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
