@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface ScrapRepository extends JpaRepository<Scrap, Long>, ScrapRepositoryCustom {
     Optional<Scrap> findByUserAndDiary(User user, Diary diary);
-
 }
