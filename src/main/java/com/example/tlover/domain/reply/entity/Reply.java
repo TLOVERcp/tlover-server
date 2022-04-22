@@ -27,6 +27,8 @@ public class Reply {
 
     private String replyState;
 
+    private boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
     private User user;

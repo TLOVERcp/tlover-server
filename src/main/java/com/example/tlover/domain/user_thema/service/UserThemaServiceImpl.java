@@ -96,10 +96,13 @@ public class UserThemaServiceImpl implements UserThemaService {
      */
     public void checkUserThema(List<String> themaNameList) {
 
-        for (String themaName : themaNameList) {
-            Thema thema = themaRepository.findByThemaName(themaName);
+        if (themaNameList.isEmpty()) {
 
-            if (thema == null) throw new NotFoundUserThemaException();
+            for (String themaName : themaNameList) {
+                Thema thema = themaRepository.findByThemaName(themaName);
+
+                if (thema == null) throw new NotFoundUserThemaException();
+            }
         }
     }
 }

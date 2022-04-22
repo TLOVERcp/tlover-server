@@ -73,6 +73,7 @@ public class UserApiController {
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessJwt(accessJwt)
                 .refreshJwtIdx(refreshJwtIdx)
+                .userNickname(user.getUserNickName())
                 .message("로그인에 성공하였습니다.")
                 .build());
     }
@@ -124,7 +125,7 @@ public class UserApiController {
     @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보를 조회합니다.")
     @GetMapping("/profile")
     public ResponseEntity<ProfileResponse> getUserProfile(HttpServletRequest request) {
-        String loginId = getLoginIdFromSession(request);
+        String loginId = this.getLoginIdFromSession(request);
         User user = userService.getUserProfile(loginId);
         List<String> userThemaName = userThemaService.getUserThemaName(user.getUserId());
 
@@ -142,6 +143,9 @@ public class UserApiController {
     public ResponseEntity<String> updateUserProfile(@Valid @ModelAttribute UserProfileRequest userProfileRequest,
                                                     @RequestParam(required = false) MultipartFile file,
                                                     HttpServletRequest request) {
+
+        userThemaService.checkUserThema(userProfileRequest.getUserThemaName());
+
         String loginId = this.getLoginIdFromSession(request);
         User user = userService.updateUserProfile(loginId, userProfileRequest, file);
         userThemaService.updateUserThema(userProfileRequest.getUserThemaName(), user);
