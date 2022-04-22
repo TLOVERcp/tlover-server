@@ -99,11 +99,11 @@ public class JwtServiceImpl implements JwtService {
         //JWT 추출합니다.
         String accessToken = resolveAccessToken();
         if (accessToken == null || accessToken.length() == 0)
-            throw new NotFoundJwtException("ACCESS-TOKEN이 비어있습니다.");
+            throw new NotFoundJwtException();
 
         Long userRefreshTokenId = resolveRefreshToken();
         if (userRefreshTokenId == null) {
-            throw new NotFoundJwtException("REFRESH-TOKEN이 비어있습니다.");
+            throw new NotFoundJwtException();
         }
 
         Jws<Claims> claims;
