@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "로그인을 위한 응답 객체")
+@ApiModel(description = "회원가입을 위한 응답 객체")
 public class SignupResponse {
 
     private String message;

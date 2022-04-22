@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "로그인을 위한 요청 객체")
+@ApiModel(description = "비밀번호 재설정을 위한 요청 객체")
 public class ResetPasswordResponse {
 
     private String message;

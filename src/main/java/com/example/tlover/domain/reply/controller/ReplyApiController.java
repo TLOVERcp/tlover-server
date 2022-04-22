@@ -31,7 +31,7 @@ public class ReplyApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "댓글을 조회합니다.", notes = "댓글을 조회합니다.")
-    @PostMapping("/get-reply")
+    @GetMapping("/get-reply")
     public ResponseEntity<List<ReplyGetResponse>> getReply(@Valid @RequestBody ReplyGetRequest replyGetRequest) {
 
         List<ReplyGetResponse> responseList = replyService.getReplyList(replyGetRequest.getDiaryId());
