@@ -4,6 +4,7 @@ import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.myfile.exception.NotFoundMyFileException;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.exception.oauth2.*;
+import com.example.tlover.domain.user_region.exception.NotFoundUserRegionException;
 import com.example.tlover.global.dto.ExceptionResponse;
 import com.example.tlover.infra.file.exception.FileExtensionException;
 import com.example.tlover.infra.file.exception.FileLoadFailedException;
@@ -179,5 +180,14 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
     public final ResponseEntity<Object> handleNotFoundDiaryException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND.toString(), Arrays.asList(ex.getMessage()));
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * User Region Domain Exception
+     */
+    @ExceptionHandler(NotFoundUserRegionException.class)
+    public final ResponseEntity<Object> handleNotFoundUserRegionException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), Arrays.asList(ex.getMessage()));
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }
