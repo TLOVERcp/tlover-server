@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "사용자 관심지역 설정을 위한 응답 객체")
+@ApiModel(description = "사용자 관심지역 조회를 위한 응답 객체")
 public class UserRegionResponse {
     private String regionName;
     private Long userId;

@@ -6,16 +6,19 @@ import com.example.tlover.domain.user.dto.SignupRequest;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.domain.user_region.dto.UpdateUserRegionRequest;
-import com.example.tlover.domain.user_region.dto.UpdateUserRegionResponse;
 import com.example.tlover.domain.user_region.dto.UserRegionResponse;
 import com.example.tlover.domain.user_region.entity.UserRegion;
+import com.example.tlover.domain.user_region.exception.NotFoundUserRegionException;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.tlover.domain.user_region.constant.UserRegionConstants.*;
 
 
 @Service
@@ -49,18 +52,18 @@ public class UserRegionServiceImpl implements UserRegionService{
     }
 
     @Override
-    public UpdateUserRegionResponse updateUserRegion(@Valid UpdateUserRegionRequest updateUserRegionRequest, String loginId) {
+    @Transactional
+    public void updateUserRegion(@Valid UpdateUserRegionRequest updateUserRegionRequest, String loginId) {
+
+        String[] userRegions = updateUserRegionRequest.getUserRegions();
         User user = userRepository.findByUserLoginId(loginId).get();
         userRegionRepository.deleteAllByUser(user);
-        UserRegion userRegion = new UserRegion();
 
-        for (String userRegionName : updateUserRegionRequest.getUserRegions()) {
-            Region region = regionRepository.findByRegionName(userRegionName).get();
-            userRegion = UserRegion.toEntityOfUserRegion(user, region);
-            userRegionRepository.save(userRegion);
+        for (String userRegionName : userRegions) {
+            Region region = regionRepository.findByRegionName(userRegionName)
+                    .orElseThrow(()->new NotFoundUserRegionException(
+                            EUserRegionExceptionMessage.eNotFoundUserRegionExceptionMessage.getValue()));
+            userRegionRepository.save(UserRegion.toEntityOfUserRegion(user, region));
         }
-
-        return UpdateUserRegionResponse.from(userRegion);
     }
-
 }
