@@ -18,6 +18,8 @@ public interface UserService {
 
     void loginIdDuplicateCheck(String loginId);
 
+    void userNicknameDuplicateCheck(String loginId);
+
     void phoneNumDuplicateCheck(String phoneNum);
 
     User getUserProfile(String loginId);
