@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "로그인을 위한 요청 객체")
+@ApiModel(description = "비밀번호 찾기을 위한 요청 객체")
 public class FindPasswordRequest {
 
     @NotBlank(message = "회원의 로그인Id를 입력해주세요.")

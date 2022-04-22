@@ -117,6 +117,23 @@ public class UserApiController {
     }
 
     /**
+     * 닉네임 중복확인
+     * @param nicknameDuplicateRequest
+     * @return ResponseEntity<DuplicateResponse>
+     * @author 윤여찬
+     */
+    @ApiOperation(value = "닉네임 중복확인", notes = "닉네임 중복확인을 합니다.")
+    @PostMapping("/nickname-duplicate-check")
+    public ResponseEntity<DuplicateResponse> duplicateCheckUser(@Valid @RequestBody NicknameDuplicateRequest nicknameDuplicateRequest) {
+
+        userService.userNicknameDuplicateCheck(nicknameDuplicateRequest.getUserNickname());
+
+        return ResponseEntity.ok(DuplicateResponse.builder()
+                .message("사용가능한 닉네임입니다.")
+                .build());
+    }
+
+    /**
      * 사용자 정보 조회
      * @param request
      * @return

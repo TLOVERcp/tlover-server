@@ -25,7 +25,7 @@ public class SignupRequest {
     private String loginId;
 
     @NotBlank(message = "회원의 비밀번호를 입력해 주세요.")
-    @Size(min = 7, max = 20, message = "패스워드는 7글자 이상 16글자 이하여야 합니다.")
+    @Size(min = 7, max = 20, message = "비밀번호는 7글자 이상 16글자 이하여야 합니다.")
     @ApiModelProperty(notes = "회원의 비밀번호를 입력해 주세요.")
     private String password;
 
@@ -34,12 +34,12 @@ public class SignupRequest {
     private String userEmail;
 
     @NotBlank(message = "회원의 전화번호를 입력해 주세요.")
-    @Size(min = 10, max = 11, message = "패스워드는 10글자 이상 11글자 이하여야 합니다.")
+    @Size(min = 10, max = 11, message = "전화번호는 10글자 이상 11글자 이하여야 합니다.")
     @ApiModelProperty(notes = "회원의 전화번호를 입력해 주세요.")
     private String userPhoneNum;
 
     @NotBlank(message = "회원의 닉네임을 입력해 주세요.")
-    @Size(min = 4, max = 16, message = "패스워드는 4글자 이상 16글자 이하여야 합니다.")
+    @Size(min = 4, max = 16, message = "닉네임은 4글자 이상 16글자 이하여야 합니다.")
     @ApiModelProperty(notes = "회원의 닉네임을 입력해 주세요.")
     private String userNickName;
 
