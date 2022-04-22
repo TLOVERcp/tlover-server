@@ -7,6 +7,7 @@ import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.user.controller.UserApiController;
+import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class DiaryApiController {
 
     private final UserApiController userApiController;
     private final DiaryService diaryService;
+    private final JwtService jwtService;
 
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
@@ -51,11 +53,13 @@ public class DiaryApiController {
      */
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성을 합니다.")
     @PostMapping(value = "/create-diary")
+
     public ResponseEntity<CreateDiaryResponse> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest , HttpServletRequest request) {
-        String loginId = userApiController.getLoginIdFromSession(request);
+        String loginId = jwtService.getLoginId();
         Diary diary = diaryService.createDiary(createDiaryRequest, loginId);
         return ResponseEntity.ok(CreateDiaryResponse.builder()
                 .message(diary.getUser().getUserNickName() + "님의 다이어리 작성이 완료 되었습니다").build());
+
     }
 
 
@@ -72,7 +76,7 @@ public class DiaryApiController {
     @PostMapping(value = "/delete-diary/{diaryId}")
     public ResponseEntity<CreateDiaryResponse> DeleteDiary(@PathVariable Long diaryId , HttpServletRequest request) {
 
-        String loginId = userApiController.getLoginIdFromSession(request);
+        String loginId = jwtService.getLoginId();
         Diary diary = diaryService.deleteDiary(diaryId, loginId);
 
         return ResponseEntity.ok(CreateDiaryResponse.builder()
@@ -93,4 +97,5 @@ public class DiaryApiController {
         Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
         return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
     }
+
 }
