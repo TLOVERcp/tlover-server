@@ -61,7 +61,6 @@ public class UserApiController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
-
         User user = userService.loginUser(loginRequest);
         request.getSession().setAttribute("loginId", user.getUserLoginId());
 
@@ -243,6 +242,7 @@ public class UserApiController {
      * @author 윤여찬
      */
     public String getLoginIdFromSession(HttpServletRequest request) {
+
         Object loginId = request.getSession().getAttribute("loginId");
 
         if (loginId == null) throw new DeniedAccessExceptioin();
@@ -289,7 +289,7 @@ public class UserApiController {
      * [POST] api/v1/users/kakao-login
      * @param kakaoLoginRequest
      * @return ResponseEntity
-     * @author hyeseon
+     * @author 정혜선
      */
     @ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 합니다.")
     @PostMapping("/kakao-login")
@@ -297,6 +297,7 @@ public class UserApiController {
         LoginResponse loginResponse = oAuth2UserServiceKakao.validateKakaoAccessToken(kakaoLoginRequest);
         return ResponseEntity.ok(loginResponse);
     }
+
 
 
 }

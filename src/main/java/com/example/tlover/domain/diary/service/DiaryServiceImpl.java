@@ -1,11 +1,15 @@
 package com.example.tlover.domain.diary.service;
 
+import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_diary.repository.AuthorityDiaryRepository;
 import com.example.tlover.domain.authority_diary.service.AuthorityDiaryService;
+import com.example.tlover.domain.diary.constant.DiaryConstants;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
+import com.example.tlover.domain.diary.exception.NotAuthorityDelete;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
@@ -36,6 +40,9 @@ import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.example.tlover.domain.diary.constant.DiaryConstants.eDiary.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,16 +60,22 @@ public class DiaryServiceImpl implements DiaryService{
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
 
+    private final DiaryConstants diaryConstants;
+
     @Override
     public Diary createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
 
             User user = userRepository.findByUserLoginId(loginId).get();
             Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
-            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, user, plan));
+
+        Optional<Diary> cdr = diaryRepository.findByUserUserIdAndPlanPlanId(user.getUserId(), plan.getPlanId());
+        if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) throw new AlreadyExistDiaryException();
+
+        Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, user, plan));
             authorityDiaryService.addDiaryUser(diary , loginId);
 
         for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-            DiaryImg diaryImg = DiaryImg.toEntity(diaryImgFileName.getOriginalFilename(), diary);
+            DiaryImg diaryImg = DiaryImg.toEntity(myFileService.saveImage(diaryImgFileName).getFileKey(), diary);
             diaryImgRepository.save(diaryImg);
         }
 
@@ -74,7 +87,6 @@ public class DiaryServiceImpl implements DiaryService{
 
         for (String themaName : createDiaryRequest.getThemaName()) {
             Thema thema = themaRepository.findByThemaName(themaName);
-            System.out.println("thema = " + thema);
             DiaryThema diaryThema = DiaryThema.toEntity(thema, diary);
             diaryThemaRepository.save(diaryThema);
         }
@@ -97,7 +109,16 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public Diary deleteDiary(Long diaryId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Diary diary = diaryRepository.findByUserAndDiaryId(user, diaryId);
+        Diary diary = diaryRepository.findByDiaryId(diaryId);
+
+        Optional<AuthorityDiary> cadr = authorityDiaryRepository.findByUserUserIdAndDiaryDiaryId(user.getUserId(), diaryId);
+        if(cadr.isEmpty()) {
+            throw new NotAuthorityDelete();
+        }else {
+            if(!cadr.get().getAuthorityDiaryStatus().equals(HOST.getValue()))
+                throw new NotAuthorityDelete();
+        }
+
         diary.setDiaryStatus("DELETE");
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
