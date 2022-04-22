@@ -238,6 +238,7 @@ public class UserApiController {
      * @author 윤여찬
      */
     public String getLoginIdFromSession(HttpServletRequest request) {
+
         Object loginId = request.getSession().getAttribute("loginId");
 
         if (loginId == null) throw new DeniedAccessExceptioin();
@@ -292,6 +293,7 @@ public class UserApiController {
         LoginResponse loginResponse = oAuth2UserServiceKakao.validateKakaoAccessToken(kakaoLoginRequest);
         return ResponseEntity.ok(loginResponse);
     }
+
 
 
 }
