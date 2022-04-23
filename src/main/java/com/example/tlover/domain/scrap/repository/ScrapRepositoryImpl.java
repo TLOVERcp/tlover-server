@@ -6,6 +6,7 @@ import com.example.tlover.domain.scrap.dto.QDiaryInquiryByScrapRankingResponse;
 import com.example.tlover.domain.scrap.entity.Scrap;
 import com.example.tlover.domain.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -59,11 +60,11 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
                         diary.diaryView,
-                        diary.count()
+                        scrapCount.sum()
                 ))
                 .from(diary)
                 .leftJoin(diary.scraps, scrap)
-                .orderBy(diary.count().desc())
+                .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -80,16 +81,18 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
                         diary.diaryView,
-                        diary.count()
+                        scrapCount.sum()
                 ))
                 .from(diary)
                 .leftJoin(diary.scraps, scrap)
-                .orderBy(diary.count().desc())
+                .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
-
+    NumberExpression<Long> scrapCount = scrap.isDeleted.
+            when(false).then(new Long(1)).
+            otherwise(new Long(0));
 
     private BooleanExpression isDeletedCheck() {return scrap.isDeleted.eq(false);}
 
