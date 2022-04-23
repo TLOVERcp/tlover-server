@@ -49,11 +49,11 @@ public class UserServiceImpl implements UserService{
      * @author 윤여찬
      */
     @Override
-    @Transactional(rollbackFor = {NotFoundUserThemaException.class})
     public User insertUser(SignupRequest signupRequest) {
 
         User user = signupRequest.toEntity(sha256Util.encrypt(signupRequest.getPassword()));
         this.loginIdDuplicateCheck(user.getUserLoginId());
+        this.userNicknameDuplicateCheck(user.getUserNickName());
         this.phoneNumDuplicateCheck(user.getUserPhoneNum());
 
         user.setUserState("active");
@@ -73,6 +73,19 @@ public class UserServiceImpl implements UserService{
         Optional<User> user = userRepository.findByUserLoginId(loginId);
 
         if (!user.isEmpty()) throw new UserIdDuplicateException();
+    }
+
+    /**
+     * 닉네임 중복 확인
+     * @param userNickName
+     * @return
+     * @author 윤여찬
+     */
+    @Override
+    public void userNicknameDuplicateCheck(String userNickName) {
+        Optional<User> user = userRepository.findByUserNickName(userNickName);
+
+        if (!user.isEmpty()) throw new UserNicknameDuplicateException();
     }
 
     /**
@@ -180,14 +193,15 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     @Transactional
-    public User updateUserProfile(String loginId, UserProfileRequest userProfileRequest, MultipartFile file) {
-
-        if (!loginId.equals(userProfileRequest.getLoginId())) this.loginIdDuplicateCheck(userProfileRequest.getLoginId());
-
+    public User updateUserProfile(String loginId, UserProfileRequest profileRequest, MultipartFile file) {
         User user = this.getUserProfile(loginId);
-        user.setUserLoginId(userProfileRequest.getLoginId());
-        user.setUserEmail(userProfileRequest.getUserEmail());
-        user.setUserNickName(userProfileRequest.getUserNickName());
+
+        if (!loginId.equals(profileRequest.getLoginId())) this.loginIdDuplicateCheck(profileRequest.getLoginId());
+        if (!user.getUserNickName().equals(profileRequest.getUserNickName())) this.userNicknameDuplicateCheck(profileRequest.getUserNickName());
+
+        user.setUserLoginId(profileRequest.getLoginId());
+        user.setUserEmail(profileRequest.getUserEmail());
+        user.setUserNickName(profileRequest.getUserNickName());
 
         if (file != null) {
             MyFile profileImg = myFileService.saveImage(file);
