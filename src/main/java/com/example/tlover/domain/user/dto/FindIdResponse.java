@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "로그인을 위한 응답 객체")
+@ApiModel(description = "아이디 찾기를 위한 응답 객체")
 public class FindIdResponse {
 
     private String loginId;
