@@ -1,8 +1,11 @@
 package com.example.tlover.domain.user.exception;
 
-public class DeniedAccessExceptioin extends RuntimeException{
+public class DeniedAccessExceptioin extends UserException {
     public DeniedAccessExceptioin() {
-        super(UserExceptionMessage.DENIED_ACCESS_EXCEPTION_MASSAGE.getMessage());
+        super(UserExceptionList.DENIED_ACCESS.getCODE(),
+                UserExceptionList.DENIED_ACCESS.getHttpStatus(),
+                UserExceptionList.DENIED_ACCESS.getMESSAGE()
+        );
     }
 }
 
