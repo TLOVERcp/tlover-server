@@ -3,14 +3,10 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.service.MyFileService;
-import com.example.tlover.domain.thema.entity.Thema;
-import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
-import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
-import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.global.encryption.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

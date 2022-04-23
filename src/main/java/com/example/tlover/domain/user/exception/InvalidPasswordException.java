@@ -1,8 +1,11 @@
 package com.example.tlover.domain.user.exception;
 
-public class InvalidPasswordException  extends RuntimeException{
+public class InvalidPasswordException  extends UserException{
     public InvalidPasswordException() {
-        super(UserExceptionMessage.INVALID_PASSWORD_EXCEPTION_MESSAGE.getMessage());
+        super(UserExceptionList.INVALID_PASSWORD.getCODE(),
+                UserExceptionList.INVALID_PASSWORD.getHttpStatus(),
+                UserExceptionList.INVALID_PASSWORD.getMESSAGE()
+        );
     }
 }
 

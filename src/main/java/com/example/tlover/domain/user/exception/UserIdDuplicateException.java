@@ -1,7 +1,10 @@
 package com.example.tlover.domain.user.exception;
 
-public class UserIdDuplicateException extends RuntimeException{
+public class UserIdDuplicateException extends UserException {
     public UserIdDuplicateException() {
-        super(UserExceptionMessage.USER_ID_DUPLICATE_EXCEPTION_MASSAGE.getMessage());
+        super(UserExceptionList.USER_ID_DUPLICATE.getCODE(),
+                UserExceptionList.USER_ID_DUPLICATE.getHttpStatus(),
+                UserExceptionList.USER_ID_DUPLICATE.getMESSAGE()
+        );
     }
 }

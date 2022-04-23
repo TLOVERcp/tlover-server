@@ -11,4 +11,5 @@ public interface UserRegionService {
     void createUserRegion(SignupRequest signupRequest, Long loginId);
     List<UserRegionResponse> getUserRegion(String loginId);
     void updateUserRegion(@Valid UpdateUserRegionRequest updateUserRegionRequest, String loginId);
+    void checkRegionName(String[] regionNameList);
 }
