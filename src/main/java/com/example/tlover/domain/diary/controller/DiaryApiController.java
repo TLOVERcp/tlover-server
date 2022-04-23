@@ -37,7 +37,6 @@ public class DiaryApiController {
     @GetMapping("/get-diary")
     public ResponseEntity<List<DiaryInquiryResponse>> getDiary(){
 //        String loginId = userApiController.getLoginIdFromSession(request);
-        jwtService.getLoginId();
         List<DiaryInquiryResponse> diaryInquiryResponse = diaryService.getDiary();
         return ResponseEntity.ok(diaryInquiryResponse);
     }
