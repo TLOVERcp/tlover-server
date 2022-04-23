@@ -3,7 +3,8 @@ package com.example.tlover.global.jwt.service;
 import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
 import com.example.tlover.global.jwt.Secret.SecretKey;
 import com.example.tlover.domain.user_refreshtoken.repository.UserRefreshTokenRepository;
-import com.example.tlover.global.jwt.exception.ExpireJwtException;
+import com.example.tlover.global.jwt.exception.ExpireAccessException;
+import com.example.tlover.global.jwt.exception.ExpireRefreshException;
 import com.example.tlover.global.jwt.exception.NotFoundJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -114,7 +115,7 @@ public class JwtServiceImpl implements JwtService {
                     .setSigningKey(SecretKey.JWT_ACCESS_SECRET_KEY)
                     .parseClaimsJws(accessToken); // 파싱 및 검증, 실패 시 에러
         }catch (Exception e3){
-            throw new ExpireJwtException("ACCESS-TOKEN이 만료되었습니다.");
+            throw new ExpireAccessException();
         }
 
         // JWT REFRESH parsing합니다.
@@ -127,7 +128,7 @@ public class JwtServiceImpl implements JwtService {
                     .setSigningKey(SecretKey.JWT_REFRESH_SECRET_KEY)
                     .parseClaimsJws(userRefreshToken);  // 파싱 및 검증, 실패 시 에러
         }catch (Exception e2){
-            throw new ExpireJwtException("REFRESH-TOKEN이 만료되었습니다.");
+            throw new ExpireRefreshException();
         }
         return claims.getBody().get("loginId",String.class);
     }
