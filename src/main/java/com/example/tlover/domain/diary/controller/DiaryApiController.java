@@ -30,15 +30,13 @@ public class DiaryApiController {
 
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
-     * @param request
      * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 조회",notes = "다이어를 조호합니다.")
     @GetMapping("/get-diary")
-    public ResponseEntity<List<DiaryInquiryResponse>> getDiary(HttpServletRequest request){
-        String loginId = userApiController.getLoginIdFromSession(request);
-
+    public ResponseEntity<List<DiaryInquiryResponse>> getDiary(){
+//        String loginId = userApiController.getLoginIdFromSession(request);
         List<DiaryInquiryResponse> diaryInquiryResponse = diaryService.getDiary();
         return ResponseEntity.ok(diaryInquiryResponse);
     }
