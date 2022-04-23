@@ -1,6 +1,7 @@
 package com.example.tlover.domain.user_region.service;
 
 import com.example.tlover.domain.region.entity.Region;
+import com.example.tlover.domain.region.exception.NotFoundRegionNameException;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.user.dto.SignupRequest;
 import com.example.tlover.domain.user.entity.User;
@@ -64,6 +65,24 @@ public class UserRegionServiceImpl implements UserRegionService{
                     .orElseThrow(()->new NotFoundUserRegionException(
                             EUserRegionExceptionMessage.eNotFoundUserRegionExceptionMessage.getValue()));
             userRegionRepository.save(UserRegion.toEntityOfUserRegion(user, region));
+        }
+    }
+
+    /**
+     * 지역 이름 확인
+     * @param regionNameList
+     * @return
+     * @author 윤여찬
+     */
+    @Override
+    public void checkRegionName(String[] regionNameList) {
+
+        if (regionNameList.length != 0) {
+
+            for (String regionName : regionNameList) {
+                regionRepository.findByRegionName(regionName).orElseThrow(NotFoundRegionNameException::new);
+
+            }
         }
     }
 }

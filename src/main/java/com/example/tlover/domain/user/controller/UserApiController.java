@@ -10,8 +10,6 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
-import com.example.tlover.domain.user_thema.exception.NotFoundUserThemaException;
-import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.domain.user_thema.service.UserThemaService;
 import com.example.tlover.domain.user_region.service.UserRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -20,8 +18,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,7 +84,8 @@ public class UserApiController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signupUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
-        userThemaService.checkUserThema(signUpRequest.getUserThemaName());
+        userThemaService.checkThemaName(signUpRequest.getUserThemaName());
+        userRegionService.checkRegionName(signUpRequest.getUserRegions());
 
         User user = userService.insertUser(signUpRequest);
         userRegionService.createUserRegion(signUpRequest, user.getUserId());
@@ -161,7 +158,8 @@ public class UserApiController {
                                                     @RequestParam(required = false) MultipartFile file,
                                                     HttpServletRequest request) {
 
-        userThemaService.checkUserThema(userProfileRequest.getUserThemaName());
+        userThemaService.checkThemaName(userProfileRequest.getUserThemaName());
+        //userRegionService.checkRegionName(userProfileRequest.getUserRegions());
 
         String loginId = this.getLoginIdFromSession(request);
         User user = userService.updateUserProfile(loginId, userProfileRequest, file);

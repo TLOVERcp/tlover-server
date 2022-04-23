@@ -1,8 +1,11 @@
 package com.example.tlover.domain.user.exception;
 
-public class NotEqualPasswordException extends RuntimeException{
+public class NotEqualPasswordException extends UserException{
     public NotEqualPasswordException() {
-        super(UserExceptionMessage.NOT_EQUAL_PASSWORD_MASSAGE.getMessage());
+        super(UserExceptionList.NOT_EQUAL_PASSWORD.getCODE(),
+                UserExceptionList.NOT_EQUAL_PASSWORD.getHttpStatus(),
+                UserExceptionList.NOT_EQUAL_PASSWORD.getMESSAGE()
+        );
     }
 }
 
