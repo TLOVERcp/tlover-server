@@ -30,7 +30,6 @@ public class DiaryApiController {
 
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
-     * @param request
      * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
