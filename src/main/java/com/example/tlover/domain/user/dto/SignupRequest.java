@@ -29,10 +29,6 @@ public class SignupRequest {
     @ApiModelProperty(notes = "회원의 비밀번호를 입력해 주세요.")
     private String password;
 
-    @NotBlank(message = "회원의 이메일을 입력해 주세요.")
-    @ApiModelProperty(notes = "회원의 이메일을 입력해 주세요.")
-    private String userEmail;
-
     @NotBlank(message = "회원의 전화번호를 입력해 주세요.")
     @Size(min = 10, max = 11, message = "전화번호는 10글자 이상 11글자 이하여야 합니다.")
     @ApiModelProperty(notes = "회원의 전화번호를 입력해 주세요.")
@@ -57,7 +53,6 @@ public class SignupRequest {
         user.setUserLoginId(this.loginId);
         user.setUserPassword(encodePassword);
         user.setUserPhoneNum(this.userPhoneNum);
-        user.setUserEmail(this.userEmail);
         user.setUserNickName(this.userNickName);
         return user;
     }

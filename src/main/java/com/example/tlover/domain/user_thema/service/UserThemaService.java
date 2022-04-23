@@ -10,5 +10,5 @@ public interface UserThemaService {
     List<String> getUserThemaName(Long userId);
     void insertUserThema(List<String> themaNameList, User user);
     void updateUserThema(List<String> themaNameList, User user);
-    void checkUserThema(List<String> themaNameList);
+    void checkThemaName(List<String> themaNameList);
 }
