@@ -19,10 +19,15 @@ public interface PlanService {
 
     Plan deletePlan(@Valid Long planId);
 
-    void finishPlan(@Valid Long planId);
-
     Plan updatePlan(@Valid CreatePlanRequest createPlanRequest, Long planId);
 
     Boolean checkUser(@Valid Long planId, String loginId );
 
+    void updatePlanStatusFinish(@Valid Long planId);
+
+    void updatePlanStatusEditing(@Valid Long planId);
+
+    void updatePlanStatusActive(@Valid Long planId);
+
+    Boolean checkPlanStatus(@Valid Long planId);
 }

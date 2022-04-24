@@ -76,12 +76,7 @@ public class PlanServiceImpl implements PlanService{
         return plan;
     }
 
-    @Override
-    @Transactional
-    public void finishPlan(Long planId) {
-        Plan plan = planRepository.findByPlanId(planId).get();
-        plan.setPlanStatus("FINISH");
-    }
+
 
     @Override
     public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId) {
@@ -99,6 +94,35 @@ public class PlanServiceImpl implements PlanService{
             if(user.getUserNickName().equals(authorityPlans.get(i).getUser().getUserNickName()))
                 return true;
         }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public void updatePlanStatusFinish(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
+        plan.setPlanStatus("FINISH");
+    }
+
+    @Override
+    @Transactional
+    public void updatePlanStatusEditing(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
+        plan.setPlanStatus("EDITING");
+    }
+
+    @Override
+    @Transactional
+    public void updatePlanStatusActive(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
+        plan.setPlanStatus("ACTIVE");
+    }
+
+    @Override
+    public Boolean checkPlanStatus(Long planId) {
+        Plan plan = planRepository.findByPlanId(planId).get();
+        if(plan.getPlanStatus().equals("ACTIVE"))
+            return true;
         return false;
     }
 

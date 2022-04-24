@@ -3,19 +3,18 @@ package com.example.tlover.domain.plan.controller;
 import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.plan.exception.AnotherUserEditingException;
 import com.example.tlover.domain.plan.exception.NoAuthorityUserException;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.jwt.service.JwtService;
-import com.example.tlover.global.jwt.service.JwtServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class PlanApiController {
     private final PlanRegionService planRegionService;
     private final AuthorityPlanService authorityPlanService;
     private final JwtService jwtService;
-    private final UserApiController userApiController;
 
     /**
      * 계획 작성 API
@@ -62,7 +60,8 @@ public class PlanApiController {
     @ApiOperation(value = "계획 목록 조회", notes = "계획 목록을 조회 합니다.")
     @GetMapping("/plan-list")
     public ResponseEntity<List<PlanListResponse>> getPlanList(@RequestParam(required = false) String status) {
-        String loginId = jwtService.getLoginId();            if (status == null) {
+        String loginId = jwtService.getLoginId();
+        if (status == null) {
                 List<PlanListResponse> planListResponses = planService.getAllPlans(loginId);
                 return ResponseEntity.ok(planListResponses);
             } else {
@@ -88,7 +87,6 @@ public class PlanApiController {
             throw new NoAuthorityUserException();
 
         PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId);
-        // 유저 확인
         return ResponseEntity.ok(planDetailResponse);
         }
 
@@ -116,6 +114,23 @@ public class PlanApiController {
                 .build());
     }
 
+    // 수정중상태로 Editing
+    @ApiOperation(value = "계획 상태 수정중으로 수정", notes = "계획 상태를 수정중으로 수정합니다.")
+    @PostMapping("/update-plan-editing/{planId}")
+    public ResponseEntity<UpdatePlanStatusResponse> updatePlanStatusEditing(@PathVariable Long planId){
+        String loginId = jwtService.getLoginId();
+        Boolean userAuthority = planService.checkUser(planId, loginId);
+
+        if(userAuthority)
+            throw new NoAuthorityUserException();
+
+        planService.updatePlanStatusEditing(planId);
+
+        return ResponseEntity.ok(UpdatePlanStatusResponse.builder()
+                .message("계획 상태 수정을 성공하였습니다.")
+                .build());
+    }
+
     /**
      * 계획 수정 API
      * [POST] api/v1/plans/update-plan:planId
@@ -128,18 +143,34 @@ public class PlanApiController {
     @PostMapping("/update-plan/{planId}")
     public ResponseEntity<UpdatePlanResponse> updatePlan(@PathVariable Long planId,
                                              @Valid @RequestBody CreatePlanRequest createPlanRequest){
-        String loginId = jwtService.getLoginId();
+        Boolean planStatus = planService.checkPlanStatus(planId);
+        if(!planStatus)
+            throw new AnotherUserEditingException();
+
+       /* String loginId = jwtService.getLoginId();
         Boolean userAuthority = planService.checkUser(planId, loginId);
 
         if(userAuthority)
-            throw new NoAuthorityUserException();
+            throw new NoAuthorityUserException();*/
 
         Plan plan = planService.updatePlan(createPlanRequest, planId);
         planRegionService.updatePlanRegion(createPlanRequest, plan);
+        planService.updatePlanStatusActive(planId);
         return ResponseEntity.ok(UpdatePlanResponse.builder()
                 .message("계획 수정을 성공하였습니다.")
                 .build());
     }
+
+    @ApiOperation(value = "계획 상태 기본으로 수정", notes = "계획 상태를 기본으로 수정합니다.")
+    @PostMapping("/update-plan-active/{planId}")
+    public ResponseEntity<UpdatePlanStatusResponse> updatePlanStatusActive(@PathVariable Long planId){
+        planService.updatePlanStatusActive(planId);
+
+        return ResponseEntity.ok(UpdatePlanStatusResponse.builder()
+                .message("계획 상태 수정을 성공하였습니다.")
+                .build());
+    }
+
 
 }
 
