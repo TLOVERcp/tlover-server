@@ -1,7 +1,5 @@
 package com.example.tlover.domain.region.exception;
 
-import com.example.tlover.domain.thema.exception.ThemaException;
-import com.example.tlover.domain.thema.exception.ThemaExceptionList;
 
 public class NotFoundRegionNameException extends RegionException {
     public NotFoundRegionNameException() {

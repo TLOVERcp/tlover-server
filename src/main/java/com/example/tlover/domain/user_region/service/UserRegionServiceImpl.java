@@ -9,7 +9,6 @@ import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.domain.user_region.dto.UpdateUserRegionRequest;
 import com.example.tlover.domain.user_region.dto.UserRegionResponse;
 import com.example.tlover.domain.user_region.entity.UserRegion;
-import com.example.tlover.domain.user_region.exception.NotFoundUserRegionException;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.tlover.domain.user_region.constant.UserRegionConstants.*;
 
 
 @Service
@@ -62,8 +59,7 @@ public class UserRegionServiceImpl implements UserRegionService{
 
         for (String userRegionName : userRegions) {
             Region region = regionRepository.findByRegionName(userRegionName)
-                    .orElseThrow(()->new NotFoundUserRegionException(
-                            EUserRegionExceptionMessage.eNotFoundUserRegionExceptionMessage.getValue()));
+                    .orElseThrow(()->new NotFoundRegionNameException());
             userRegionRepository.save(UserRegion.toEntityOfUserRegion(user, region));
         }
     }
