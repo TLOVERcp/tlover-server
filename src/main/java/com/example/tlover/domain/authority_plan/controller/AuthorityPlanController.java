@@ -74,6 +74,7 @@ public class AuthorityPlanController {
                 .message("계획 공유 요청을 수락하였습니다.")
                 .build());
     }
+
     /**
      * 계획 공유 요청 거절 API
      * [POST] api/v1/authority-plans/reject-authority-plan/:authorityPlanId
