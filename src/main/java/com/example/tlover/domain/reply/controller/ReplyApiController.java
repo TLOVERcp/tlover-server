@@ -4,6 +4,7 @@ package com.example.tlover.domain.reply.controller;
 import com.example.tlover.domain.reply.dto.*;
 import com.example.tlover.domain.reply.service.ReplyService;
 import com.example.tlover.domain.user.controller.UserApiController;
+import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class ReplyApiController {
 
     private final UserApiController userApiController;
     private final ReplyService replyService;
+    private final JwtService jwtService;
 
     /**
      * 댓글 조회
@@ -31,7 +33,7 @@ public class ReplyApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "댓글을 조회합니다.", notes = "댓글을 조회합니다.")
-    @GetMapping("/get-reply")
+    @PostMapping("/get-reply")
     public ResponseEntity<List<ReplyGetResponse>> getReply(@Valid @RequestBody ReplyGetRequest replyGetRequest) {
 
         List<ReplyGetResponse> responseList = replyService.getReplyList(replyGetRequest.getDiaryId());
@@ -50,8 +52,8 @@ public class ReplyApiController {
     @PostMapping("/insert")
     public ResponseEntity<ReplyResponse> insertReply(@Valid @RequestBody ReplyInsertRequest replyInsertRequest,
                                                      HttpServletRequest request) {
-
-        String loginId = userApiController.getLoginIdFromSession(request);
+        //replyService.checkState(replyInsertRequest.getReplyState());
+        String loginId = jwtService.getLoginId();
         replyService.insertReply(replyInsertRequest, loginId);
 
         return ResponseEntity.ok(ReplyResponse.from("댓글을 등록했습니다."));
@@ -67,8 +69,8 @@ public class ReplyApiController {
     @PostMapping("/update")
     public ResponseEntity<ReplyResponse> updateReply(@Valid @RequestBody ReplyUpdateRequest replyUpdateRequest,
                                                         HttpServletRequest request) {
-
-        String loginId = userApiController.getLoginIdFromSession(request);
+        //replyService.checkState(replyUpdateRequest.getReplyState());
+        String loginId = jwtService.getLoginId();
         replyService.updateReply(replyUpdateRequest, loginId);
 
         return ResponseEntity.ok(ReplyResponse.from("댓글을 수정했습니다."));
@@ -85,7 +87,7 @@ public class ReplyApiController {
     public ResponseEntity<ReplyResponse> deleteReply(@Valid @RequestBody ReplyDeleteRequest replyDeleteRequest,
                                                         HttpServletRequest request) {
 
-        String loginId = userApiController.getLoginIdFromSession(request);
+        String loginId = jwtService.getLoginId();
         replyService.deleteReply(replyDeleteRequest, loginId);
 
         return ResponseEntity.ok(ReplyResponse.from("댓글을 삭제했습니다."));
