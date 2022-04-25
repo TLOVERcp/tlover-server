@@ -1,5 +1,4 @@
-package com.example.tlover.domain.user_region.dto;
-
+package com.example.tlover.domain.plan.dto;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -11,9 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "사용자 관심지역 삭제를 위한 응답 객체")
-public class DeleteUserRegionResponse {
-
+@ApiModel(description = "수정 상태 변경을 위한 응답 객체")
+public class UpdatePlanStatusResponse {
     private String message;
-
 }
