@@ -1,6 +1,5 @@
 package com.example.tlover.domain.scrap.service;
 
-import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.scrap.dto.*;
