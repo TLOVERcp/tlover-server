@@ -15,9 +15,9 @@ public class ApiErrorResponse {
     private String errorCode;
     private List<String> message;
 
-    public ApiErrorResponse(String errorCode,List<String> messagee) {
+    public ApiErrorResponse(String errorCode,List<String> message) {
         this.timeStamp = LocalDateTime.now().withNano(0);
         this.errorCode = errorCode;
-        this.message = messagee;
+        this.message = message;
     }
 }
