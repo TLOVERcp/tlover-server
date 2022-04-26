@@ -7,9 +7,12 @@ import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.user.controller.UserApiController;
+import com.example.tlover.global.exception.dto.ApiErrorResponse;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/diary")
+@RequestMapping("api/v1/diaries")
 @RequiredArgsConstructor
 @Api(tags = "Diary API")
 public class DiaryApiController {
@@ -33,12 +36,25 @@ public class DiaryApiController {
      * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
-    @ApiOperation(value = "다이어리 조회",notes = "다이어를 조호합니다.")
+    @ApiOperation(value = "다이어리 조회",notes = "다이어를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class)
+    })
     @GetMapping("/get-diary")
     public ResponseEntity<List<DiaryInquiryResponse>> getDiary(){
-//        String loginId = userApiController.getLoginIdFromSession(request);
+        jwtService.getLoginId();
         List<DiaryInquiryResponse> diaryInquiryResponse = diaryService.getDiary();
         return ResponseEntity.ok(diaryInquiryResponse);
+    }
+
+    @ApiOperation(value = "다이어리 갈만한 여행지 조회", notes = "홈 화면의 두번째 조회 API입니다.")
+    @GetMapping("/get-goingdiary")
+    public ResponseEntity<List<DiaryInquiryResponse>> getGoingDiary(){
+        jwtService.getLoginId();
+        List<DiaryInquiryResponse> diaryInquiryResponses = diaryService.getGoingDiary();
+        return ResponseEntity.ok(diaryInquiryResponses);
     }
 
     /**
@@ -51,7 +67,6 @@ public class DiaryApiController {
      */
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성을 합니다.")
     @PostMapping(value = "/create-diary")
-
     public ResponseEntity<CreateDiaryResponse> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest , HttpServletRequest request) {
         String loginId = jwtService.getLoginId();
         Diary diary = diaryService.createDiary(createDiaryRequest, loginId);
@@ -91,7 +106,7 @@ public class DiaryApiController {
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
     @PostMapping(value = "/modify-diary/{diaryId}")
     public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request){
-        String loginId = userApiController.getLoginIdFromSession(request);
+        String loginId = jwtService.getLoginId();
         Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
         return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
     }

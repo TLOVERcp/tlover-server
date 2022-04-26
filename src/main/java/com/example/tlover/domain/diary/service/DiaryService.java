@@ -18,4 +18,5 @@ public interface DiaryService {
 
     Diary getDiaryByDiaryId(Long diaryId);
 
+    List<DiaryInquiryResponse> getGoingDiary();
 }

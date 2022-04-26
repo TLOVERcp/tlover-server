@@ -18,11 +18,9 @@ import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_region.repository.DiaryRegionRepository;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.diary_thema.repository.DiaryThemaRepository;
-import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan_region.service.PlanRegionService;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.thema.entity.Thema;
@@ -34,12 +32,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.example.tlover.domain.diary.constant.DiaryConstants.eDiary.*;
@@ -150,6 +146,23 @@ public class DiaryServiceImpl implements DiaryService{
     public Diary getDiaryByDiaryId(Long diaryId) {
         return this.diaryRepository.findById(diaryId).orElseThrow(NotFoundDiaryException::new);
     }
+
+    @Override
+    public List<DiaryInquiryResponse> getGoingDiary() {
+        Thema thema = themaRepository.findByThemaName("봄나들이");
+        DiaryThema diaryThemas = diaryThemaRepository.findByThema(thema);
+        List<Diary> diaries = diaryRepository.findAll();
+//        thema.get
+//        List<Diary> diaries = diaryRepository.findBy();
+        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
+
+        for(Diary d : diaries){
+            diaryInquiryResponseList.add(DiaryInquiryResponse.from(d));
+        }
+
+        return diaryInquiryResponseList;
+    }
+
 
 }
 
