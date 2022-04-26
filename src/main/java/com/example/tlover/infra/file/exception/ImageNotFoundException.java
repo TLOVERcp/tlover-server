@@ -1,6 +1,10 @@
 package com.example.tlover.infra.file.exception;
-import com.example.tlover.infra.file.constant.FileConstants.EFileExceptionMessage;
 
-public class ImageNotFoundException extends IllegalArgumentException {
-    public ImageNotFoundException() {super(EFileExceptionMessage.eImageNotFoundExceptionMessage.getValue());}
+public class ImageNotFoundException extends FileException {
+    public ImageNotFoundException(){
+        super(FileExceptionList.IMAGE_NOT_FOUND.getCODE(),
+                FileExceptionList.IMAGE_NOT_FOUND.getHttpStatus(),
+                FileExceptionList.IMAGE_NOT_FOUND.getMESSAGE()
+        );
+    }
 }
