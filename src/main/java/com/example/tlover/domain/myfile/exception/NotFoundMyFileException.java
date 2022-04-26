@@ -1,9 +1,10 @@
 package com.example.tlover.domain.myfile.exception;
 
-import com.example.tlover.domain.myfile.constant.MyFileConstants.EMyFileExceptionMessage;
-
-public class NotFoundMyFileException extends IllegalArgumentException{
-    public NotFoundMyFileException() {
-        super(EMyFileExceptionMessage.eNotFoundMyFileExceptionMessage.getMessage());
+public class NotFoundMyFileException extends MyFileException {
+    public NotFoundMyFileException(){
+        super(MyFileExceptionList.NOT_FOUND_MY_FILE.getCODE(),
+                MyFileExceptionList.NOT_FOUND_MY_FILE.getHttpStatus(),
+                MyFileExceptionList.NOT_FOUND_MY_FILE.getMESSAGE()
+        );
     }
 }
