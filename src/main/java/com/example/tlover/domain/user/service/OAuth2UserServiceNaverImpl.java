@@ -5,7 +5,7 @@ import com.example.tlover.domain.user.constant.UserConstants.ESocialProvider;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.dto.NaverLoginRequest;
 import com.example.tlover.domain.user.entity.User;
-import com.example.tlover.domain.user.exception.oauth2.*;
+import com.example.tlover.domain.user.exception.oauth2.naver.*;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

@@ -1,6 +1,5 @@
 package com.example.tlover.domain.scrap.controller;
 
-import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.scrap.constant.ScrapConstants.EScrapResponseMessage;
 import com.example.tlover.domain.scrap.dto.*;
 import com.example.tlover.domain.scrap.service.ScrapService;
