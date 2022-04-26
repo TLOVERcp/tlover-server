@@ -1,6 +1,10 @@
 package com.example.tlover.infra.file.exception;
-import com.example.tlover.infra.file.constant.FileConstants.EFileExceptionMessage;
 
-public class FileLoadFailedException extends IllegalArgumentException {
-    public FileLoadFailedException() {super(EFileExceptionMessage.eFileLoadFailedExceptionMessage.getValue());}
+public class FileLoadFailedException extends FileException {
+    public FileLoadFailedException(){
+        super(FileExceptionList.FILE_LOAD_FAILED.getCODE(),
+                FileExceptionList.FILE_LOAD_FAILED.getHttpStatus(),
+                FileExceptionList.FILE_LOAD_FAILED.getMESSAGE()
+        );
+    }
 }
