@@ -10,6 +10,7 @@ import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,9 @@ import java.util.List;
 @Api(tags = "AuthorityPlan API")
 public class AuthorityPlanController {
 
-    private final UserApiController userApiController;
-    private final AuthorityPlanService authorityPlanService;
+    @Autowired
+ private final AuthorityPlanService authorityPlanService;
+    @Autowired
     private final JwtService jwtService;
 
     /**
