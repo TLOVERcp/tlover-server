@@ -26,7 +26,10 @@ public class WebMvcContextConfiguration implements WebMvcConfigurer {
                         "/api/v1/users/find-password",
                         "/api/v1/users/naver-login",
                         "/api/v1/users/google-login",
-                        "/api/v1/users/kakao-login"
+                        "/api/v1/users/kakao-login",
+                        "/api/v1/sms/send",
+                        "/api/v1/sms/find-password",
+                        "/api/v1/sms/find-id"
                         );
     }
 
