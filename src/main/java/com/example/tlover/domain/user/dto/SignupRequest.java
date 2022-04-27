@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -20,23 +21,24 @@ import java.util.List;
 public class SignupRequest {
 
     @NotBlank(message = "회원의 로그인Id를 입력해주세요.")
-    @Size(min = 5, max = 18, message = "로그인 Id는 크기가 5에서 18사이여야 합니다.")
+    @Pattern(regexp = "^[a-z0-9]{6,18}$", message = "로그인 Id는 6~18글자의 영소문자, 숫자만 가능합니다.")
     @ApiModelProperty(notes = "로그인 Id를 입력해 주세요.")
     private String loginId;
 
     @NotBlank(message = "회원의 비밀번호를 입력해 주세요.")
-    @Size(min = 7, max = 20, message = "비밀번호는 7글자 이상 16글자 이하여야 합니다.")
+    @Pattern(regexp = "^.*(?=^.{8,20}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$",
+            message = "비밀번호는 특수문자를 포함한 8~20글자의 영대/소문자, 숫자만 가능합니다.")
     @ApiModelProperty(notes = "회원의 비밀번호를 입력해 주세요.")
     private String password;
 
     @NotBlank(message = "회원의 전화번호를 입력해 주세요.")
-    @Size(min = 10, max = 11, message = "전화번호는 10글자 이상 11글자 이하여야 합니다.")
+    @Pattern(regexp = "^[0-9]{11,11}$", message = "전화번호는 11자리의 숫자만 가능합니다.")
     @ApiModelProperty(notes = "회원의 전화번호를 입력해 주세요.")
     private String userPhoneNum;
 
-    @NotBlank(message = "회원의 닉네임을 입력해 주세요.")
-    @Size(min = 4, max = 16, message = "닉네임은 4글자 이상 16글자 이하여야 합니다.")
-    @ApiModelProperty(notes = "회원의 닉네임을 입력해 주세요.")
+    @NotBlank(message = "회원의 닉네임을 입력해주세요.")
+    @Pattern(regexp = "^[a-z0-9가-힣]{6,18}$", message = "닉네임은 6~18글자의 영소문자, 숫자, 한글만 가능합니다.")
+    @ApiModelProperty(notes = "닉네임을 입력해 주세요.")
     private String userNickName;
 
     @Size(min = 0, max = 3, message = "관심 지역은 0개 이상 3개 이하로 선택해야 합니다.")
