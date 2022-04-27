@@ -1,8 +1,13 @@
 package com.example.tlover.domain.reply.exception;
 
-public class NotEqualUserIdException extends RuntimeException{
+import com.example.tlover.domain.user.exception.UserExceptionList;
+
+public class NotEqualUserIdException extends ReplyException {
     public NotEqualUserIdException() {
-        super(ReplyExceptionMessage.NOT_EQUAL_USER_ID_EXCEPTION_MESSAGE.getMessage());
+        super(ReplyExceptionList.NOT_EQUAL_USER_ID.getCODE(),
+                ReplyExceptionList.NOT_EQUAL_USER_ID.getHttpStatus(),
+                ReplyExceptionList.NOT_EQUAL_USER_ID.getMESSAGE()
+        );
     }
 }
 

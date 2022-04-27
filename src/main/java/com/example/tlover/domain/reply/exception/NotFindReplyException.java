@@ -1,8 +1,11 @@
 package com.example.tlover.domain.reply.exception;
 
-public class NotFindReplyException extends RuntimeException{
+public class NotFindReplyException extends ReplyException {
     public NotFindReplyException() {
-        super(ReplyExceptionMessage.NOT_FIND_REPLY_EXCEPTION_MESSAGE.getMessage());
+        super(ReplyExceptionList.NOT_FIND_REPLY.getCODE(),
+                ReplyExceptionList.NOT_FIND_REPLY.getHttpStatus(),
+                ReplyExceptionList.NOT_FIND_REPLY.getMESSAGE()
+        );
     }
 }
 

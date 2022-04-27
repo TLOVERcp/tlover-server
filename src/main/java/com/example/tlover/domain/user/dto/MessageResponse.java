@@ -12,9 +12,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "아이디 중복 확인을 위한 응답 객체")
-public class DuplicateResponse {
+@ApiModel(description = "메시지 전달을 위한 응답 객체")
+public class MessageResponse {
 
     private String message;
+
+    public static LoginResponse from(String message) {
+        return LoginResponse.builder()
+                .message(message)
+                .build();
+    }
 
 }
