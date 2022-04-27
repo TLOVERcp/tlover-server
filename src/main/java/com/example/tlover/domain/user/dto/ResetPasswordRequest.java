@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -16,12 +17,12 @@ import javax.validation.constraints.Size;
 public class ResetPasswordRequest {
 
     @NotBlank(message = "회원의 이전 비밀번호를 입력해주세요.")
-    @Size(min = 7, max = 18, message = "로그인 Id는 크기가 7에서 18사이여야 합니다.")
     @ApiModelProperty(notes = "회원의 이전 비밀번호를 입력해주세요.")
     private String beforePassword;
 
     @NotBlank(message = "변경할 비밀번호를 입력해 주세요.")
-    @Size(min = 7, max = 20, message = "패스워드는 7글자 이상 20글자 이하여야 합니다.")
+    @Pattern(regexp = "^.*(?=^.{8,20}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$",
+            message = "비밀번호는 특수문자를 포함한 8~20글자의 영대/소문자, 숫자만 가능합니다.")
     @ApiModelProperty(notes = "변경할 비밀번호를 입력해 주세요.")
     private String afterPassword;
 }

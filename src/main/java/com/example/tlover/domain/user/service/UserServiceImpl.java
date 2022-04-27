@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService{
 
         if (user.isEmpty()) throw new NotFoundUserException();
         if (!user.get().getUserPassword().equals(sha256Util.encrypt(loginRequest.getPassword()))) throw new InvalidPasswordException();
+        if (user.get().getUserState().equals("DELETED")) throw new UserDeletedException();
         return user.get();
     }
 
@@ -98,6 +99,19 @@ public class UserServiceImpl implements UserService{
     }
 
     /**
+     * 이메일 중복 확인
+     * @param userEmail
+     * @return
+     * @author 윤여찬
+     */
+    @Override
+    public void userEmailDuplicateCheck(String userEmail) {
+        Optional<User> user = userRepository.findByUserEmail(userEmail);
+
+        if (!user.isEmpty()) throw new UserEmailDuplicateException();
+    }
+
+    /**
      * 아이디 찾기
      * @param findIdRequest, certifiedValue
      * @return FindIdResponse
@@ -138,10 +152,10 @@ public class UserServiceImpl implements UserService{
         if (user.isEmpty()) throw new NotFoundUserException();
 
         // 변경할 비밀번호가 기존 비밀번호와 일치할 때
-        if (user.get().getUserPassword().equals(sha256Util.encrypt(findPasswordRequest.getPassword())))
+        if (user.get().getUserPassword().equals(sha256Util.encrypt(findPasswordRequest.getChangePassword())))
             throw new PasswordEqualException();
 
-        user.get().setUserPassword(sha256Util.encrypt(findPasswordRequest.getPassword()));
+        user.get().setUserPassword(sha256Util.encrypt(findPasswordRequest.getChangePassword()));
 
         return FindPasswordResponse.builder()
                 .message("비밀번호 재설정이 완료되었습니다.")
@@ -192,10 +206,11 @@ public class UserServiceImpl implements UserService{
     public User updateUserProfile(String loginId, UserProfileRequest profileRequest, MultipartFile file) {
         User user = this.getUserProfile(loginId);
 
-        if (!loginId.equals(profileRequest.getLoginId())) this.loginIdDuplicateCheck(profileRequest.getLoginId());
+        // if (!loginId.equals(profileRequest.getLoginId())) this.loginIdDuplicateCheck(profileRequest.getLoginId());
         if (!user.getUserNickName().equals(profileRequest.getUserNickName())) this.userNicknameDuplicateCheck(profileRequest.getUserNickName());
+        if (!user.getUserEmail().equals(profileRequest.getUserEmail())) this.userEmailDuplicateCheck(profileRequest.getUserEmail());
 
-        user.setUserLoginId(profileRequest.getLoginId());
+        // user.setUserLoginId(profileRequest.getLoginId());
         user.setUserEmail(profileRequest.getUserEmail());
         user.setUserNickName(profileRequest.getUserNickName());
 
@@ -220,7 +235,7 @@ public class UserServiceImpl implements UserService{
         User user = this.getUserProfile(loginId);
 
         if (!user.getUserPassword().equals(sha256Util.encrypt(withdrawUserRequest.getPassword()))) throw new NotEqualPasswordException();
-        user.setUserState("deleted");
+        user.setUserState("DELETED");
     }
 
     public User getUserByUserId(Long userId) {
