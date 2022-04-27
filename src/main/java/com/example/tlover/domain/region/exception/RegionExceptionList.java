@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum RegionExceptionList {
 
-    NOT_FOUND_REGION_NAME("R0001",HttpStatus.FORBIDDEN, "해당 지역 이름을 찾지 못했습니다.");
+    NOT_FOUND_REGION_NAME("R0001",HttpStatus.BAD_REQUEST, "해당 지역 이름을 찾지 못했습니다.");
 
     private final String CODE;
     private final HttpStatus httpStatus;
