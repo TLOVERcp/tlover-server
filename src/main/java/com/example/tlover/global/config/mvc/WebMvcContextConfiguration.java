@@ -19,7 +19,7 @@ public class WebMvcContextConfiguration implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/api/v1/**")
                 .excludePathPatterns("/api/v1/users/login",
-                        "/api/v1/users/signupUser",
+                        "/api/v1/users/signup",
                         "/api/v1/users/duplicate-check",
                         "/api/v1/users/nickname-duplicate-check",
                         "/api/v1/users/find-id",
