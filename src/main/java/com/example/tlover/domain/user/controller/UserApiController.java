@@ -56,6 +56,7 @@ public class UserApiController {
      * @return ResponseEntity<LoginResponse>
      * @author 윤여찬, 토큰관련 : 한규범
      */
+
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "비밀번호가 잘못되었습니다.(U0001) / 해당 아이디를 찾을 수 없습니다.(U0002) / 해당 계정은 삭제된 계정입니다.(U0010)", response = InvalidPasswordException.class),
