@@ -17,9 +17,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PlanRegionServiceImpl implements PlanRegionService {
-    @Autowired
     private final PlanRegionRepository planRegionRepository;
-    @Autowired
     private final RegionRepository regionRepository;
 
     @Override

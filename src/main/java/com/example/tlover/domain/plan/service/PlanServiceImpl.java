@@ -28,13 +28,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService{
-    @Autowired
     private final PlanRepository planRepository;
-    @Autowired
     private final PlanRegionRepository planRegionRepository;
-    @Autowired
     private final AuthorityPlanRepository authorityPlanRepository;
-    @Autowired
     private final UserRepository userRepository;
 
     @Override

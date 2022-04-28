@@ -22,11 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorityPlanServiceImpl implements AuthorityPlanService{
 
-    @Autowired
     private final PlanRepository planRepository;
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final AuthorityPlanRepository authorityPlanRepository;
 
     //공유 요청
