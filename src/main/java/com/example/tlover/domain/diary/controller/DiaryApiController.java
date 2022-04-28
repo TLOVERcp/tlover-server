@@ -109,7 +109,7 @@ public class DiaryApiController {
     /**
      * 다이어리에 좋아요를 누르거나 좋아요 취소하기
      * @param diaryId
-     * @param loginId
+     * @param   loginId
      * author 신동민
      */
 
