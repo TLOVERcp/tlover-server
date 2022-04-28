@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ThemaExceptionList {
 
-    NOT_FOUND_THEMA_NAME("T0001",HttpStatus.FORBIDDEN, "해당 테마 이름을 찾지 못했습니다.");
+    NOT_FOUND_THEMA_NAME("T0001",HttpStatus.BAD_REQUEST, "해당 테마 이름을 찾지 못했습니다.");
 
     private final String CODE;
     private final org.springframework.http.HttpStatus httpStatus;

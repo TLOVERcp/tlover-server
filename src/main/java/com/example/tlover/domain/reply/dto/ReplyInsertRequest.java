@@ -27,16 +27,12 @@ public class ReplyInsertRequest {
     @ApiModelProperty(notes = "다이어리의 id를 입력해주세요.")
     private Long diaryId;
 
-    private String replyState;
-
     public Reply toEntity(Diary diary, User user) {
         Reply reply = new Reply();
         reply.setReplyContext(this.replyContext);
         reply.setDiary(diary);
         reply.setUser(user);
         reply.setReplyTime(LocalDateTime.now());
-        reply.setReplyState(this.replyState);
-        reply.setDeleted(false);
         return reply;
     }
 

@@ -1,8 +1,0 @@
-package com.example.tlover.domain.user.exception.oauth2;
-
-public class KakaoUnAuthorizedFaildException extends RuntimeException {
-    public KakaoUnAuthorizedFaildException(String s) {
-        super(s);
-    }
-
-}

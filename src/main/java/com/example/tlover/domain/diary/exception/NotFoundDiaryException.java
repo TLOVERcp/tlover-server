@@ -1,9 +1,11 @@
 package com.example.tlover.domain.diary.exception;
 
-import com.example.tlover.domain.myfile.constant.MyFileConstants;
-
-public class NotFoundDiaryException extends IllegalArgumentException {
+public class NotFoundDiaryException extends DiaryException {
     public NotFoundDiaryException() {
-        super("해당 diaryId로 Diary를 찾을 수 없습니다.");
+        super(
+                DiaryExceptionList.NOT_FOUND_DIARY.getCODE(),
+                DiaryExceptionList.NOT_FOUND_DIARY.getHttpStatus(),
+                DiaryExceptionList.NOT_FOUND_DIARY.getMESSAGE()
+                );
     }
 }

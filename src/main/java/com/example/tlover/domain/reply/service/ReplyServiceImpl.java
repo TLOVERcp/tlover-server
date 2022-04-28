@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +39,24 @@ public class ReplyServiceImpl implements ReplyService{
     public List<ReplyGetResponse> getReplyList(Long diaryId) {
 
         List<ReplyGetResponse> responseList = new ArrayList<>();
-        Diary diary = new Diary();
-        diary.setDiaryId(diaryId);
-        List<Reply> replyList = replyRepository.findByDiary(diary).orElseThrow(NotFoundDiaryException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryId);
 
-        for (Reply reply : replyList) {
-            responseList.add(ReplyGetResponse.from(reply));
+        if (diary == null) throw new NotFoundDiaryException();
+
+        Optional<List<Reply>> replyList = replyRepository.findByDiary(diary);
+
+        if (!replyList.isEmpty()) {
+
+            for (Reply reply : replyList.get()) {
+                reply.setDiary(diary);
+
+                if (reply.getReplyState().equals("ACTIVE")) {
+                    responseList.add(ReplyGetResponse.from(reply));
+                }
+
+            }
         }
+
 
         return responseList;
     }
@@ -63,6 +75,7 @@ public class ReplyServiceImpl implements ReplyService{
 
         User user = userRepository.findByUserLoginId(loginId).get();
         Reply reply = replyInsertRequest.toEntity(diary, user);
+        reply.setReplyState("ACTIVE");
         this.checkReply(reply, loginId);
 
         replyRepository.save(reply);
@@ -82,8 +95,6 @@ public class ReplyServiceImpl implements ReplyService{
         this.checkReply(reply, loginId);
 
         reply.setReplyContext(replyUpdateRequest.getReplyContext());
-        reply.setReplyState(replyUpdateRequest.getReplyState());
-
     }
 
     /**
@@ -99,7 +110,7 @@ public class ReplyServiceImpl implements ReplyService{
         Reply reply = replyRepository.findByReplyId(replyDeleteRequest.getReplyId()).orElseThrow(NotFindReplyException::new);
         this.checkReply(reply, loginId);
 
-        reply.setDeleted(true);
+        reply.setReplyState("DELETED");
     }
 
     /**
@@ -110,7 +121,7 @@ public class ReplyServiceImpl implements ReplyService{
      */
     public void checkReply(Reply reply, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Diary diary = diaryRepository.findByDiaryId(reply.getDiary().getDiaryId());
+        Diary diary = diaryRepository.findByDiaryId(reply.getDiary().getDiaryId()).orElseThrow(NotFoundDiaryException::new);
 
         if (reply.getUser().getUserId() != user.getUserId()) throw new NotEqualUserIdException();
 

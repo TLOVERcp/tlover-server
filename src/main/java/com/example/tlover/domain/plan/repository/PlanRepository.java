@@ -18,6 +18,5 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     Optional<Plan> findByUserAndPlanId(User user, Long planId);
 
-    Optional<Plan> findByPlanId(Long planId)
-            ;
+    Optional<Plan> findByPlanId(Long planId);
 }
