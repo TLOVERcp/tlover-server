@@ -8,6 +8,7 @@ import com.example.tlover.domain.plan_region.repository.PlanRegionRepository;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,7 +17,6 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PlanRegionServiceImpl implements PlanRegionService {
-
     private final PlanRegionRepository planRegionRepository;
     private final RegionRepository regionRepository;
 
