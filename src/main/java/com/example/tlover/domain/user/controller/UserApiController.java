@@ -1,13 +1,14 @@
 package com.example.tlover.domain.user.controller;
 
 
+import com.example.tlover.domain.region.exception.NotFoundRegionNameException;
+import com.example.tlover.domain.thema.exception.NotFoundThemaNameException;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
-import com.example.tlover.domain.user.exception.NotCertifiedValueException;
+import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
-import com.example.tlover.domain.user.exception.DeniedAccessExceptioin;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
 import com.example.tlover.domain.user_thema.service.UserThemaService;
@@ -16,6 +17,8 @@ import com.example.tlover.global.jwt.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +57,11 @@ public class UserApiController {
      * @author 윤여찬, 토큰관련 : 한규범
      */
     @ApiOperation(value = "사용자 로그인", notes = "로그인을 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "비밀번호가 잘못되었습니다.(U0001) / 해당 아이디를 찾을 수 없습니다.(U0002) / 해당 계정은 삭제된 계정입니다.(U0010)", response = InvalidPasswordException.class),
+            @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002)", response = NotFoundUserException.class),
+            @ApiResponse(code = 400, message = "해당 계정은 삭제된 계정입니다.(U0010)", response = UserDeletedException.class)
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                    HttpServletRequest request) {
@@ -81,6 +89,13 @@ public class UserApiController {
      * @author 윤여찬 , 사용자 관심지역 관련: 정혜선
      */
     @ApiOperation(value = "사용자 회원가입", notes = "회원가입을 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 409, message = "해당 아이디는 이미 존재하는 아이디입니다.(U0003) / 해당 전화번호는 이미 존재하는 전화번호입니다.(U0008) / 해당 닉네임은 이미 존재하는 닉네임입니다.(U0009)", response = UserIdDuplicateException.class),
+            @ApiResponse(code = 409, message = "해당 전화번호는 이미 존재하는 전화번호입니다.(U0008)", response = PhoneNumDuplicateException.class),
+            @ApiResponse(code = 409, message = "해당 닉네임은 이미 존재하는 닉네임입니다.(U0009)", response = UserNicknameDuplicateException.class),
+            @ApiResponse(code = 400, message = "해당 테마 이름을 찾지 못했습니다.(T0001) / 해당 지역 이름을 찾지 못했습니다.(R0001)", response = NotFoundThemaNameException.class),
+            @ApiResponse(code = 400, message = "해당 지역 이름을 찾지 못했습니다.(R0001)", response = NotFoundRegionNameException.class)
+    })
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signupUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
@@ -99,16 +114,19 @@ public class UserApiController {
     /**
      * 아이디 중복확인
      * @param duplicateRequest
-     * @return ResponseEntity<DuplicateResponse>
+     * @return ResponseEntity<MessageResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "아이디 중복확인", notes = "아이디 중복확인을 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 409, message = "해당 아이디는 이미 존재하는 아이디입니다.(U0003)", response = UserIdDuplicateException.class)
+    })
     @PostMapping("/duplicate-check")
-    public ResponseEntity<DuplicateResponse> duplicateCheckUser(@Valid @RequestBody DuplicateRequest duplicateRequest) {
+    public ResponseEntity<MessageResponse> duplicateCheckUser(@Valid @RequestBody DuplicateRequest duplicateRequest) {
 
         userService.loginIdDuplicateCheck(duplicateRequest.getLoginId());
 
-        return ResponseEntity.ok(DuplicateResponse.builder()
+        return ResponseEntity.ok(MessageResponse.builder()
                 .message("사용가능한 아이디입니다.")
                 .build());
     }
@@ -116,16 +134,19 @@ public class UserApiController {
     /**
      * 닉네임 중복확인
      * @param nicknameDuplicateRequest
-     * @return ResponseEntity<DuplicateResponse>
+     * @return ResponseEntity<MessageResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "닉네임 중복확인", notes = "닉네임 중복확인을 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 409, message = "해당 닉네임은 이미 존재하는 닉네임입니다.(U0009)", response = UserNicknameDuplicateException.class)
+    })
     @PostMapping("/nickname-duplicate-check")
-    public ResponseEntity<DuplicateResponse> duplicateCheckUser(@Valid @RequestBody NicknameDuplicateRequest nicknameDuplicateRequest) {
+    public ResponseEntity<MessageResponse> duplicateCheckUser(@Valid @RequestBody NicknameDuplicateRequest nicknameDuplicateRequest) {
 
         userService.userNicknameDuplicateCheck(nicknameDuplicateRequest.getUserNickname());
 
-        return ResponseEntity.ok(DuplicateResponse.builder()
+        return ResponseEntity.ok(MessageResponse.builder()
                 .message("사용가능한 닉네임입니다.")
                 .build());
     }
@@ -137,6 +158,9 @@ public class UserApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "잘못된 접근입니다.(U0004)", response = DeniedAccessExceptioin.class)
+    })
     @GetMapping("/profile")
     public ResponseEntity<ProfileResponse> getUserProfile(HttpServletRequest request) {
         String loginId = this.getLoginIdFromSession(request);
@@ -153,20 +177,25 @@ public class UserApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 정보 수정", notes = "사용자 정보를 수정합니다.", produces = "multipart/form-data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "잘못된 접근입니다.(U0004)", response = DeniedAccessExceptioin.class),
+            @ApiResponse(code = 409, message = "해당 닉네임은 이미 존재하는 닉네임입니다.(U0009) / 해당 이메일은 이미 존재하는 이메일입니다.(U0011)", response = UserNicknameDuplicateException.class),
+            @ApiResponse(code = 409, message = "해당 이메일은 이미 존재하는 이메일입니다.(U0011)", response = UserEmailDuplicateException.class)
+    })
     @PostMapping("/update-profile")
-    public ResponseEntity<String> updateUserProfile(@Valid @ModelAttribute UserProfileRequest userProfileRequest,
-                                                    @RequestParam(required = false) MultipartFile file,
-                                                    HttpServletRequest request) {
+    public ResponseEntity<MessageResponse> updateUserProfile(@Valid @ModelAttribute UserProfileRequest userProfileRequest,
+                                                    @RequestParam(required = false) MultipartFile file) {
 
         userThemaService.checkThemaName(userProfileRequest.getUserThemaName());
         //userRegionService.checkRegionName(userProfileRequest.getUserRegions());
 
-        String loginId = this.getLoginIdFromSession(request);
+        String loginId = jwtService.getLoginId();
         User user = userService.updateUserProfile(loginId, userProfileRequest, file);
         userThemaService.updateUserThema(userProfileRequest.getUserThemaName(), user);
-        request.getSession().setAttribute("loginId", user.getUserLoginId());
 
-        return ResponseEntity.ok("사용자 정보가 수정되었습니다.");
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("사용자 정보가 수정되었습니다.")
+                .build());
     }
 
     /**
@@ -176,6 +205,10 @@ public class UserApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "아이디 찾기", notes = "아이디 찾기를 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002) / 인증 코드가 일치하지 않습니다.(U0007)", response = NotFoundUserException.class),
+            @ApiResponse(code = 400, message = "인증 코드가 일치하지 않습니다.(U0007)", response = NotCertifiedValueException.class)
+    })
     @PostMapping("/find-id")
     public ResponseEntity<FindIdResponse> findUserId(@Valid @RequestBody FindIdRequest findIdRequest,
                                                      HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
@@ -192,6 +225,11 @@ public class UserApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "비밀번호 찾기(재설정)", notes = "비밀번호 찾기를 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002) / 입력하신 비밀번호가 기존의 비밀번호와 일치하지 않습니다.(U0005) / 변경할 비밀번호가 기존의 비밀번호와 동일합니다.(U0006)", response = NotFoundUserException.class),
+            @ApiResponse(code = 400, message = "입력하신 비밀번호가 기존의 비밀번호와 일치하지 않습니다.(U0005)", response = NotEqualPasswordException.class),
+            @ApiResponse(code = 400, message = "변경할 비밀번호가 기존의 비밀번호와 동일합니다.(U0006)", response = PasswordEqualException.class),
+    })
     @PostMapping("/find-password")
     public ResponseEntity<FindPasswordResponse> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest,
                                                              HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
@@ -208,10 +246,13 @@ public class UserApiController {
      * @author 윤여찬
      */
     @ApiOperation(value = "비밀번호 재설정", notes = "비밀번호를 재설정 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "입력하신 비밀번호가 기존의 비밀번호와 일치하지 않습니다.(U0005) / 변경할 비밀번호가 기존의 비밀번호와 동일합니다.(U0006)", response = NotEqualPasswordException.class),
+            @ApiResponse(code = 400, message = "변경할 비밀번호가 기존의 비밀번호와 동일합니다.(U0006)", response = PasswordEqualException.class),
+    })
     @PostMapping("/reset-password")
-    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest,
-                                                               HttpServletRequest request) {
-        String loginId = getLoginIdFromSession(request);
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        String loginId = jwtService.getLoginId();
         userService.resetPassword(resetPasswordRequest, loginId);
 
         return ResponseEntity.ok(ResetPasswordResponse.builder()
@@ -222,32 +263,38 @@ public class UserApiController {
     /**
      * 사용자 로그아웃
      * @param request
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<MessageResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 로그아웃", notes = "사용자 로그아웃을 합니다.")
     @GetMapping("/logout")
-    public ResponseEntity<String> logoutUser(HttpServletRequest request) {
+    public ResponseEntity<MessageResponse> logoutUser(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.invalidate();
 
-        return ResponseEntity.ok("로그아웃에 성공했습니다.");
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("로그아웃에 성공했습니다.")
+                .build());
     }
 
     /**
      * 회원 탈퇴
      * @param withdrawUserRequest, request
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<MessageResponse>
      * @author 윤여찬
      */
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴를 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "입력하신 비밀번호가 기존의 비밀번호와 일치하지 않습니다.(U0005)", response = NotEqualPasswordException.class)
+    })
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdrawUser(@Valid @RequestBody WithdrawUserRequest withdrawUserRequest,
-                                               HttpServletRequest request) {
-        String loginId = getLoginIdFromSession(request);
+    public ResponseEntity<MessageResponse> withdrawUser(@Valid @RequestBody WithdrawUserRequest withdrawUserRequest) {
+        String loginId = jwtService.getLoginId();
         userService.withdrawUser(withdrawUserRequest, loginId);
 
-        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("회원 탈퇴가 완료되었습니다.")
+                .build());
     }
 
     /**
