@@ -2,12 +2,17 @@ package com.example.tlover.domain.diary.controller;
 
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
+import com.example.tlover.domain.diary.exception.NotAuthorityDeleteException;
+import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +36,7 @@ public class DiaryApiController {
      * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
-    @ApiOperation(value = "다이어리 조회",notes = "다이어를 조호합니다.")
+    @ApiOperation(value = "다이어리 조회",notes = "다이어를 조회합니다.")
     @GetMapping("/get-diary")
     public ResponseEntity<List<DiaryInquiryResponse>> getDiary(){
 //        String loginId = userApiController.getLoginIdFromSession(request);
@@ -48,6 +53,13 @@ public class DiaryApiController {
      * author => 신동민
      */
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성을 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 500 , message = "하나의 유저는 하나의 계획에 한번만 작성 가능합니다." ,
+            response = AlreadyExistDiaryException.class
+            ) ,
+            @ApiResponse(code = 404 , message = "해당 diaryId로 Diary를 찾을 수 없습니다." ,
+            response = NotFoundDiaryException.class)
+    })
     @PostMapping(value = "/create-diary")
     public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest , HttpServletRequest request) {
         String loginId = jwtService.getLoginId();
@@ -64,7 +76,15 @@ public class DiaryApiController {
      * author => 신동민
      */
 
+
     @ApiOperation(value = "다이어리 삭제", notes = "다이어리를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 403 , message = "다이어리의 삭제 권한이 없습니다." ,
+                    response = NotAuthorityDeleteException.class
+            ) ,
+            @ApiResponse(code = 404 , message = "해당 diaryId로 Diary를 찾을 수 없습니다." ,
+                    response = NotFoundDiaryException.class)
+            })
     @PostMapping(value = "/delete-diary/{diaryId}")
     public ResponseEntity<ResponseDto<DeleteDiaryResponse>> DeleteDiary(@PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
@@ -94,6 +114,13 @@ public class DiaryApiController {
      */
 
     @ApiOperation(value = "다이어리 좋아요 누르기" , notes = "다이어리 좋아요를 누르거나 취소합니다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 403 , message = "다이어리의 삭제 권한이 없습니다." ,
+                    response = NotAuthorityDeleteException.class
+            ) ,
+            @ApiResponse(code = 404 , message = "해당 diaryId로 Diary를 찾을 수 없습니다." ,
+                    response = NotFoundDiaryException.class)
+    })
     @PostMapping(value = "/liked/{diaryId}")
         public ResponseEntity<ResponseDto<DiaryLikedChangeResponse>> DiaryLikedChange(@PathVariable Long diaryId) {
             String loginId = jwtService.getLoginId();
