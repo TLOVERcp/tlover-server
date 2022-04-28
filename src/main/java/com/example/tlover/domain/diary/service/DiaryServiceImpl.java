@@ -4,12 +4,11 @@ import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_diary.repository.AuthorityDiaryRepository;
 import com.example.tlover.domain.authority_diary.service.AuthorityDiaryService;
 import com.example.tlover.domain.diary.constant.DiaryConstants;
-import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
-import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
-import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
+import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
-import com.example.tlover.domain.diary.exception.NotAuthorityDelete;
+import com.example.tlover.domain.diary.exception.NoSuchElementException;
+import com.example.tlover.domain.diary.exception.NotAuthorityDeleteException;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
@@ -18,28 +17,29 @@ import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_region.repository.DiaryRegionRepository;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.diary_thema.repository.DiaryThemaRepository;
+import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
+import com.example.tlover.domain.diray_liked.repository.DiaryLikedRepository;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan_region.service.PlanRegionService;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
+import javax.transaction.NotSupportedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.example.tlover.domain.diary.constant.DiaryConstants.eDiary.*;
@@ -59,23 +59,32 @@ public class DiaryServiceImpl implements DiaryService{
     private final ThemaRepository themaRepository;
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
+    private final DiaryLikedRepository diaryLikedRepository;
 
-    private final DiaryConstants diaryConstants;
 
     @Override
-    public Diary createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
+    @Transactional
+    public CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
 
             User user = userRepository.findByUserLoginId(loginId).get();
             Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
 
         Optional<Diary> cdr = diaryRepository.findByUserUserIdAndPlanPlanId(user.getUserId(), plan.getPlanId());
+
         if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) throw new AlreadyExistDiaryException();
+        //의논하기
+//        else if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(DELETE.getValue())) {
+//            diaryRepository.delete(cdr.get());
+//        }
 
         Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, user, plan));
             authorityDiaryService.addDiaryUser(diary , loginId);
 
         for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-            DiaryImg diaryImg = DiaryImg.toEntity(myFileService.saveImage(diaryImgFileName).getFileKey(), diary);
+            MyFile myFile = myFileService.saveImage(diaryImgFileName);
+            myFile.setDiary(diary);
+            myFile.setUser(user);
+            DiaryImg diaryImg = DiaryImg.toEntity(myFile.getFileKey(), diary);
             diaryImgRepository.save(diaryImg);
         }
 
@@ -91,7 +100,7 @@ public class DiaryServiceImpl implements DiaryService{
             diaryThemaRepository.save(diaryThema);
         }
 
-            return diary;
+        return CreateDiaryResponse.from(diary.getDiaryId() , true);
 
     }
 
@@ -107,26 +116,31 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     @Transactional
-    public Diary deleteDiary(Long diaryId, String loginId) {
+    public DeleteDiaryResponse deleteDiary(Long diaryId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Diary diary = diaryRepository.findByDiaryId(diaryId);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
 
         Optional<AuthorityDiary> cadr = authorityDiaryRepository.findByUserUserIdAndDiaryDiaryId(user.getUserId(), diaryId);
+
         if(cadr.isEmpty()) {
-            throw new NotAuthorityDelete();
+            throw new NotAuthorityDeleteException();
         }else {
             if(!cadr.get().getAuthorityDiaryStatus().equals(HOST.getValue()))
-                throw new NotAuthorityDelete();
+                throw new NotAuthorityDeleteException();
         }
 
         diary.setDiaryStatus("DELETE");
+
+        for(MyFile myFile :   myFileService.findByUserAndDiary(user, diary)) {
+            myFile.setDeleted(true);
+        }
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
         diaryImgRepository.deleteByDiary_DiaryId(diaryId);
         diaryThemaRepository.deleteByDiary_DiaryId(diaryId);
         authorityDiaryRepository.deleteByDiary_DiaryId(diaryId);
 
-        return diary;
+        return DeleteDiaryResponse.from(diary.getDiaryId() , true);
     }
 
     @Override
@@ -151,5 +165,50 @@ public class DiaryServiceImpl implements DiaryService{
         return this.diaryRepository.findById(diaryId).orElseThrow(NotFoundDiaryException::new);
     }
 
+
+
+    @Override
+    @Transactional
+    public DiaryLikedChangeResponse diaryLikedChange(Long diaryId, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+
+        Optional<DiaryLiked> diaryLiked = diaryLikedRepository.findByUserAndDiary(user, diary);
+
+        if(diaryLiked.isEmpty()) {
+            DiaryLiked dl = diaryLikedRepository.save(DiaryLiked.toEntity(user, diary));
+            return DiaryLikedChangeResponse.from(dl.getDiaryLikedId() , true);
+        }
+        else if(diaryLiked.isPresent() && diaryLiked.get().isLiked()) {
+            diaryLiked.get().setLiked(false);
+            return DiaryLikedChangeResponse.from(diaryLiked.get().getDiaryLikedId() , false);
+        }
+        else if(diaryLiked.isPresent() && !diaryLiked.get().isLiked()) {
+            diaryLiked.get().setLiked(true);
+            return DiaryLikedChangeResponse.from(diaryLiked.get().getDiaryLikedId() , true);
+        }
+
+        throw new NoSuchElementException();
+    }
+
+
+
+
+    @Override
+    public DiaryLikedViewsResponse getDiaryViews(Long diaryId) {
+
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+
+        Long dlv = diaryLikedRepository.countByDiaryAndIsLiked(diary, true).get();
+
+        return DiaryLikedViewsResponse.from(diary.getDiaryId() , dlv);
+
+    }
+
+
+
+
+
 }
+
 

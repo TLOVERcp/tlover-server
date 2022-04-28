@@ -110,7 +110,7 @@ public class ReplyServiceImpl implements ReplyService{
      */
     public void checkReply(Reply reply, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Diary diary = diaryRepository.findByDiaryId(reply.getDiary().getDiaryId());
+        Diary diary = diaryRepository.findByDiaryId(reply.getDiary().getDiaryId()).orElseThrow(NotFoundDiaryException::new);
 
         if (reply.getUser().getUserId() != user.getUserId()) throw new NotEqualUserIdException();
 
