@@ -14,3 +14,4 @@ public interface ScrapRepositoryCustom {
     Optional<Scrap> findByUserAndDiaryAndNotDeleted(User user, Diary diary);
     Page<DiaryInquiryByScrapRankingResponse> findAllDiariesByScrapRanking(Pageable pageable);
 }
+
