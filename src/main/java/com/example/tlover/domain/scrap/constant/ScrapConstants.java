@@ -11,7 +11,9 @@ public class ScrapConstants {
         eCreateScrapMessage("스크랩을 완료했습니다."),
         eDeleteScrapMessage("스크랩을 취소했습니다."),
         eScrapOrNotMessage("스크랩 여부를 확인했습니다."),
-        eGetDiariesByScrapRankingMessage("모든 다이어리를 스크랩 랭킹 순으로 조회합니다.");
+        eGetDiariesByScrapRankingMessage("모든 다이어리를 스크랩 랭" +
+                "" +
+                "킹 순으로 조회합니다.");
         private final String message;
     }
 
