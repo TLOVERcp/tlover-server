@@ -7,6 +7,8 @@ import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
+import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
+import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
@@ -67,10 +69,16 @@ public class Diary {
     private List<DiaryThema> diaryThemas = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary")
+    private List<DiaryLiked> diaryLikeds = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary")
     private List<Reply> replies = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary")
     private List<Scrap> scraps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    private List<MyFile> myFiles = new ArrayList<>();
 
     public void setUser(User user) {
         this.user = user;
@@ -83,7 +91,6 @@ public class Diary {
     }
 
     public static Diary toEntity(CreateDiaryRequest createDiaryRequest , User user , Plan plan){
-
         Diary diary = new Diary();
            diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
            diary.setDiaryContext(createDiaryRequest.getDiaryContext());

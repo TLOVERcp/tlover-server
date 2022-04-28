@@ -3,15 +3,13 @@ package com.example.tlover.domain.user.service;
 import com.example.tlover.domain.user.dto.KakaoLoginRequest;
 import com.example.tlover.domain.user.dto.LoginResponse;
 import com.example.tlover.domain.user.entity.User;
-import com.example.tlover.domain.user.exception.oauth2.KakaoFailException;
-import com.example.tlover.domain.user.exception.oauth2.KakaoUnAuthorizedFaildException;
+import com.example.tlover.domain.user.exception.oauth2.kakao.*;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -83,21 +81,21 @@ public class OAuth2UserServiceKakaoImpl implements OAuth2UserServiceKakao {
 
                     br.close();
                 } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    throw new KakaoUnAuthorizedFaildException(EOAuth2UserServiceImpl.eKakaoAutenticationFailedException.getValue());
-            } else {
-                throw new KakaoFailException(EOAuth2UserServiceImpl.eKakaoLoginFailException.getValue());
+                    throw new KakaoUnAuthorizedFaildException();
+                } else {
+                    throw new KakaoFailException();
                 }
             }catch (IOException e) {
-                throw new RuntimeException(EOAuth2UserServiceImpl.eKakaoApiResponseException.getValue() + kakaoUserInfoUrl, e);
+                throw new KakaoApiResponseException();
             }finally {
                 conn.disconnect();
             }
         } catch (MalformedURLException e) {
-            throw new RuntimeException(EOAuth2UserServiceImpl.eKakaoApiUrlException.getValue()+kakaoUserInfoUrl);
+            throw new KakaoUrlException(kakaoUserInfoUrl);
         } catch (ProtocolException e) {
-            throw new RuntimeException(EOAuth2UserServiceImpl.eKakaoProtocolExcpetion.getValue());
+            throw new KakaoProtocolException();
         } catch (IOException e) {
-            throw new RuntimeException(EOAuth2UserServiceImpl.eKakaoApiResponseException.getValue() + kakaoUserInfoUrl, e);
+            throw new KakaoApiResponseException();
         }
         return kakaoUserInfo;
     }

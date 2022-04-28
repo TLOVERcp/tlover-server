@@ -13,6 +13,16 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "다이어리 삭제를 위한 응답 객체")
 public class DeleteDiaryResponse {
 
-    private String message;
+    private Long diaryId;
+    private boolean isDeleted;
+
+    public static DeleteDiaryResponse from(Long diaryId , boolean isDeleted) {
+        return DeleteDiaryResponse.builder()
+                .diaryId(diaryId)
+                .isDeleted(isDeleted)
+                .build();
+    }
+
+
 }
 

@@ -9,9 +9,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "다이어리 작성을 위한 응답 객체")
+@ApiModel(description = "다이어리 작성 응답 객체")
 public class CreateDiaryResponse {
 
-    private String message;
+    private Long diaryId;
+    private boolean isCreated;
+
+    public static CreateDiaryResponse from(Long diaryId , boolean isCreated) {
+        return CreateDiaryResponse.builder()
+                .diaryId(diaryId)
+                .isCreated(isCreated)
+                .build();
+    }
+
 
 }
