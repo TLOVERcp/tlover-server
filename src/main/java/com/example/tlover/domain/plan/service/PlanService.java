@@ -17,7 +17,7 @@ public interface PlanService {
 
     PlanDetailResponse getPlanDetail(@Valid Long planId);
 
-    Plan deletePlan(@Valid Long planId);
+    Plan deletePlan(@Valid Long planId, String loginId);
 
     Plan updatePlan(@Valid CreatePlanRequest createPlanRequest, Long planId);
 

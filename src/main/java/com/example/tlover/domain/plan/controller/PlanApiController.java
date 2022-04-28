@@ -4,14 +4,14 @@ import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.AnotherUserEditingException;
-import com.example.tlover.domain.plan.exception.NoAuthorityUserException;
+import com.example.tlover.domain.plan.exception.NoAuthorityPlanException;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
-import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +24,13 @@ import java.util.List;
 @Api(tags = "Plan API")
 public class PlanApiController {
 
+    @Autowired
     private final PlanService planService;
+    @Autowired
     private final PlanRegionService planRegionService;
+    @Autowired
     private final AuthorityPlanService authorityPlanService;
+    @Autowired
     private final JwtService jwtService;
 
     /**
@@ -64,10 +68,10 @@ public class PlanApiController {
         if (status == null) {
                 List<PlanListResponse> planListResponses = planService.getAllPlans(loginId);
                 return ResponseEntity.ok(planListResponses);
-            } else {
+        } else {
                 List<PlanListResponse> planListResponses = planService.getPlansByState(loginId, status);
                 return ResponseEntity.ok(planListResponses);
-            }
+        }
     }
 
     /**
@@ -81,10 +85,10 @@ public class PlanApiController {
     @GetMapping("/plan-detail/{planId}")
     public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable Long planId) {
         String loginId = jwtService.getLoginId();
-        Boolean userAuthority = planService.checkUser(planId, loginId);
 
-        if(userAuthority)
-            throw new NoAuthorityUserException();
+        Boolean userAuthority = planService.checkUser(planId, loginId);
+        if(!userAuthority)
+            throw new NoAuthorityPlanException();
 
         PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId);
         return ResponseEntity.ok(planDetailResponse);
@@ -101,12 +105,12 @@ public class PlanApiController {
     @PostMapping("/delete-plan/{planId}")
     public ResponseEntity<DeletePlanResponse> deletePlan(@PathVariable Long planId){
         String loginId = jwtService.getLoginId();
+
         Boolean userAuthority = planService.checkUser(planId, loginId);
+        if(!userAuthority)
+            throw new NoAuthorityPlanException();
 
-        if(userAuthority)
-           throw new NoAuthorityUserException();
-
-        Plan plan = planService.deletePlan(planId);
+        Plan plan = planService.deletePlan(planId, loginId);
         planRegionService.deletePlanRegion(plan);
         authorityPlanService.deleteAuthorityPlan(plan);
         return ResponseEntity.ok(DeletePlanResponse.builder()
@@ -119,10 +123,15 @@ public class PlanApiController {
     @PostMapping("/update-plan-editing/{planId}")
     public ResponseEntity<UpdatePlanStatusResponse> updatePlanStatusEditing(@PathVariable Long planId){
         String loginId = jwtService.getLoginId();
-        Boolean userAuthority = planService.checkUser(planId, loginId);
+       //이미 수정 중인지 확인
+        Boolean planStatus = planService.checkPlanStatus(planId);
+        if(!planStatus)
+            throw new AnotherUserEditingException();
 
-        if(userAuthority)
-            throw new NoAuthorityUserException();
+        //수정 권한이 있는 유저인지 확인
+        Boolean userAuthority = planService.checkUser(planId, loginId);
+        if(!userAuthority)
+            throw new NoAuthorityPlanException();
 
         planService.updatePlanStatusEditing(planId);
 
@@ -143,9 +152,7 @@ public class PlanApiController {
     @PostMapping("/update-plan/{planId}")
     public ResponseEntity<UpdatePlanResponse> updatePlan(@PathVariable Long planId,
                                              @Valid @RequestBody CreatePlanRequest createPlanRequest){
-        Boolean planStatus = planService.checkPlanStatus(planId);
-        if(!planStatus)
-            throw new AnotherUserEditingException();
+
 
        /* String loginId = jwtService.getLoginId();
         Boolean userAuthority = planService.checkUser(planId, loginId);
