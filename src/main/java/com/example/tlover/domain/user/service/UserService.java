@@ -22,6 +22,8 @@ public interface UserService {
 
     void phoneNumDuplicateCheck(String phoneNum);
 
+    void userEmailDuplicateCheck(String userEmail);
+
     User getUserProfile(String loginId);
 
     FindIdResponse findUserId(@Valid FindIdRequest findIdRequest, CertifiedValue certifiedValue) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException;
