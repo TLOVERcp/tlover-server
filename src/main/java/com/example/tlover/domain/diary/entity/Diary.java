@@ -4,6 +4,7 @@ import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
+import com.example.tlover.domain.diary_connect.entity.DiaryConnect;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
@@ -79,6 +80,9 @@ public class Diary {
 
     @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<MyFile> myFiles = new ArrayList<>();
+
+    @OneToOne(mappedBy = "diary")
+    private DiaryConnect diaryConnect;
 
     public void setUser(User user) {
         this.user = user;
