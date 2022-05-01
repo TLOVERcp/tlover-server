@@ -1,9 +1,6 @@
 package com.example.tlover.domain.diary.controller;
 
-import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
-import com.example.tlover.domain.diary.dto.CreateDiaryResponse;
-import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
-import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
+import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
 import com.example.tlover.domain.diary.exception.NotAuthorityDeleteException;
@@ -44,7 +41,6 @@ public class DiaryApiController {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
             @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
-            @ApiResponse(code = 302, message = "ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class)
     })
     @GetMapping("/get-diary")
     public ResponseEntity<List<DiaryInquiryResponse>> getDiary(){
@@ -56,7 +52,6 @@ public class DiaryApiController {
     @ApiOperation(value = "다이어리 갈만한 여행지 조회", notes = "홈 화면의 두번째 조회 API입니다.")
     @GetMapping("/get-goingdiary")
     public ResponseEntity<List<DiaryInquiryResponse>> getGoingDiary(){
-        jwtService.getLoginId();
         List<DiaryInquiryResponse> diaryInquiryResponses = diaryService.getGoingDiary();
         return ResponseEntity.ok(diaryInquiryResponses);
     }
@@ -89,7 +84,6 @@ public class DiaryApiController {
      * 다이어리 삭제 API
      * swagger url => [post]  api/v1/plans/delete-diary/{diaryId}
      * @param diaryId
-     * @param request
      * @return ResponseEntity<CreateDiaryResponse>
      * author => 신동민
      */
@@ -127,7 +121,6 @@ public class DiaryApiController {
     /**
      * 다이어리에 좋아요를 누르거나 좋아요 취소하기
      * @param diaryId
-     * @param   loginId
      * author 신동민
      */
 
@@ -165,15 +158,4 @@ public class DiaryApiController {
     public ResponseEntity<ResponseDto<DiaryLikedViewsResponse>> DiaryLikeViews(@PathVariable Long diaryId) {
         return ResponseEntity.ok(ResponseDto.create("테스트" , diaryService.getDiaryViews(diaryId)));
     }
-
-
-
-
-
-
-
-
-
-
-
 }

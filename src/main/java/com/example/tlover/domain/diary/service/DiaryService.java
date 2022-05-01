@@ -20,5 +20,6 @@ public interface DiaryService {
     DiaryLikedChangeResponse diaryLikedChange(Long diaryId , String loginId);
 
     DiaryLikedViewsResponse getDiaryViews(Long diaryId);
+
     List<DiaryInquiryResponse> getGoingDiary();
 }
