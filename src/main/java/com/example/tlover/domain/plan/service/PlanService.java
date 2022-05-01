@@ -29,5 +29,5 @@ public interface PlanService {
 
     void updatePlanStatusActive(@Valid Long planId);
 
-    Boolean checkPlanStatus(@Valid Long planId);
+    String checkPlanStatus(@Valid Long planId);
 }

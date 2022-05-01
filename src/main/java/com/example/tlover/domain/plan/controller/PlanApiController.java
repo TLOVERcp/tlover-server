@@ -1,15 +1,21 @@
 package com.example.tlover.domain.plan.controller;
 
 import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
+import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
+import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.plan.exception.AlreadyFinishPlanException;
 import com.example.tlover.domain.plan.exception.AnotherUserEditingException;
 import com.example.tlover.domain.plan.exception.NoAuthorityPlanException;
+import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +89,10 @@ public class PlanApiController {
      */
     @ApiOperation(value = "계획 내용 상세 조회", notes = "계획 내용을 상세 조회 합니다.")
     @GetMapping("/plan-detail/{planId}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "해당 계획을 찾을 수 없습니다." ,
+                    response = NotFoundPlanException.class)
+    })
     public ResponseEntity<PlanDetailResponse> getPlanDetail(@PathVariable Long planId) {
         String loginId = jwtService.getLoginId();
 
@@ -101,10 +111,18 @@ public class PlanApiController {
      * @return ResponseEntity
      * @author 류민아
      */
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "해당 계획을 찾을 수 없습니다." ,
+                    response = NotFoundPlanException.class)
+    })
     @ApiOperation(value = "계획 삭제", notes = "계획을 삭제합니다.")
     @PostMapping("/delete-plan/{planId}")
     public ResponseEntity<DeletePlanResponse> deletePlan(@PathVariable Long planId){
         String loginId = jwtService.getLoginId();
+
+        String planStatus = planService.checkPlanStatus(planId);
+        if(planStatus.equals("FINISH"))
+            throw new AlreadyFinishPlanException();
 
         Boolean userAuthority = planService.checkUser(planId, loginId);
         if(!userAuthority)
@@ -121,12 +139,18 @@ public class PlanApiController {
     // 수정중상태로 Editing
     @ApiOperation(value = "계획 상태 수정중으로 수정", notes = "계획 상태를 수정중으로 수정합니다.")
     @PostMapping("/update-plan-editing/{planId}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "해당 계획을 찾을 수 없습니다." ,
+                    response = NotFoundPlanException.class)
+    })
     public ResponseEntity<UpdatePlanStatusResponse> updatePlanStatusEditing(@PathVariable Long planId){
         String loginId = jwtService.getLoginId();
-       //이미 수정 중인지 확인
-        Boolean planStatus = planService.checkPlanStatus(planId);
-        if(!planStatus)
+
+        String planStatus = planService.checkPlanStatus(planId);
+        if(planStatus.equals("EDITING"))
             throw new AnotherUserEditingException();
+        if(planStatus.equals("FINISH"))
+            throw new AlreadyFinishPlanException(); // 오류 추가하기
 
         //수정 권한이 있는 유저인지 확인
         Boolean userAuthority = planService.checkUser(planId, loginId);
@@ -150,6 +174,10 @@ public class PlanApiController {
      */
     @ApiOperation(value = "계획 수정", notes = "계획을 수정합니다.")
     @PostMapping("/update-plan/{planId}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "해당 계획을 찾을 수 없습니다." ,
+                    response = NotFoundPlanException.class)
+    })
     public ResponseEntity<UpdatePlanResponse> updatePlan(@PathVariable Long planId,
                                              @Valid @RequestBody CreatePlanRequest createPlanRequest){
 
@@ -170,9 +198,12 @@ public class PlanApiController {
 
     @ApiOperation(value = "계획 상태 기본으로 수정", notes = "계획 상태를 기본으로 수정합니다.")
     @PostMapping("/update-plan-active/{planId}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "해당 계획을 찾을 수 없습니다." ,
+                    response = NotFoundPlanException.class)
+    })
     public ResponseEntity<UpdatePlanStatusResponse> updatePlanStatusActive(@PathVariable Long planId){
         planService.updatePlanStatusActive(planId);
-
         return ResponseEntity.ok(UpdatePlanStatusResponse.builder()
                 .message("계획 상태 수정을 성공하였습니다.")
                 .build());
