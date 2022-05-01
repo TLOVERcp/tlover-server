@@ -38,21 +38,13 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
         Optional<List<AuthorityPlan>> sharePlan = authorityPlanRepository.findAllByUserAndPlan(user,plan);
         if(sharePlan.isPresent()) {
             for (AuthorityPlan authorityPlan : sharePlan.get()) {
-                System.out.println(authorityPlan.getAuthorityPlanStatus());
-                if (authorityPlan.getAuthorityPlanStatus().equals("REJECT")) sharePlan.get().remove(authorityPlan);
-            }
-        }
-        if(sharePlan.isEmpty()){
-            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
-            authorityPlanRepository.save(authorityPlan);
-        } else {
-            for (AuthorityPlan authorityPlan : sharePlan.get()) {
                 if (authorityPlan.getAuthorityPlanStatus().equals("ACCEPT")) throw new DeniedShareAcceptException();
                 if (authorityPlan.getAuthorityPlanStatus().equals("REQUEST")) throw new DeniedShareRequestException();
                 if (authorityPlan.getAuthorityPlanStatus().equals("HOST")) throw new DeniedShareHostException();
             }
         }
-
+            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
+            authorityPlanRepository.save(authorityPlan);
     }
 
     //원글쓴이 권한 저장
