@@ -1,10 +1,10 @@
 package com.example.tlover.domain.plan.exception;
 
-public class AlreadyDeletePlanException extends planException {
+public class AlreadyDeletePlanException extends PlanException {
     public AlreadyDeletePlanException() {
-        super(planExceptionList.ALREADY_DELETE_PLAN.getCODE(),
-                planExceptionList.ALREADY_DELETE_PLAN.getHttpStatus(),
-                planExceptionList.ALREADY_DELETE_PLAN.getMESSAGE()
+        super(PlanExceptionList.ALREADY_DELETE_PLAN.getCODE(),
+                PlanExceptionList.ALREADY_DELETE_PLAN.getHttpStatus(),
+                PlanExceptionList.ALREADY_DELETE_PLAN.getMESSAGE()
         );
     }
 }
