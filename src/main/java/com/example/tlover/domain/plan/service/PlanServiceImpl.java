@@ -8,6 +8,7 @@ import com.example.tlover.domain.plan.dto.PlanListResponse;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.AlreadyDeletePlanException;
 import com.example.tlover.domain.plan.exception.NoAuthorityDeleteException;
+import com.example.tlover.domain.plan.exception.NotFoundAuthorityPlanException;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
@@ -66,7 +67,7 @@ public class PlanServiceImpl implements PlanService{
     public PlanDetailResponse getPlanDetail(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
         List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan).orElseThrow(NotFoundPlanException::new);
-        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).orElseThrow(NotFoundPlanException::new);
+        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).orElseThrow(NotFoundAuthorityPlanException::new);
         return PlanDetailResponse.from(plan, planRegion, authorityPlans);
     }
 
@@ -74,7 +75,7 @@ public class PlanServiceImpl implements PlanService{
     @Transactional
     public Plan deletePlan(Long planId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundPlanException::new);
-        Plan plan = planRepository.findByPlanId(planId).get();
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
 
         if(plan.getPlanStatus().equals("DELETE"))
             throw new AlreadyDeletePlanException();
@@ -129,7 +130,7 @@ public class PlanServiceImpl implements PlanService{
     public Boolean checkUser(Long planId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        AuthorityPlan authorityPlans = authorityPlanRepository.findAllByPlanAndUser(plan, user).orElseThrow(NotFoundPlanException::new); //dhfb
+        AuthorityPlan authorityPlans = authorityPlanRepository.findAllByPlanAndUser(plan, user).orElseThrow(NotFoundAuthorityPlanException::new);
         if(authorityPlans.getAuthorityPlanStatus().equals("HOST")||authorityPlans.getAuthorityPlanStatus().equals("ACCEPT"))
                 return true;
         return false;
