@@ -1,10 +1,10 @@
 package com.example.tlover.domain.plan.exception;
 
-public class AnotherUserEditingException extends planException {
+public class AnotherUserEditingException extends PlanException {
     public AnotherUserEditingException() {
-        super(planExceptionList.ANOTHER_USER_EDITING.getCODE(),
-                planExceptionList.ANOTHER_USER_EDITING.getHttpStatus(),
-                planExceptionList.ANOTHER_USER_EDITING.getMESSAGE()
+        super(PlanExceptionList.ANOTHER_USER_EDITING.getCODE(),
+                PlanExceptionList.ANOTHER_USER_EDITING.getHttpStatus(),
+                PlanExceptionList.ANOTHER_USER_EDITING.getMESSAGE()
         );
     }
 }

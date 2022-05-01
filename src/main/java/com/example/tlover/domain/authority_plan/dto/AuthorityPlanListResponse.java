@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class AuthorityPlanListResponse {
     private String planUserNickName;
     private String planStatus;
     private String authorityPlanStatus;
+    @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime authorityPlanShareDate;
 
     public static AuthorityPlanListResponse from(AuthorityPlan authorityPlans) {

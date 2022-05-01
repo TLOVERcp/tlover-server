@@ -24,4 +24,12 @@ public interface AuthorityPlanRepository extends JpaRepository<AuthorityPlan , L
 
     Optional<List<AuthorityPlan>> findAllByPlanAndAuthorityPlanStatus(Plan plan, String accept);
 
+    Optional<AuthorityPlan> findAllByPlanAndUser(Plan plan, User user);
+
+   // @Query("select a from AuthorityPlan a where a.user = :user and a.authorityPlanStatus not in ('REJECT')")
+    //Optional<AuthorityPlan> findByUser(User user);
+
+    Optional<List<AuthorityPlan>> findAllByUserAndPlan(User user, Plan plan);
+
+    Optional<AuthorityPlan> findByPlanPlanIdAndUser(Long planId, User user);
 }
