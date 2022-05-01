@@ -61,6 +61,7 @@ public class DiaryServiceImpl implements DiaryService{
     private final AuthorityDiaryRepository authorityDiaryRepository;
     private final DiaryLikedRepository diaryLikedRepository;
 
+    private final DiaryConstants diaryConstants;
 
     @Override
     @Transactional
@@ -206,9 +207,19 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
 
+    @Override
+    public List<DiaryInquiryResponse> getGoingDiary() {
+        Thema thema = themaRepository.findByThemaName("봄나들이");
 
+        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema);
+        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
 
-
+        for(int i=0; i<diaryThemas.size(); i++){
+            Optional<Diary> diaries = diaryRepository.findByDiaryId(diaryThemas.get(i).getDiary().getDiaryId());
+            if(diaries.get().getDiaryStatus().equals("ACTIVE") || diaries.get().getDiaryStatus().equals("COMPLETE")){
+                diaryInquiryResponseList.add(DiaryInquiryResponse.from(diaries.get()));
+            }
+        }
+        return diaryInquiryResponseList;
+    }
 }
-
-
