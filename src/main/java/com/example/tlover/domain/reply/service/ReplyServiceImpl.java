@@ -11,15 +11,19 @@ import com.example.tlover.domain.reply.entity.Reply;
 import com.example.tlover.domain.reply.exception.NotEqualUserIdException;
 import com.example.tlover.domain.reply.exception.NotFindReplyException;
 import com.example.tlover.domain.reply.repository.ReplyRepository;
+import com.example.tlover.domain.scrap.dto.DiaryInquiryByScrapRankingResponse;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.global.dto.PaginationDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,29 +40,14 @@ public class ReplyServiceImpl implements ReplyService{
      * @author 윤여찬
      */
     @Override
-    public List<ReplyGetResponse> getReplyList(Long diaryId) {
+    public PaginationDto<List<ReplyGetResponse>> getReplyList(Long diaryId, Pageable pageable) {
 
-        List<ReplyGetResponse> responseList = new ArrayList<>();
-        Diary diary = diaryRepository.findByDiaryId(diaryId);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
 
-        if (diary == null) throw new NotFoundDiaryException();
+        Page<ReplyGetResponse> page = this.replyRepository.findByDiaryCustom(diary, pageable);
+        List<ReplyGetResponse> data = page.get().collect(Collectors.toList());
 
-        Optional<List<Reply>> replyList = replyRepository.findByDiary(diary);
-
-        if (!replyList.isEmpty()) {
-
-            for (Reply reply : replyList.get()) {
-                reply.setDiary(diary);
-
-                if (reply.getReplyState().equals("ACTIVE")) {
-                    responseList.add(ReplyGetResponse.from(reply));
-                }
-
-            }
-        }
-
-
-        return responseList;
+        return PaginationDto.of(page, data);
     }
 
     /**
