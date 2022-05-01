@@ -5,10 +5,7 @@ import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
 import com.example.tlover.domain.plan.entity.Plan;
-import com.example.tlover.domain.plan.exception.DeniedShareAcceptException;
-import com.example.tlover.domain.plan.exception.DeniedShareHostException;
-import com.example.tlover.domain.plan.exception.DeniedShareRequestException;
-import com.example.tlover.domain.plan.exception.NotFoundPlanException;
+import com.example.tlover.domain.plan.exception.*;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
@@ -88,14 +85,14 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     @Override
     @Transactional
     public void updateAcceptAuthorityPlan(Long authorityPlanId) {
-        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundPlanException::new);
+        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundAuthorityPlanException::new);
         authorityPlan.setAuthorityPlanStatus("ACCEPT");
     }
 
     @Override
     @Transactional
     public void updateRejectAuthorityPlan(Long authorityPlanId) {
-        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundPlanException::new);
+        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundAuthorityPlanException::new);
         authorityPlan.setAuthorityPlanStatus("REJECT");
     }
 
