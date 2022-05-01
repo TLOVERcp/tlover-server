@@ -96,17 +96,7 @@ public class PlanServiceImpl implements PlanService{
         return plan;
     }
 
-    @Override
-    public Boolean checkUser(Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
-        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        List<AuthorityPlan> authorityPlans = findAuthorityPlan(user);
-        for(int i=0; i< authorityPlans.size(); i++){
-            if(user.getUserNickName().equals(authorityPlans.get(i).getUser().getUserNickName()))
-                return true;
-        }
-        return false;
-    }
+
 
     @Override
     @Transactional
@@ -130,10 +120,18 @@ public class PlanServiceImpl implements PlanService{
     }
 
     @Override
-    public Boolean checkPlanStatus(Long planId) {
+    public String checkPlanStatus(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        if(plan.getPlanStatus().equals("ACTIVE"))
-            return true;
+        return plan.getPlanStatus();
+    }
+
+    @Override
+    public Boolean checkUser(Long planId, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
+        AuthorityPlan authorityPlans = authorityPlanRepository.findAllByPlanAndUser(plan, user).orElseThrow(NotFoundPlanException::new); //dhfb
+        if(authorityPlans.getAuthorityPlanStatus().equals("HOST")||authorityPlans.getAuthorityPlanStatus().equals("ACCEPT"))
+                return true;
         return false;
     }
 

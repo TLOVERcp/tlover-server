@@ -5,6 +5,9 @@ import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
 import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.plan.exception.DeniedShareAcceptException;
+import com.example.tlover.domain.plan.exception.DeniedShareHostException;
+import com.example.tlover.domain.plan.exception.DeniedShareRequestException;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.user.entity.User;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +33,26 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     //공유 요청
     @Override
     public void sharePlan(Long planId, SharePlanRequest sharePlanRequest) {
-        Plan plan = planRepository.findByPlanId(planId).get();
-        User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName()).get();
-        AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
-        authorityPlanRepository.save(authorityPlan);
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
+        User user = userRepository.findByUserNickName(sharePlanRequest.getUserNickName()).orElseThrow(NotFoundUserException::new);
+        Optional<List<AuthorityPlan>> sharePlan = authorityPlanRepository.findAllByUserAndPlan(user,plan);
+        if(sharePlan.isPresent()) {
+            for (AuthorityPlan authorityPlan : sharePlan.get()) {
+                System.out.println(authorityPlan.getAuthorityPlanStatus());
+                if (authorityPlan.getAuthorityPlanStatus().equals("REJECT")) sharePlan.get().remove(authorityPlan);
+            }
+        }
+        if(sharePlan.isEmpty()){
+            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
+            authorityPlanRepository.save(authorityPlan);
+        } else {
+            for (AuthorityPlan authorityPlan : sharePlan.get()) {
+                if (authorityPlan.getAuthorityPlanStatus().equals("ACCEPT")) throw new DeniedShareAcceptException();
+                if (authorityPlan.getAuthorityPlanStatus().equals("REQUEST")) throw new DeniedShareRequestException();
+                if (authorityPlan.getAuthorityPlanStatus().equals("HOST")) throw new DeniedShareHostException();
+            }
+        }
+
     }
 
     //원글쓴이 권한 저장
@@ -87,6 +107,19 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
         authorityPlan.setAuthorityPlanStatus("REJECT");
     }
 
+    @Override
+    public boolean checkAuthority(String loginId, Long planId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
+        Optional<List<AuthorityPlan>> sharePlan = authorityPlanRepository.findAllByUserAndPlan(user,plan);
+        if(sharePlan.isPresent()){
+            for(AuthorityPlan authorityPlan : sharePlan.get()){
+                if(authorityPlan.getAuthorityPlanStatus().equals("HOST")) return true;
+            }
+        }
+
+        return false;
+    }
 
 
 }

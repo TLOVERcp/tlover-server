@@ -5,6 +5,7 @@ import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
 import com.example.tlover.domain.authority_plan.dto.SharePlanResponse;
 import com.example.tlover.domain.authority_plan.dto.UpdateAuthorityPlanResponse;
 import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
+import com.example.tlover.domain.plan.exception.NoAuthorityShareException;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
@@ -40,6 +41,8 @@ public class AuthorityPlanController {
     public ResponseEntity<SharePlanResponse> SharePlan(@PathVariable Long planId,
                                                        @Valid @RequestBody SharePlanRequest sharePlanRequest){
         String loginId = jwtService.getLoginId();
+        boolean checkAuthority = authorityPlanService.checkAuthority(loginId, planId);
+        if(!checkAuthority) throw new NoAuthorityShareException();
         authorityPlanService.sharePlan(planId, sharePlanRequest);
         return ResponseEntity.ok(SharePlanResponse.builder()
                 .message("계획 권한 공유를 성공하였습니다.")

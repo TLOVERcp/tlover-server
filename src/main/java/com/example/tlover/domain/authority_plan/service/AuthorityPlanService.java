@@ -21,5 +21,5 @@ public interface AuthorityPlanService {
 
     void updateRejectAuthorityPlan(@Valid Long authorityPlanId);
 
-
+    boolean checkAuthority(String loginId, Long planId);
 }
