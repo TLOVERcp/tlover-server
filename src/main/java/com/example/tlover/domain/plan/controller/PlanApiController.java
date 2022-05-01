@@ -147,6 +147,7 @@ public class PlanApiController {
         String loginId = jwtService.getLoginId();
 
         String planStatus = planService.checkPlanStatus(planId);
+        System.out.println(planStatus);
         if(planStatus.equals("EDITING"))
             throw new AnotherUserEditingException();
         if(planStatus.equals("FINISH"))
@@ -187,7 +188,9 @@ public class PlanApiController {
 
         if(userAuthority)
             throw new NoAuthorityUserException();*/
-
+        String planStatus = planService.checkPlanStatus(planId);
+        System.out.println(planStatus);
+        if(!planStatus.equals("EDITING")) throw new RuntimeException("수정불가");
         Plan plan = planService.updatePlan(createPlanRequest, planId);
         planRegionService.updatePlanRegion(createPlanRequest, plan);
         planService.updatePlanStatusActive(planId);

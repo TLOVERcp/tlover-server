@@ -5,10 +5,7 @@ import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
 import com.example.tlover.domain.plan.entity.Plan;
-import com.example.tlover.domain.plan.exception.DeniedShareAcceptException;
-import com.example.tlover.domain.plan.exception.DeniedShareHostException;
-import com.example.tlover.domain.plan.exception.DeniedShareRequestException;
-import com.example.tlover.domain.plan.exception.NotFoundPlanException;
+import com.example.tlover.domain.plan.exception.*;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
@@ -38,21 +35,13 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
         Optional<List<AuthorityPlan>> sharePlan = authorityPlanRepository.findAllByUserAndPlan(user,plan);
         if(sharePlan.isPresent()) {
             for (AuthorityPlan authorityPlan : sharePlan.get()) {
-                System.out.println(authorityPlan.getAuthorityPlanStatus());
-                if (authorityPlan.getAuthorityPlanStatus().equals("REJECT")) sharePlan.get().remove(authorityPlan);
-            }
-        }
-        if(sharePlan.isEmpty()){
-            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
-            authorityPlanRepository.save(authorityPlan);
-        } else {
-            for (AuthorityPlan authorityPlan : sharePlan.get()) {
                 if (authorityPlan.getAuthorityPlanStatus().equals("ACCEPT")) throw new DeniedShareAcceptException();
                 if (authorityPlan.getAuthorityPlanStatus().equals("REQUEST")) throw new DeniedShareRequestException();
                 if (authorityPlan.getAuthorityPlanStatus().equals("HOST")) throw new DeniedShareHostException();
             }
         }
-
+            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
+            authorityPlanRepository.save(authorityPlan);
     }
 
     //원글쓴이 권한 저장
@@ -96,14 +85,14 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     @Override
     @Transactional
     public void updateAcceptAuthorityPlan(Long authorityPlanId) {
-        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundPlanException::new);
+        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundAuthorityPlanException::new);
         authorityPlan.setAuthorityPlanStatus("ACCEPT");
     }
 
     @Override
     @Transactional
     public void updateRejectAuthorityPlan(Long authorityPlanId) {
-        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundPlanException::new);
+        AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundAuthorityPlanException::new);
         authorityPlan.setAuthorityPlanStatus("REJECT");
     }
 
