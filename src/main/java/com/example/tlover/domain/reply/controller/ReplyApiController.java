@@ -4,10 +4,16 @@ package com.example.tlover.domain.reply.controller;
 import com.example.tlover.domain.reply.dto.*;
 import com.example.tlover.domain.reply.service.ReplyService;
 import com.example.tlover.domain.user.controller.UserApiController;
+import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +28,6 @@ import java.util.List;
 @Api(tags = "Reply API")
 public class ReplyApiController {
 
-    private final UserApiController userApiController;
     private final ReplyService replyService;
     private final JwtService jwtService;
 
@@ -34,11 +39,9 @@ public class ReplyApiController {
      */
     @ApiOperation(value = "댓글을 조회합니다.", notes = "댓글을 조회합니다.")
     @PostMapping("/get-reply")
-    public ResponseEntity<List<ReplyGetResponse>> getReply(@Valid @RequestBody ReplyGetRequest replyGetRequest) {
-
-        List<ReplyGetResponse> responseList = replyService.getReplyList(replyGetRequest.getDiaryId());
-
-        return ResponseEntity.ok(responseList);
+    public ResponseEntity<PaginationDto<List<ReplyGetResponse>>> getReply(@Valid @RequestBody ReplyGetRequest replyGetRequest,
+                                                                         @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(replyService.getReplyList(replyGetRequest.getDiaryId(), pageable));
     }
 
 
@@ -84,8 +87,7 @@ public class ReplyApiController {
      */
     @ApiOperation(value = "댓글을 삭제합니다", notes = "댓글을 삭제합니다.")
     @PostMapping("/delete")
-    public ResponseEntity<ReplyResponse> deleteReply(@Valid @RequestBody ReplyDeleteRequest replyDeleteRequest,
-                                                        HttpServletRequest request) {
+    public ResponseEntity<ReplyResponse> deleteReply(@Valid @RequestBody ReplyDeleteRequest replyDeleteRequest) {
 
         String loginId = jwtService.getLoginId();
         replyService.deleteReply(replyDeleteRequest, loginId);
