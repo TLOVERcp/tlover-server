@@ -21,7 +21,7 @@ public class DiaryThema {
     @Id @GeneratedValue
     private Long diaryThemaId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "diary_diaryId")
     private Diary diary;
 
