@@ -7,6 +7,7 @@ import com.example.tlover.domain.scrap.entity.Scrap;
 import com.example.tlover.domain.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
+import static com.example.tlover.domain.myfile.entity.QMyFile.myFile;
 import static com.example.tlover.domain.scrap.entity.QScrap.scrap;
 
 public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
@@ -60,10 +62,12 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
                         diary.diaryView,
+                        myFile.fileKey,
                         scrapCount.sum()
                 ))
                 .from(diary)
                 .leftJoin(diary.scraps, scrap)
+                .leftJoin(diary.myFiles, myFile)
                 .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId)
                 .offset(pageable.getOffset())
@@ -81,10 +85,12 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
                         diary.diaryView,
+                        myFile.fileKey,
                         scrapCount.sum()
                 ))
                 .from(diary)
                 .leftJoin(diary.scraps, scrap)
+                .leftJoin(diary.myFiles, myFile)
                 .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId);
 
