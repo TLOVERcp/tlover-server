@@ -1,8 +1,10 @@
 package com.example.tlover.domain.diary.exception;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+
 
 @Getter
 @RequiredArgsConstructor
@@ -13,8 +15,8 @@ public enum DiaryExceptionList {
     NO_AUTHORITY_DELETE("D0003" , HttpStatus.FORBIDDEN , "다이어리의 삭제 권한이 없습니다."),
     NOT_FOUND_DIARY("D0004" , HttpStatus.NOT_FOUND , "해당 diaryId로 Diary를 찾을 수 없습니다.");
 
-    private final String CODE;
-    private final HttpStatus httpStatus;
-    private final String MESSAGE;
+    public final String CODE;
+    public final HttpStatus httpStatus;
+    public final String MESSAGE;
 
 }
