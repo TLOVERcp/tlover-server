@@ -43,7 +43,9 @@ public class MyFileServiceImpl implements MyFileService {
     @Override
     @Transactional
     public boolean deleteFile(Long fileId) {
-        this.findByFileId(fileId).setDeleted(true);
+        MyFile myFile = this.findByFileId(fileId);
+        myFile.setDeleted(true);
+        this.fileService.delete(myFile.getFileKey());
         return true;
     }
 
