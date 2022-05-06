@@ -170,14 +170,15 @@ public class DiaryApiController {
 
 
     /**
-     * 다이어리 조회
+     * 홈 화면 여행 취향 다이어리 조회
      * @return
+     * @Author 한규범
      */
     @ApiOperation(value = "홈 화면 여행 취향 다이어리 조회", notes = "나와 여행 취향이 닮은 사람들에 대한 다이어리를 조회합니다.")
     @GetMapping(value = "/get-diary-prefer")
-    public ResponseEntity<List<DiaryPreferenceResponse>> getDiaryPreference(){
+    public ResponseEntity<ResponseDto<List<DiaryPreferenceResponse>>> getDiaryPreference(){
         String loginId = jwtService.getLoginId();
         List<DiaryPreferenceResponse> diaryInquiryResponse = diaryService.getDiaryPreference(loginId);
-        return ResponseEntity.ok(diaryInquiryResponse);
+        return ResponseEntity.ok(ResponseDto.create(diaryInquiryResponse));
     }
 }
