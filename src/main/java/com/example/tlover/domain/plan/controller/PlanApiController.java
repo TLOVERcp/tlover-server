@@ -8,6 +8,7 @@ import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.*;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
+import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -66,14 +67,14 @@ public class PlanApiController {
      */
     @ApiOperation(value = "계획 목록 조회", notes = "계획 목록을 조회 합니다.")
     @GetMapping("/plan-list")
-    public ResponseEntity<List<PlanListResponse>> getPlanList(@RequestParam(required = false) String status) {
+    public ResponseEntity<ResponseDto<List<PlanListResponse>>> getPlanList(@RequestParam(required = false) String status) {
         String loginId = jwtService.getLoginId();
         if (status == null) {
                 List<PlanListResponse> planListResponses = planService.getAllPlans(loginId);
-                return ResponseEntity.ok(planListResponses);
+                return ResponseEntity.ok(ResponseDto.create("조회",planListResponses));
         } else {
                 List<PlanListResponse> planListResponses = planService.getPlansByState(loginId, status);
-                return ResponseEntity.ok(planListResponses);
+            return ResponseEntity.ok(ResponseDto.create("조회",planListResponses));
         }
     }
 
