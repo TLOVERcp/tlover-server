@@ -47,8 +47,11 @@ public class PlanServiceImpl implements PlanService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<AuthorityPlan> authorityPlans = findAuthorityPlan(user);
         List<PlanListResponse> planList = new ArrayList<>();
-        for(int i=0; i<authorityPlans.size(); i++)
-            planList.add(PlanListResponse.from(authorityPlans.get(i).getPlan()));
+        for(int i=0; i<authorityPlans.size(); i++) {
+            Plan p = authorityPlans.get(i).getPlan();
+            List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(p).orElseThrow(NotFoundPlanException::new);
+            planList.add(PlanListResponse.from(p, planRegion));
+        }
         return planList;
     }
 
@@ -58,8 +61,11 @@ public class PlanServiceImpl implements PlanService{
         List<AuthorityPlan> authorityPlans = findAuthorityPlan(user);
         authorityPlans = checkStatus(authorityPlans, status);
         List<PlanListResponse> planList = new ArrayList<>();
-        for(int i=0; i<authorityPlans.size(); i++)
-            planList.add(PlanListResponse.from(authorityPlans.get(i).getPlan()));
+        for(int i=0; i<authorityPlans.size(); i++) {
+            Plan p = authorityPlans.get(i).getPlan();
+            List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(p).orElseThrow(NotFoundPlanException::new);
+            planList.add(PlanListResponse.from(p, planRegion));
+        }
         return planList;
     }
 
