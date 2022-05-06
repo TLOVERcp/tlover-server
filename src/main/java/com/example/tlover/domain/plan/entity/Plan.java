@@ -39,6 +39,9 @@ public class Plan {
 
     private LocalDateTime planWriteDate;
 
+    private Long expense;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
     private User user;
@@ -67,6 +70,7 @@ public class Plan {
         plan.setPlanWriteDate(LocalDateTime.now());
         plan.setPlanStatus("ACTIVE");
         plan.setUser(user);
+        plan.setExpense(createPlanRequest.getExpense());
         return plan;
 
 
