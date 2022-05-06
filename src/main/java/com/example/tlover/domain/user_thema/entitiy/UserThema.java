@@ -15,9 +15,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserThema {
-//testjh
     @Id
     @GeneratedValue
+    @Column
     private Long userThemaId;
 
     @ManyToOne(fetch = FetchType.LAZY)

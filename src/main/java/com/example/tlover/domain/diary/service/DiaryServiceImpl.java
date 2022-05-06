@@ -30,12 +30,14 @@ import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.domain.user_region.repository.UserRegionRepository;
+import com.example.tlover.domain.user_thema.entitiy.UserThema;
+import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.NotSupportedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -60,6 +62,8 @@ public class DiaryServiceImpl implements DiaryService{
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
     private final DiaryLikedRepository diaryLikedRepository;
+    private final UserRegionRepository userRegionRepository;
+    private final UserThemaRepository userThemaRepository;
 
     private final DiaryConstants diaryConstants;
 
@@ -214,6 +218,8 @@ public class DiaryServiceImpl implements DiaryService{
         List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema);
         List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
 
+        User u = diaryThemas.get(0).getDiary().getUser();
+        System.out.println(u.getUserId());
         for(int i=0; i<diaryThemas.size(); i++){
             Optional<Diary> diaries = diaryRepository.findByDiaryId(diaryThemas.get(i).getDiary().getDiaryId());
             if(diaries.get().getDiaryStatus().equals("ACTIVE") || diaries.get().getDiaryStatus().equals("COMPLETE")){
@@ -221,5 +227,27 @@ public class DiaryServiceImpl implements DiaryService{
             }
         }
         return diaryInquiryResponseList;
+    }
+
+    @Override
+    public List<DiaryPreferenceResponse> getDiaryPreference(String loginId) {
+        //결과를 위한 배열
+        List<DiaryPreferenceResponse> diaryPreferenceResponses = new ArrayList<>();
+        //유저 정보 가져와
+        User user = userRepository.findByUserLoginId(loginId).get();
+        //유저 테마 가져와
+        List<UserThema> userThemas = user.getUserThemas();
+
+        Optional<Thema> thema = themaRepository.findByThemaId(userThemas.get(0).getThema().getThemaId());
+
+        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema.get());
+
+        for (int i = 0; i < diaryThemas.size(); i++) {
+            Diary diary = diaryThemas.get(i).getDiary();
+
+            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
+        }
+
+        return diaryPreferenceResponses;
     }
 }

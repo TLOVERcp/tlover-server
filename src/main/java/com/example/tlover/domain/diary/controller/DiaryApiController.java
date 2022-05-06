@@ -49,7 +49,16 @@ public class DiaryApiController {
         return ResponseEntity.ok(diaryInquiryResponse);
     }
 
+    /**
+     * 갈만한 여행지 조회
+     * @return ResponseEntity<List<DiaryInquiryResponse>>
+     * @author 한규범
+     */
     @ApiOperation(value = "다이어리 갈만한 여행지 조회", notes = "홈 화면의 두번째 조회 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+    })
     @GetMapping("/get-goingdiary")
     public ResponseEntity<List<DiaryInquiryResponse>> getGoingDiary(){
         List<DiaryInquiryResponse> diaryInquiryResponses = diaryService.getGoingDiary();
@@ -157,5 +166,18 @@ public class DiaryApiController {
     @PostMapping(value = "/liked-views/{diaryId}")
     public ResponseEntity<ResponseDto<DiaryLikedViewsResponse>> DiaryLikeViews(@PathVariable Long diaryId) {
         return ResponseEntity.ok(ResponseDto.create("테스트" , diaryService.getDiaryViews(diaryId)));
+    }
+
+
+    /**
+     * 다이어리 조회
+     * @return
+     */
+    @ApiOperation(value = "홈 화면 여행 취향 다이어리 조회", notes = "나와 여행 취향이 닮은 사람들에 대한 다이어리를 조회합니다.")
+    @GetMapping(value = "/get-diary-prefer")
+    public ResponseEntity<List<DiaryPreferenceResponse>> getDiaryPreference(){
+        String loginId = jwtService.getLoginId();
+        List<DiaryPreferenceResponse> diaryInquiryResponse = diaryService.getDiaryPreference(loginId);
+        return ResponseEntity.ok(diaryInquiryResponse);
     }
 }

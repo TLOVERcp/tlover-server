@@ -38,6 +38,7 @@ public class User {
 
     @Id
     @GeneratedValue
+    @Column
     private Long userId;
 
     private String userLoginId;

@@ -22,4 +22,6 @@ public interface DiaryService {
     DiaryLikedViewsResponse getDiaryViews(Long diaryId);
 
     List<DiaryInquiryResponse> getGoingDiary();
+
+    List<DiaryPreferenceResponse> getDiaryPreference(String loginId);
 }
