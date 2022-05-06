@@ -80,19 +80,13 @@ public class PlanServiceImpl implements PlanService{
     @Override
     @Transactional
     public Plan deletePlan(Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundPlanException::new);
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-
         if(plan.getPlanStatus().equals("DELETE"))
             throw new AlreadyDeletePlanException();
         if(!user.getUserId().equals(plan.getUser().getUserId()))
             throw new NoAuthorityDeleteException();
-
-
         plan.setPlanStatus("DELETE");
-
-
-
         return plan;
     }
 
@@ -102,8 +96,6 @@ public class PlanServiceImpl implements PlanService{
         plan.updatePlan(createPlanRequest, plan);
         return plan;
     }
-
-
 
     @Override
     @Transactional
