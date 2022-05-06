@@ -32,9 +32,11 @@ public class CreatePlanRequest {
     private LocalDateTime planEndDate;
 
     @NotNull(message = "여행 지역을 입력해주세요.")
-    @ApiModelProperty(notes = "여행 지역을  입력해 주세요.")
+    @ApiModelProperty(notes = "여행 지역을 입력해 주세요.")
     private String[] regionName;
 
+    @ApiModelProperty(notes = "여행 경비를 입력 주세요.")
+    private Long expense;
     }
 
 

@@ -13,6 +13,7 @@ public enum PlanExceptionList {
     NO_AUTHORITY_DELETE("P0004", HttpStatus.FORBIDDEN, "해당 계획에 삭제 권한이 없는 유저입니다."),
     ALREADY_DELETE_PLAN("P0005", HttpStatus.BAD_REQUEST, "이미 삭제된 계획입니다."),
     ALREADY_FINISH_PLAN("P0006", HttpStatus.BAD_REQUEST, "이미 작성이 완료되어 수정/삭제가 불가능합니다."),
+    NO_EDITING_STATUS("P0007",HttpStatus.FORBIDDEN,"수정이 불가능한 상태입니다."),
 
 
     DENIED_SHARE_HOST("P0010", HttpStatus.BAD_REQUEST, "공유가 불가능한 유저(HOST)입니다."),
