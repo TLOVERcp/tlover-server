@@ -3,17 +3,14 @@ package com.example.tlover.domain.plan.dto;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
-import com.example.tlover.domain.user.entity.User;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -29,7 +26,7 @@ public class PlanDetailResponse {
     private LocalDateTime planStartDate;
     private LocalDateTime planEndDate;
     private LocalDateTime planWriteDate;
-    //private String userNickName;
+    private Long day;
     private String[] regionName;
     private String[] users;
 
@@ -42,6 +39,13 @@ public class PlanDetailResponse {
         for(int i=0; i< authorityPlans.size(); i++){
             users[i] = authorityPlans.get(i).getUser().getUserNickName();
         }
+        long period = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), plan.getPlanEndDate().toLocalDate())+1;
+        long day = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), LocalDateTime.now().toLocalDate())+1;
+    // 2 3 4 5 6 7 6 5
+        if(period-day<0||day<0){ //지났으면 양수 , 끝나는 조건 추가하기
+            day = -1;
+        }
+
         return PlanDetailResponse.builder()
                 .planId(plan.getPlanId())
                 .planTitle(plan.getPlanTitle())
@@ -50,7 +54,7 @@ public class PlanDetailResponse {
                 .planStartDate(plan.getPlanStartDate())
                 .planEndDate(plan.getPlanEndDate())
                 .planWriteDate(plan.getPlanWriteDate())
-                //.userNickName(plan.getUser().getUserNickName())
+                .day(day)
                 .regionName(regionName)
                 .users(users)
                 .build();

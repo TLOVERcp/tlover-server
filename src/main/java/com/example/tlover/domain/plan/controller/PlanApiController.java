@@ -5,10 +5,7 @@ import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
-import com.example.tlover.domain.plan.exception.AlreadyFinishPlanException;
-import com.example.tlover.domain.plan.exception.AnotherUserEditingException;
-import com.example.tlover.domain.plan.exception.NoAuthorityPlanException;
-import com.example.tlover.domain.plan.exception.NotFoundPlanException;
+import com.example.tlover.domain.plan.exception.*;
 import com.example.tlover.domain.plan.service.PlanService;
 import com.example.tlover.domain.plan_region.service.PlanRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -190,7 +187,7 @@ public class PlanApiController {
             throw new NoAuthorityUserException();*/
         String planStatus = planService.checkPlanStatus(planId);
         System.out.println(planStatus);
-        if(!planStatus.equals("EDITING")) throw new RuntimeException("수정불가");
+        if(!planStatus.equals("EDITING")) throw new NoEditingStatusException();
         Plan plan = planService.updatePlan(createPlanRequest, planId);
         planRegionService.updatePlanRegion(createPlanRequest, plan);
         planService.updatePlanStatusActive(planId);
