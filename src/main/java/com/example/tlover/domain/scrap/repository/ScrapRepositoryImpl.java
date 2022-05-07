@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
+import static com.example.tlover.domain.myfile.entity.QMyFile.myFile;
 import static com.example.tlover.domain.scrap.entity.QScrap.scrap;
 
 public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
@@ -60,10 +61,12 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
                         diary.diaryView,
+                        myFile.fileKey,
                         scrapCount.sum()
                 ))
                 .from(diary)
                 .leftJoin(diary.scraps, scrap)
+                .leftJoin(diary.myFiles, myFile)
                 .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId)
                 .offset(pageable.getOffset())
@@ -81,10 +84,12 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
                         diary.diaryView,
+                        myFile.fileKey,
                         scrapCount.sum()
                 ))
                 .from(diary)
                 .leftJoin(diary.scraps, scrap)
+                .leftJoin(diary.myFiles, myFile)
                 .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId);
 

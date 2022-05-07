@@ -3,17 +3,16 @@ package com.example.tlover.domain.plan.dto;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
-import com.example.tlover.domain.user.entity.User;
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -26,12 +25,29 @@ public class PlanDetailResponse {
     private String planTitle;
     private String planContext;
     private String planStatus;
-    private LocalDateTime planStartDate;
-    private LocalDateTime planEndDate;
-    private LocalDateTime planWriteDate;
-    //private String userNickName;
+    private String planStartDate;
+    private String planEndDate;
+    private String planWriteDate;
+    private Long day;
+    private Long expense;
     private String[] regionName;
     private String[] users;
+
+    @QueryProjection
+    public PlanDetailResponse(Long planId, String planTitle, String planContext, String planStatus, LocalDateTime planStartDate
+        , LocalDateTime planEndDate, LocalDateTime planWriteDate, Long day, String[] regionName, String[] users, Long expense){
+        this.planId = planId;
+        this.planTitle = planTitle;
+        this.planContext = planContext;
+        this.planStatus = planStatus;
+        this.planStartDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planStartDate);
+        this.planEndDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planEndDate);
+        this.planWriteDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planWriteDate);
+        this.day = day;
+        this.regionName = regionName;
+        this.users = users;
+        this.expense = expense;
+    }
 
     public static PlanDetailResponse from(Plan plan, List<PlanRegion> planRegions, List<AuthorityPlan> authorityPlans){
         String[] regionName = new String[planRegions.size()];
@@ -42,15 +58,21 @@ public class PlanDetailResponse {
         for(int i=0; i< authorityPlans.size(); i++){
             users[i] = authorityPlans.get(i).getUser().getUserNickName();
         }
+        long period = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), plan.getPlanEndDate().toLocalDate())+1;
+        long day = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), LocalDateTime.now().toLocalDate())+1;
+        if(period-day<0||day<0){
+            day = -1;
+        }
+
         return PlanDetailResponse.builder()
                 .planId(plan.getPlanId())
                 .planTitle(plan.getPlanTitle())
                 .planContext(plan.getPlanContext())
                 .planStatus(plan.getPlanStatus())
-                .planStartDate(plan.getPlanStartDate())
-                .planEndDate(plan.getPlanEndDate())
-                .planWriteDate(plan.getPlanWriteDate())
-                //.userNickName(plan.getUser().getUserNickName())
+                .planStartDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanStartDate()))
+                .planEndDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanEndDate()))
+                .planWriteDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanWriteDate()))
+                .day(day)
                 .regionName(regionName)
                 .users(users)
                 .build();

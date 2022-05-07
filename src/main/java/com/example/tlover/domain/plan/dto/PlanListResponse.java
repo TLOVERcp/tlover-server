@@ -1,14 +1,19 @@
 package com.example.tlover.domain.plan.dto;
 
 import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.dto.ProfileResponse;
 import com.example.tlover.domain.user.entity.User;
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -19,14 +24,44 @@ import java.util.List;
 public class PlanListResponse {
     private Long planId;
     private String planTitle;
-    // private String planContext;
     private String planStatus;
+    private String planStartDate;
+    private String planEndDate;
+    private Long day;
+    private String[] regionName;
+    private Long expense;
 
-   public static PlanListResponse from(Plan plan) {
+    @QueryProjection
+    public PlanListResponse(Long planId, String planTitle,  LocalDateTime planStartDate
+            , LocalDateTime planEndDate,  Long day, String[] regionName, Long expense){
+        this.planId = planId;
+        this.planTitle = planTitle;
+        this.planStartDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planStartDate);
+        this.planEndDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planEndDate);
+        this.day = day;
+        this.regionName = regionName;
+        this.expense = expense;
+    }
+
+   public static PlanListResponse from(Plan plan, List<PlanRegion> planRegions) {
+       String[] regionName = new String[planRegions.size()];
+       for(int i=0; i< regionName.length; i++){
+           regionName[i] = planRegions.get(i).getRegion().getRegionName();
+       }
+       long period = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), plan.getPlanEndDate().toLocalDate())+1;
+       long day = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), LocalDateTime.now().toLocalDate())+1;
+       if(period-day<0||day<0){
+           day = -1;
+       }
+
         return PlanListResponse.builder()
                 .planId(plan.getPlanId())
                 .planTitle(plan.getPlanTitle())
                 .planStatus(plan.getPlanStatus())
+                .planStartDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanStartDate()))
+                .planEndDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanEndDate()))
+                .day(day)
+                .regionName(regionName)
                 .build();
     }
 }

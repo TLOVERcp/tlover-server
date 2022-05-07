@@ -1,12 +1,18 @@
 package com.example.tlover.domain.scrap.controller;
 
+import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
+import com.example.tlover.domain.diary.exception.DiaryExceptionList;
+import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.scrap.constant.ScrapConstants.EScrapResponseMessage;
 import com.example.tlover.domain.scrap.dto.*;
 import com.example.tlover.domain.scrap.service.ScrapService;
+import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.dto.ResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +31,7 @@ import java.util.List;
 public class ScrapController {
 
     private final ScrapService scrapService;
+    private final static String NOT_FOUND_DIARY_CODE = DiaryExceptionList.NOT_FOUND_DIARY.getCODE();
 
     /**
      * 다이어리의 스크랩 수 조회
@@ -33,6 +40,8 @@ public class ScrapController {
      * @author 김정우
      */
     @ApiOperation(value = "다이어리의 스크랩 수 조회", notes = "다이어리의 스크랩 수를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "[D0004] 해당 diaryId로 Diary를 찾을 수 없습니다.", response = NotFoundDiaryException.class)})
     @GetMapping("{diaryId}")
     public ResponseEntity<ResponseDto<ScrapCountResponse>> getScrapCount(@PathVariable Long diaryId) {
         return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapCountSuccessMessage.getMessage()
@@ -46,6 +55,10 @@ public class ScrapController {
      * @author 김정우
      */
     @ApiOperation(value = "다이어리 스크랩 생성/삭제", notes = "다이어리의 스크랩을 생성/삭제 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "[D0004] 해당 diaryId로 Diary를 찾을 수 없습니다.", response = NotFoundDiaryException.class),
+            @ApiResponse(code = 400 , message = "[U0002] 해당 아이디를 찾을 수 없습니다.", response = NotFoundUserException.class),
+    })
     @PostMapping
     public ResponseEntity<ResponseDto<ScrapChangeResponse>> changeScrap(@Valid @RequestBody ScrapChangeRequest scrapChangeRequest) {
         ScrapChangeResponse scrapChangeResponse = this.scrapService.changeScrap(scrapChangeRequest);
@@ -66,6 +79,10 @@ public class ScrapController {
      * @author 김정우
      */
     @ApiOperation(value = "해당 유저의 해당 다이어리 스크랩 여부 조회", notes = "해당 유저의 해당 다이어리 스크랩 여부를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404 , message = "[D0004] 해당 diaryId로 Diary를 찾을 수 없습니다.", response = NotFoundDiaryException.class),
+            @ApiResponse(code = 400 , message = "[U0002] 해당 아이디를 찾을 수 없습니다.", response = NotFoundUserException.class),
+    })
     @GetMapping("/whether")
     public ResponseEntity<ResponseDto<ScrapOrNotResponse>> getScrapOrNot(@Valid @RequestBody ScrapOrNotRequest scrapOrNotRequest) {
         return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapOrNotMessage.getMessage()

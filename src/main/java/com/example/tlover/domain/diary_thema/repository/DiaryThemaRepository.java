@@ -1,5 +1,6 @@
 package com.example.tlover.domain.diary_thema.repository;
 
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.thema.entity.Thema;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,5 @@ public interface DiaryThemaRepository extends JpaRepository<DiaryThema, Long> {
 
     List<DiaryThema> findByThema(Thema thema);
 
+    List<DiaryThema> findByThemaThemaId(Long themaId);
 }

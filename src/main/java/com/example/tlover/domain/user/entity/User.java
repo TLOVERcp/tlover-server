@@ -3,17 +3,14 @@ package com.example.tlover.domain.user.entity;
 import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary_connect.entity.DiaryConnect;
+import com.example.tlover.domain.diary_connect.entity.DiaryConnection;
 import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
 import com.example.tlover.domain.report.entity.Report;
 import com.example.tlover.domain.scrap.entity.Scrap;
-
-import com.example.tlover.domain.user.constant.UserConstants.*;
-
-
+import com.example.tlover.domain.user.constant.UserConstants.ESocialProvider;
 import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
 import com.example.tlover.domain.user_region.entity.UserRegion;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
@@ -21,7 +18,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,7 +33,8 @@ import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvi
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_userId")
     private Long userId;
 
     private String userLoginId;
@@ -95,8 +92,8 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<MyFile> myFiles = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user")
-    private DiaryConnect diaryConnect;
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    private List<DiaryConnection> diaryConnections = new ArrayList<>();
 
     /**
      * 연관관계 메서드

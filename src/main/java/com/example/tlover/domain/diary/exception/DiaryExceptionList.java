@@ -1,8 +1,10 @@
 package com.example.tlover.domain.diary.exception;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+
 
 @Getter
 @RequiredArgsConstructor
@@ -15,8 +17,8 @@ public enum DiaryExceptionList {
     NOT_FOUND_SEARCH_DIARY("DS005" , HttpStatus.NOT_FOUND , "검색된 다이어리가 없습니다.");
 
 
-    private final String CODE;
-    private final HttpStatus httpStatus;
-    private final String MESSAGE;
+    public final String CODE;
+    public final HttpStatus httpStatus;
+    public final String MESSAGE;
 
 }
