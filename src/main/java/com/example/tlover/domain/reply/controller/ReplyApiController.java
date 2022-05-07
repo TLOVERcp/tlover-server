@@ -33,15 +33,15 @@ public class ReplyApiController {
 
     /**
      * 댓글 조회
-     * @param replyGetRequest
+     * @param diaryId
      * @return ResponseEntity<List<ReplyGetResponse>>
      * @author 윤여찬
      */
     @ApiOperation(value = "댓글을 조회합니다.", notes = "댓글을 조회합니다.")
-    @PostMapping("/get-reply")
-    public ResponseEntity<PaginationDto<List<ReplyGetResponse>>> getReply(@Valid @RequestBody ReplyGetRequest replyGetRequest,
+    @GetMapping("/get-reply")
+    public ResponseEntity<PaginationDto<List<ReplyGetResponse>>> getReply(@RequestParam Long diaryId,
                                                                          @PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(replyService.getReplyList(replyGetRequest.getDiaryId(), pageable));
+        return ResponseEntity.ok(replyService.getReplyList(diaryId, pageable));
     }
 
 
