@@ -29,7 +29,6 @@ public class Diary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "diary_diaryId")
     private Long diaryId;
 
     private String diaryTitle;
