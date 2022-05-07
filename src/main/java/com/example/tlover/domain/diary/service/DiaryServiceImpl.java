@@ -167,7 +167,7 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     public Diary getDiaryByDiaryId(Long diaryId) {
-        return this.diaryRepository.findById(diaryId).orElseThrow(NotFoundDiaryException::new);
+        return this.diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
     }
 
 

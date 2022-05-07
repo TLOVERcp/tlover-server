@@ -25,6 +25,7 @@ public class DiaryInquiryResponse {
     private String diaryWriteDate;
     private String diaryEndDate;
     private String diaryView;
+    private Integer diaryConnectionCount;
 
     public static DiaryInquiryResponse from(Diary diary){
         return DiaryInquiryResponse.builder()
@@ -40,5 +41,19 @@ public class DiaryInquiryResponse {
                 .build();
     }
 
+    public static DiaryInquiryResponse from(Diary diary, Integer diaryConnectionCount){
+        return DiaryInquiryResponse.builder()
+                .diaryId(diary.getDiaryId())
+                .diaryTitle(diary.getDiaryTitle())
+                .diaryPublicStatus(diary.getDiaryPublicStatus())
+                .diaryStatus(diary.getDiaryStatus())
+                .diaryContext(diary.getDiaryContext())
+                .diaryStartDate(diary.getDiaryStartDate())
+                .diaryWriteDate(diary.getDiaryWriteDate())
+                .diaryEndDate(diary.getDiaryEndDate())
+                .diaryView(diary.getDiaryView())
+                .diaryConnectionCount(diaryConnectionCount)
+                .build();
+    }
 
 }
