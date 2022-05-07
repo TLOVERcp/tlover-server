@@ -1,11 +1,13 @@
 package com.example.tlover.domain.user.controller;
 
 
+import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.region.exception.NotFoundRegionNameException;
 import com.example.tlover.domain.thema.exception.NotFoundThemaNameException;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
+import com.example.tlover.domain.user.exception.oauth2.naver.*;
 import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
@@ -20,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -332,6 +335,14 @@ public class UserApiController {
      */
 
     @ApiOperation(value = "네이버 로그인", notes = "네이버 로그인을 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 409 , message = "[N0001] NAVER API 응답을 읽는데 실패했습니다.", response = NaverApiResponseException.class),
+            @ApiResponse(code = 409 , message = "[N0002] NAVER API URL이 잘못되었습니다. : ", response = NaverApiUrlException.class),
+            @ApiResponse(code = 401 , message = "[N0003] Naver 인증에 실패했습니다.", response = NaverAuthenticationFailedException.class),
+            @ApiResponse(code = 409 , message = "[N0004] NAVER와의 연결이 실패했습니다. : ", response = NaverConnectionException.class),
+            @ApiResponse(code = 404 , message = "[N0005] Naver API 검색 결과가 없습니다.", response = NaverNotFoundException.class),
+            @ApiResponse(code = 403 , message = "[N0006] Naver API 호출 권한이 없습니다.", response = NaverPermissionException.class),
+    })
     @PostMapping("/naver-login")
     public ResponseEntity<LoginResponse> loginNaverUser(@Valid @RequestBody NaverLoginRequest naverLoginRequest){
         LoginResponse loginResponse = oAuth2UserServiceNaver.validateNaverAccessToken(naverLoginRequest);

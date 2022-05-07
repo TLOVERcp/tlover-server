@@ -8,6 +8,7 @@ import com.example.tlover.domain.plan.dto.PlanListResponse;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.AlreadyDeletePlanException;
 import com.example.tlover.domain.plan.exception.NoAuthorityDeleteException;
+import com.example.tlover.domain.plan.exception.NotFoundAuthorityPlanException;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
@@ -46,8 +47,11 @@ public class PlanServiceImpl implements PlanService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<AuthorityPlan> authorityPlans = findAuthorityPlan(user);
         List<PlanListResponse> planList = new ArrayList<>();
-        for(int i=0; i<authorityPlans.size(); i++)
-            planList.add(PlanListResponse.from(authorityPlans.get(i).getPlan()));
+        for(int i=0; i<authorityPlans.size(); i++) {
+            Plan p = authorityPlans.get(i).getPlan();
+            List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(p).orElseThrow(NotFoundPlanException::new);
+            planList.add(PlanListResponse.from(p, planRegion));
+        }
         return planList;
     }
 
@@ -57,8 +61,11 @@ public class PlanServiceImpl implements PlanService{
         List<AuthorityPlan> authorityPlans = findAuthorityPlan(user);
         authorityPlans = checkStatus(authorityPlans, status);
         List<PlanListResponse> planList = new ArrayList<>();
-        for(int i=0; i<authorityPlans.size(); i++)
-            planList.add(PlanListResponse.from(authorityPlans.get(i).getPlan()));
+        for(int i=0; i<authorityPlans.size(); i++) {
+            Plan p = authorityPlans.get(i).getPlan();
+            List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(p).orElseThrow(NotFoundPlanException::new);
+            planList.add(PlanListResponse.from(p, planRegion));
+        }
         return planList;
     }
 
@@ -66,26 +73,20 @@ public class PlanServiceImpl implements PlanService{
     public PlanDetailResponse getPlanDetail(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
         List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan).orElseThrow(NotFoundPlanException::new);
-        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).orElseThrow(NotFoundPlanException::new);
+        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).orElseThrow(NotFoundAuthorityPlanException::new);
         return PlanDetailResponse.from(plan, planRegion, authorityPlans);
     }
 
     @Override
     @Transactional
     public Plan deletePlan(Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundPlanException::new);
-        Plan plan = planRepository.findByPlanId(planId).get();
-
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
         if(plan.getPlanStatus().equals("DELETE"))
             throw new AlreadyDeletePlanException();
         if(!user.getUserId().equals(plan.getUser().getUserId()))
             throw new NoAuthorityDeleteException();
-
-
         plan.setPlanStatus("DELETE");
-
-
-
         return plan;
     }
 
@@ -94,18 +95,6 @@ public class PlanServiceImpl implements PlanService{
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
         plan.updatePlan(createPlanRequest, plan);
         return plan;
-    }
-
-    @Override
-    public Boolean checkUser(Long planId, String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
-        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        List<AuthorityPlan> authorityPlans = findAuthorityPlan(user);
-        for(int i=0; i< authorityPlans.size(); i++){
-            if(user.getUserNickName().equals(authorityPlans.get(i).getUser().getUserNickName()))
-                return true;
-        }
-        return false;
     }
 
     @Override
@@ -130,10 +119,18 @@ public class PlanServiceImpl implements PlanService{
     }
 
     @Override
-    public Boolean checkPlanStatus(Long planId) {
+    public String checkPlanStatus(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        if(plan.getPlanStatus().equals("ACTIVE"))
-            return true;
+        return plan.getPlanStatus();
+    }
+
+    @Override
+    public Boolean checkUser(Long planId, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
+        AuthorityPlan authorityPlans = authorityPlanRepository.findAllByPlanAndUser(plan, user).orElseThrow(NotFoundAuthorityPlanException::new);
+        if(authorityPlans.getAuthorityPlanStatus().equals("HOST")||authorityPlans.getAuthorityPlanStatus().equals("ACCEPT"))
+                return true;
         return false;
     }
 

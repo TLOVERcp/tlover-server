@@ -25,5 +25,7 @@ public interface DiaryService {
 
     List<DiaryInquiryResponse> getGoingDiary();
 
+    List<DiaryPreferenceResponse> getDiaryPreference(String loginId);
+
     PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +20,9 @@ public class ResponseDto<T> {
     }
     public static <T> ResponseDto<T> create(String message, T dto) {
         return new ResponseDto<>(message, dto);
+    }
+
+    public static <T> ResponseDto<T> create(T dto){
+        return new ResponseDto<>(null,dto);
     }
 }
