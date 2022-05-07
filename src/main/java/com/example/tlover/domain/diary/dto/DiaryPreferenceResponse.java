@@ -26,6 +26,8 @@ public class DiaryPreferenceResponse {
 
     private List<String> image;
 
+    private String userNickName;
+
     public static DiaryPreferenceResponse from(Diary diary, List<String> regionName, List<String> image){
         return DiaryPreferenceResponse.builder()
                 .diaryId(diary.getDiaryId())
@@ -33,6 +35,7 @@ public class DiaryPreferenceResponse {
                 .startDate(diary.getDiaryStartDate())
                 .regionName(regionName)
                 .image(image)
+                .userNickName(diary.getUser().getUserNickName())
                 .build();
     }
 
