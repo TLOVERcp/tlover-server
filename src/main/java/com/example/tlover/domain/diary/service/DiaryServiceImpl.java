@@ -6,10 +6,7 @@ import com.example.tlover.domain.authority_diary.service.AuthorityDiaryService;
 import com.example.tlover.domain.diary.constant.DiaryConstants;
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
-import com.example.tlover.domain.diary.exception.NoSuchElementException;
-import com.example.tlover.domain.diary.exception.NotAuthorityDeleteException;
-import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_img.repository.DiaryImgRepository;
@@ -25,12 +22,16 @@ import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
+import com.example.tlover.domain.reply.dto.ReplyGetResponse;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.global.dto.PaginationDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.tlover.domain.diary.constant.DiaryConstants.eDiary.*;
 
@@ -221,5 +223,34 @@ public class DiaryServiceImpl implements DiaryService{
             }
         }
         return diaryInquiryResponseList;
+    }
+
+    /**
+     * 다이어리 검색 조회
+     * @return ResponseEntity<List<DiaryInquiryResponse>>
+     * @author 윤여찬
+     */
+    @Override
+    public PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable) {
+
+        Page<DiarySearchResponse> page;
+        Thema thema = themaRepository.findByThemaName(keyword);
+
+        // 키워드가 테마이름인지 확인
+        if (thema != null) {
+            page = this.diaryRepository.findByThemaKewordCustom(keyword, pageable);
+        } else {
+            page = this.diaryRepository.findByKeywordCustom(keyword, pageable);
+        }
+
+        List<DiarySearchResponse> data = page.get().collect(Collectors.toList());
+
+        for (DiarySearchResponse diary: data) {
+            diary.setThemaNames(diaryRepository.findBySearchedDiaryId(diary.getDiaryId()));
+        }
+
+        if (data.isEmpty()) throw new NotFoundSearchDiaryException();
+
+        return PaginationDto.of(page, data);
     }
 }

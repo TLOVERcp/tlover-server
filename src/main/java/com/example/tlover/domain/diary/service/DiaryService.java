@@ -2,6 +2,8 @@ package com.example.tlover.domain.diary.service;
 
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.global.dto.PaginationDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -22,4 +24,6 @@ public interface DiaryService {
     DiaryLikedViewsResponse getDiaryViews(Long diaryId);
 
     List<DiaryInquiryResponse> getGoingDiary();
+
+    PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
 }
