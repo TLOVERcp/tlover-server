@@ -5,11 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ApiModel(description = "유저의 스크랩 생성/삭제 요청 객체")
 public class ScrapChangeRequest {
