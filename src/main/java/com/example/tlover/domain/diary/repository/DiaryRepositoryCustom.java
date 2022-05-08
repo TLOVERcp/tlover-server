@@ -15,5 +15,7 @@ public interface DiaryRepositoryCustom {
 
     Page<DiarySearchResponse> findByThemaKewordCustom(String keyword, Pageable pageable);
 
-    List<String> findBySearchedDiaryId(Long diaryId);
+    List<String> findThemaNamesByDiaryId(Long diaryId);
+
+    List<String> findRegionNamesByDiaryId(Long diaryId);
 }
