@@ -23,7 +23,6 @@ public class DiarySearchResponse {
     private String diaryEndDate;
     private String diaryView;
     private List<String> themaNames;
-    // 테마 이름 여러개 어떻게 리턴해야 하는지?
 
 
     @QueryProjection
