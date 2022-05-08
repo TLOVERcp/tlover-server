@@ -24,4 +24,6 @@ public interface DiaryService {
     List<DiaryInquiryResponse> getGoingDiary();
 
     List<DiaryPreferenceResponse> getDiaryPreference(String loginId);
+
+    List<MyDiaryListResponse> getDiaryList(String loginId);
 }
