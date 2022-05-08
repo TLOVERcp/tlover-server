@@ -298,8 +298,10 @@ public class DiaryServiceImpl implements DiaryService{
         List<DiarySearchResponse> data = page.get().collect(Collectors.toList());
 
         for (DiarySearchResponse diary : data) {
-            List<String> themaNames = diaryRepository.findBySearchedDiaryId(diary.getDiaryId());
+            List<String> themaNames = diaryRepository.findThemaNamesByDiaryId(diary.getDiaryId());
+            List<String> regionNames = diaryRepository.findRegionNamesByDiaryId(diary.getDiaryId());
             if (themaNames != null) diary.setThemaNames(themaNames);
+            if (regionNames != null) diary.setRegionNames(regionNames);
         }
 
         if (data.isEmpty()) throw new NotFoundSearchDiaryException();

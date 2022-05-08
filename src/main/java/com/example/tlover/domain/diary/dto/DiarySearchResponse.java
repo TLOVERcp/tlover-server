@@ -23,6 +23,7 @@ public class DiarySearchResponse {
     private String diaryEndDate;
     private String diaryView;
     private List<String> themaNames;
+    private List<String> regionNames;
 
 
     @QueryProjection
@@ -41,5 +42,9 @@ public class DiarySearchResponse {
 
     public void setThemaNames(List<String> themaNames) {
         this.themaNames = themaNames;
+    }
+
+    public void setRegionNames(List<String> regionNames) {
+        this.regionNames = regionNames;
     }
 }

@@ -15,6 +15,8 @@ import java.util.List;
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
 import static com.example.tlover.domain.diary_thema.entity.QDiaryThema.diaryThema;
 import static com.example.tlover.domain.thema.entity.QThema.thema;
+import static com.example.tlover.domain.diary_region.entity.QDiaryRegion.diaryRegion;
+import static com.example.tlover.domain.region.entity.QRegion.region;
 
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
@@ -113,7 +115,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public List<String> findBySearchedDiaryId(Long diaryId) {
+    public List<String> findThemaNamesByDiaryId(Long diaryId) {
 
         List<String> content = queryFactory
                 .select(
@@ -125,6 +127,24 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .leftJoin(thema)
                 .on(diaryThema.thema.themaId.eq(thema.themaId))
                 .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull())
+                .fetch();
+
+        return content;
+    }
+
+    @Override
+    public List<String> findRegionNamesByDiaryId(Long diaryId) {
+
+        List<String> content = queryFactory
+                .select(
+                        region.regionName
+                )
+                .from(diary)
+                .leftJoin(diaryRegion)
+                .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
+                .leftJoin(region)
+                .on(diaryRegion.region.regionId.eq(region.regionId))
+                .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq("COMPLETE"), diaryRegion.diaryRegionId.isNotNull())
                 .fetch();
 
         return content;
