@@ -36,7 +36,7 @@ public class SearchApiController {
 
     /**
      * 다이어리 검색 조회
-     * @return ResponseEntity<List<DiaryInquiryResponse>>
+     * @return ResponseEntity<PaginationDto<List<DiarySearchResponse>>>
      * @author 윤여찬
      */
     @ApiOperation(value = "다이어리 검색",notes = "다이어리를 검색합니다.")
@@ -46,8 +46,8 @@ public class SearchApiController {
     @GetMapping("/get-diary")
     public ResponseEntity<PaginationDto<List<DiarySearchResponse>>> searchDiary(@RequestParam String keyword,
                                                                                @PageableDefault Pageable pageable) {
-        PaginationDto<List<DiarySearchResponse>> diaryInquiryResponse = diaryService.getSearchedDiary(keyword, pageable);
-        return ResponseEntity.ok(diaryInquiryResponse);
+        PaginationDto<List<DiarySearchResponse>> diarySearchResponse = diaryService.getSearchedDiary(keyword, pageable);
+        return ResponseEntity.ok(diarySearchResponse);
     }
 
 

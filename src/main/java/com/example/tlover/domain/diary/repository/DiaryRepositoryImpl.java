@@ -42,7 +42,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
                 ))
                 .from(diary)
-                .where(diary.diaryTitle.contains(keyword), diary.diaryContext.contains(keyword), diary.diaryStatus.eq("COMPLETE"))
+                .where(diary.diaryTitle.contains(keyword).or(diary.diaryContext.contains(keyword)), diary.diaryStatus.eq("COMPLETE"))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -60,7 +60,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                         diary.diaryView
                 ))
                 .from(diary)
-                .where(diary.diaryTitle.contains(keyword), diary.diaryContext.contains(keyword), diary.diaryStatus.eq("COMPLETE"));
+                .where(diary.diaryTitle.contains(keyword).or(diary.diaryContext.contains(keyword)), diary.diaryStatus.eq("COMPLETE"));
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
@@ -85,7 +85,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .on(diary.diaryId.eq(diaryThema.diary.diaryId))
                 .leftJoin(thema)
                 .on(diaryThema.thema.themaId.eq(thema.themaId))
-                .where(thema.themaName.eq(keyword), diary.diaryStatus.eq("COMPLETE"))
+                .where(thema.themaName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -107,7 +107,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .on(diary.diaryId.eq(diaryThema.diary.diaryId))
                 .leftJoin(thema)
                 .on(diaryThema.thema.themaId.eq(thema.themaId))
-                .where(thema.themaName.eq(keyword), diary.diaryStatus.eq("COMPLETE"));
+                .where(thema.themaName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull());
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
@@ -124,7 +124,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .on(diary.diaryId.eq(diaryThema.diary.diaryId))
                 .leftJoin(thema)
                 .on(diaryThema.thema.themaId.eq(thema.themaId))
-                .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq("COMPLETE"))
+                .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull())
                 .fetch();
 
         return content;

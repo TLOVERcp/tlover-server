@@ -255,7 +255,7 @@ public class DiaryServiceImpl implements DiaryService{
 
     /**
      * 다이어리 검색 조회
-     * @return ResponseEntity<List<DiaryInquiryResponse>>
+     * @return PaginationDto<List<DiarySearchResponse>>
      * @author 윤여찬
      */
     @Override
@@ -273,8 +273,9 @@ public class DiaryServiceImpl implements DiaryService{
 
         List<DiarySearchResponse> data = page.get().collect(Collectors.toList());
 
-        for (DiarySearchResponse diary: data) {
-            diary.setThemaNames(diaryRepository.findBySearchedDiaryId(diary.getDiaryId()));
+        for (DiarySearchResponse diary : data) {
+            List<String> themaNames = diaryRepository.findBySearchedDiaryId(diary.getDiaryId());
+            if (themaNames != null) diary.setThemaNames(themaNames);
         }
 
         if (data.isEmpty()) throw new NotFoundSearchDiaryException();
