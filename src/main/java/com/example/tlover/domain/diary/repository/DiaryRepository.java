@@ -16,6 +16,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findBy();
     Optional<Diary> findByDiaryId(Long diaryId);
     Optional<Diary> findByUserUserIdAndPlanPlanId(Long userId, Long planId);
+    Optional<List<Diary>> findByUser(User user);
 
     List<Diary> findByDiaryThemas(DiaryThema diaryThema);
 

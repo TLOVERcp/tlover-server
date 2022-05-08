@@ -250,4 +250,28 @@ public class DiaryServiceImpl implements DiaryService{
 
         return diaryPreferenceResponses;
     }
+
+    @Override
+    public List<MyDiaryListResponse> getDiaryList(String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).get();
+        List<Diary> diaries = diaryRepository.findByUser(user).get();
+        List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
+        List<String> diaryRegionNames = new ArrayList<>();
+        List<String> diaryThemaNames = new ArrayList<>();
+
+        for (Diary diary : diaries) {
+            List<DiaryRegion> diaryRegions = diaryRegionRepository.findByDiary(diary);
+            for (DiaryRegion diaryRegion : diaryRegions) {
+                String diaryRegionName = diaryRegion.getRegion().getRegionName();
+                diaryRegionNames.add(diaryRegionName);
+            }
+            List<DiaryThema> diaryThemas = diaryThemaRepository.findByDiary(diary);
+            for (DiaryThema diaryThema : diaryThemas) {
+                String diaryThemaName = diaryThema.getThema().getThemaName();
+                diaryThemaNames.add(diaryThemaName);
+            }
+            myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionNames, diaryThemaNames));
+        }
+        return myDiaryListResponses;
+    }
 }
