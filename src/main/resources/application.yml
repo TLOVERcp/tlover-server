@@ -59,4 +59,6 @@ sms:
   access-key: JUARhMRAzpFrstZqd775
   secret-key: lgiOpHwGvTW5HjcIaCKkhATBHFB3qeRuWzaBOrZZ
 
+weather:
+  service-key: TafHkD6CilGs36dV%2B9czinbrrqD1AymCTtNo7U%2B9PpGxErWg76qqU7Iq0cRSqpi7lEbvLT872%2B19d6p0%2B7qE5g%3D%3D
 

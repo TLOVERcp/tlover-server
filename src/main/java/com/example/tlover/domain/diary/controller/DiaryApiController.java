@@ -10,6 +10,8 @@ import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.exception.dto.ApiErrorResponse;
 import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
+import com.example.tlover.global.weather.service.WeatherService;
+import com.example.tlover.global.weather.service.WeatherServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -175,10 +177,26 @@ public class DiaryApiController {
      * @Author 한규범
      */
     @ApiOperation(value = "홈 화면 여행 취향 다이어리 조회", notes = "나와 여행 취향이 닮은 사람들에 대한 다이어리를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+    })
     @GetMapping(value = "/get-diary-prefer")
     public ResponseEntity<ResponseDto<List<DiaryPreferenceResponse>>> getDiaryPreference(){
         String loginId = jwtService.getLoginId();
         List<DiaryPreferenceResponse> diaryInquiryResponse = diaryService.getDiaryPreference(loginId);
         return ResponseEntity.ok(ResponseDto.create(diaryInquiryResponse));
+    }
+
+    @ApiOperation(value = "날씨기반 여행 추천", notes = "날씨 데이터를 불러와 맑은 날에 대해서 다이어리를 추천해줍니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+    })
+    @GetMapping(value = "/get-diary-weather")
+    public void getDairyWeather(){
+        diaryService.getWeather();
+//        weatherService.getWeather();
+
     }
 }

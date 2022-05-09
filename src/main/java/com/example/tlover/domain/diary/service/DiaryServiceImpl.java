@@ -33,16 +33,14 @@ import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
+import com.example.tlover.global.weather.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.tlover.domain.diary.constant.DiaryConstants.eDiary.*;
 
@@ -64,7 +62,7 @@ public class DiaryServiceImpl implements DiaryService{
     private final DiaryLikedRepository diaryLikedRepository;
     private final UserRegionRepository userRegionRepository;
     private final UserThemaRepository userThemaRepository;
-
+    private final WeatherService weatherService;
     private final DiaryConstants diaryConstants;
 
     @Override
@@ -248,6 +246,13 @@ public class DiaryServiceImpl implements DiaryService{
             diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
         }
 
+        Collections.shuffle(diaryPreferenceResponses);
+
         return diaryPreferenceResponses;
+    }
+
+    @Override
+    public void getWeather() {
+        weatherService.getWeather();
     }
 }
