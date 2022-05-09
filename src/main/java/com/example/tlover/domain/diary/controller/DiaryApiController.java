@@ -2,11 +2,10 @@ package com.example.tlover.domain.diary.controller;
 
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
-import com.example.tlover.domain.diary.exception.NotAuthorityDeleteException;
-import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.user.controller.UserApiController;
+import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.exception.dto.ApiErrorResponse;
 import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -15,6 +14,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -229,7 +230,7 @@ public class DiaryApiController {
     })
     @GetMapping("/search")
     public ResponseEntity<ResponseDto<PaginationDto<List<DiarySearchResponse>>>> searchDiary(@RequestParam String keyword,
-                                                                                             @PageableDefault Pageable pageable) {
+                                                                                             @PageableDefault SpringDataWebProperties.Pageable pageable) {
         PaginationDto<List<DiarySearchResponse>> diarySearchResponse = diaryService.getSearchedDiary(keyword, pageable);
         return ResponseEntity.ok(ResponseDto.create(diarySearchResponse));
     }
