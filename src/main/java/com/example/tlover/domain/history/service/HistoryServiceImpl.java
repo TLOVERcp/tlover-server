@@ -4,14 +4,14 @@ import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.history.dto.CreateHistoryRequest;
-import com.example.tlover.domain.history.dto.CreateHistoryResponse;
-import com.example.tlover.domain.history.dto.DeleteHistoryResponse;
 import com.example.tlover.domain.history.dto.GetHistoryResponse;
+import com.example.tlover.domain.history.exception.NotFoundHistoryException;
 import com.example.tlover.domain.history.exception.RejectDeletedDiaryException;
 import com.example.tlover.domain.history.entity.History;
 import com.example.tlover.domain.history.exception.RejectGetDiaryException;
 import com.example.tlover.domain.history.repository.HistoryRepository;
 import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class HistoryServiceImpl implements HistoryService{
 
     @Override
     public List<GetHistoryResponse> getUserHistory(String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
 
         List<History> histories = historyRepository.findByUser(user);
         List<GetHistoryResponse> historyResponses = new ArrayList<>();
@@ -73,12 +73,15 @@ public class HistoryServiceImpl implements HistoryService{
                 return o2.getDate().compareTo(o1.getDate());
             }
         });
+        if (historyResponses.isEmpty()) {
+            throw new NotFoundHistoryException();
+        }
         return historyResponses;
     }
 
     @Override
     public void deleteHistory(String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         historyRepository.deleteByUser(user);
     }
 }
