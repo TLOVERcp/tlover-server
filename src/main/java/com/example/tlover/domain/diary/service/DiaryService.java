@@ -30,4 +30,6 @@ public interface DiaryService {
     List<MyDiaryListResponse> getDiaryList(String loginId);
 
     PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
+
+    List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
 }
