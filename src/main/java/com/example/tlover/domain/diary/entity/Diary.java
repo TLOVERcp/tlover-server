@@ -8,6 +8,7 @@ import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
+import com.example.tlover.domain.history.entity.History;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
@@ -78,6 +79,9 @@ public class Diary {
 
     @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<MyFile> myFiles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary")
+    private List<History> histories = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<DiaryConnection> diaryConnections = new ArrayList<>();
