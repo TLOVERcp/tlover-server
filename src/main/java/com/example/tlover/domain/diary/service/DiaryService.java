@@ -2,6 +2,8 @@ package com.example.tlover.domain.diary.service;
 
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.global.dto.PaginationDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -24,6 +26,12 @@ public interface DiaryService {
     List<DiaryInquiryResponse> getGoingDiary();
 
     List<DiaryPreferenceResponse> getDiaryPreference(String loginId);
+
+    List<MyDiaryListResponse> getDiaryList(String loginId);
+
+    PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
+
+    List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
 
     void getWeather();
 }

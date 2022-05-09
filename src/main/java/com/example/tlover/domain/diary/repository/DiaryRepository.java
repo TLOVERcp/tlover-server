@@ -11,11 +11,12 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface DiaryRepository extends JpaRepository<Diary, Long> {
+public interface DiaryRepository extends JpaRepository<Diary, Long>, DiaryRepositoryCustom {
     Diary findByUserAndDiaryId(User user, Long diaryId);
     List<Diary> findBy();
     Optional<Diary> findByDiaryId(Long diaryId);
     Optional<Diary> findByUserUserIdAndPlanPlanId(Long userId, Long planId);
+    Optional<List<Diary>> findByUser(User user);
 
     List<Diary> findByDiaryThemas(DiaryThema diaryThema);
 
