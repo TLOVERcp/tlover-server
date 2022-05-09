@@ -22,7 +22,6 @@ import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
-import com.example.tlover.domain.reply.dto.ReplyGetResponse;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
@@ -255,27 +254,60 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     public List<MyDiaryListResponse> getDiaryList(String loginId) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        List<Diary> diaries = diaryRepository.findByUser(user).get();
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        List<Diary> diaries = diaryRepository.findByUser(user).orElseThrow(NotFoundDiaryException::new);
         List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
         List<String> diaryRegionNames = new ArrayList<>();
         List<String> diaryThemaNames = new ArrayList<>();
 
         for (Diary diary : diaries) {
-            List<DiaryRegion> diaryRegions = diaryRegionRepository.findByDiary(diary);
-            for (DiaryRegion diaryRegion : diaryRegions) {
-                String diaryRegionName = diaryRegion.getRegion().getRegionName();
-                diaryRegionNames.add(diaryRegionName);
-            }
-            List<DiaryThema> diaryThemas = diaryThemaRepository.findByDiary(diary);
-            for (DiaryThema diaryThema : diaryThemas) {
-                String diaryThemaName = diaryThema.getThema().getThemaName();
-                diaryThemaNames.add(diaryThemaName);
-            }
+            diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
+            diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
             myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionNames, diaryThemaNames));
+        }
+        if (myDiaryListResponses.isEmpty()) {
+            throw new NotFoundMyDiaryException();
         }
         return myDiaryListResponses;
     }
+
+    @Override
+    public List<MyDiaryListResponse> getAcceptDiaryList(String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        List<AuthorityDiary> acceptDiaries = authorityDiaryRepository.findByAuthorityDiaryStatusAndUser("ACCEPT", user);
+        List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
+        List<String> diaryRegionNames = new ArrayList<>();
+        List<String> diaryThemaNames = new ArrayList<>();
+
+        for (AuthorityDiary acceptDiary : acceptDiaries) {
+            diaryRegionNames = getDiaryRegions(diaryRegionNames, acceptDiary.getDiary());
+            diaryThemaNames = getDiaryThemas(diaryThemaNames, acceptDiary.getDiary());
+            myDiaryListResponses.add(MyDiaryListResponse.from(acceptDiary.getDiary(), diaryRegionNames, diaryThemaNames));
+        }
+        if (myDiaryListResponses.isEmpty()) {
+            throw new NotFoundAcceptDiaryException();
+        }
+        return myDiaryListResponses;
+    }
+
+    private List<String> getDiaryRegions(List<String> diaryRegionNames, Diary diary) {
+        List<DiaryRegion> diaryRegions = diaryRegionRepository.findByDiary(diary);
+        for (DiaryRegion diaryRegion : diaryRegions) {
+            String diaryRegionName = diaryRegion.getRegion().getRegionName();
+            diaryRegionNames.add(diaryRegionName);
+        }
+        return diaryRegionNames;
+    }
+
+    private List<String> getDiaryThemas(List<String> diaryThemaNames, Diary diary) {
+        List<DiaryThema> diaryThemas = diaryThemaRepository.findByDiary(diary);
+        for (DiaryThema diaryThema : diaryThemas) {
+            String diaryThemaName = diaryThema.getThema().getThemaName();
+            diaryThemaNames.add(diaryThemaName);
+        }
+        return diaryThemaNames;
+    }
+
 
     /**
      * 다이어리 검색 조회

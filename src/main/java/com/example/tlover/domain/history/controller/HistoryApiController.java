@@ -4,6 +4,7 @@ import com.example.tlover.domain.history.dto.CreateHistoryRequest;
 import com.example.tlover.domain.history.dto.CreateHistoryResponse;
 import com.example.tlover.domain.history.dto.DeleteHistoryResponse;
 import com.example.tlover.domain.history.dto.GetHistoryResponse;
+import com.example.tlover.domain.history.exception.NotFoundHistoryException;
 import com.example.tlover.domain.history.exception.RejectDeletedDiaryException;
 import com.example.tlover.domain.history.exception.RejectGetDiaryException;
 import com.example.tlover.domain.history.service.HistoryServiceImpl;
@@ -38,7 +39,11 @@ public class HistoryApiController {
      */
     @ApiOperation(value = "방문 기록 생성", notes = "방문 기록을 생성합니다.")
     @PostMapping(value = "/create-history")
-    public ResponseEntity<CreateHistoryResponse> createHistory(@Valid CreateHistoryRequest createHistoryRequest) {
+    @ApiResponses(value = {
+            @ApiResponse(code = 401 , message = "해당 다이어리는 조회할 수 없는 상태입니다.(H0001)" , response = RejectGetDiaryException.class),
+            @ApiResponse(code = 400 , message = "해당 다이어리는 삭제된 상태입니다.(H0002)" , response = RejectDeletedDiaryException.class)
+    })
+    public ResponseEntity<CreateHistoryResponse> createHistory(@Valid @RequestBody CreateHistoryRequest createHistoryRequest) {
         String loginId = jwtService.getLoginId();
         historyService.createHistory(loginId, createHistoryRequest);
         return ResponseEntity.ok(CreateHistoryResponse.builder()
@@ -55,8 +60,7 @@ public class HistoryApiController {
     @ApiOperation(value = "방문 기록 조회", notes = "방문 기록을 조회합니다.")
     @GetMapping("/get-history")
     @ApiResponses(value = {
-            @ApiResponse(code = 400 , message = "해당 다이어리는 조회할 수 없는 상태입니다.(H0001)" , response = RejectGetDiaryException.class),
-            @ApiResponse(code = 400 , message = "해당 다이어리는 삭제된 상태입니다.(H0002)" , response = RejectDeletedDiaryException.class)
+            @ApiResponse(code = 404, message = "방문 기록을 찾을 수 없습니다(H0003).", response = NotFoundHistoryException.class)
     })
     public ResponseEntity<ResponseDto<List<GetHistoryResponse>>> getUserRegion() {
         String loginId = jwtService.getLoginId();
@@ -78,6 +82,5 @@ public class HistoryApiController {
         return ResponseEntity.ok(DeleteHistoryResponse.builder()
                 .message("방문 기록이 전체 삭제되었습니다.")
                 .build());
-
     }
 }
