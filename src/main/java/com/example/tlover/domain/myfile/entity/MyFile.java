@@ -24,11 +24,11 @@ public class MyFile extends BaseTimeEntity {
         private int diaryDay;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "user_userId")
         private User user;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "diary_id")
+        @JoinColumn(name = "diary_diaryId")
         private Diary diary;
 
         private boolean isDeleted;

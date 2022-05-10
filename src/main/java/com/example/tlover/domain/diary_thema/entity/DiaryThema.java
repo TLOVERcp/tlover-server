@@ -18,7 +18,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class DiaryThema {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryThemaId;
 
     @ManyToOne(fetch = FetchType.EAGER)

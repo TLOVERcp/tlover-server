@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Getter
 @Setter
@@ -16,8 +18,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class UserThema {
     @Id
-    @GeneratedValue
-    @Column
+    @GeneratedValue(strategy = IDENTITY)
     private Long userThemaId;
 
     @ManyToOne(fetch = FetchType.LAZY)

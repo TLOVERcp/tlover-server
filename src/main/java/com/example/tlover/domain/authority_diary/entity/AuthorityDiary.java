@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class AuthorityDiary {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorityDiaryId;
 
     @ManyToOne(fetch = FetchType.LAZY)

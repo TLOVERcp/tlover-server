@@ -15,7 +15,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class DiaryLiked {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryLikedId;
 
     private boolean isLiked;
