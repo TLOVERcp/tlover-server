@@ -26,7 +26,6 @@ public class DiaryConnection extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_diaryId")
     private Diary diary;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
     private User user;

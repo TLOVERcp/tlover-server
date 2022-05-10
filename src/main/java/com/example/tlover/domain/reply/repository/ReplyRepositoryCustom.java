@@ -7,6 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface ReplyRepositoryCustom {
-
     Page<ReplyGetResponse> findByDiaryCustom(Diary diary, Pageable pageable);
 }
