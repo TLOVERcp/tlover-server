@@ -18,8 +18,11 @@ public interface AuthorityDiaryRepository extends JpaRepository<AuthorityDiary, 
     Optional<AuthorityDiary
             > findByUserUserId(Long userId);
 
-    Optional<AuthorityDiary
-            > findByUserUserIdAndDiaryDiaryId(Long userId, Long diaryId);
+    Optional<AuthorityDiary> findByUserUserIdAndDiaryDiaryId(Long userId, Long diaryId);
 
     Optional<AuthorityDiary> findByAuthorityDiaryIdAndUser(Long authorityDiaryId, User user);
+
+    Optional<List<AuthorityDiary>> findByUserAndAuthorityDiaryStatus(User user, String request);
+
+    Optional<AuthorityDiary> findByDiaryAndUser(Diary diary, User user);
 }

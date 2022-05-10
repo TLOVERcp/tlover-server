@@ -23,6 +23,10 @@ public interface DiaryService {
 
     DiaryLikedViewsResponse getDiaryViews(Long diaryId);
 
+    void completeDiary(String loginId, Long planId, Long diaryId);
+
+    PaginationDto<List<DiaryInquiryByLikedRankingResponse>> getDiaryByLikedRanking(Pageable pageable);
+
     List<DiaryInquiryResponse> getGoingDiary();
 
     List<DiaryPreferenceResponse> getDiaryPreference(String loginId);

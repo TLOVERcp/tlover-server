@@ -13,6 +13,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class DiaryRegion {
 
+
+
     @Id
     @GeneratedValue
     private Long diaryRegionId;

@@ -4,6 +4,8 @@ import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.service.DiaryService;
+import com.example.tlover.domain.scrap.constant.ScrapConstants;
+import com.example.tlover.domain.scrap.dto.DiaryInquiryByScrapRankingResponse;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.exception.dto.ApiErrorResponse;
@@ -36,7 +38,8 @@ public class DiaryApiController {
 
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
-     * @return ResponseEntity<List<DiaryInquiryResponse>>
+     *
+     * @return ResponseEntity<List < DiaryInquiryResponse>>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 조회", notes = "다이어리를 조회합니다.")
@@ -53,7 +56,8 @@ public class DiaryApiController {
 
     /**
      * 갈만한 여행지 조회
-     * @return ResponseEntity<List<DiaryInquiryResponse>>
+     *
+     * @return ResponseEntity<List < DiaryInquiryResponse>>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 갈만한 여행지 조회", notes = "홈 화면의 두번째 조회 API입니다.")
@@ -70,6 +74,7 @@ public class DiaryApiController {
     /**
      * 다이어리 작성 api
      * swagger url => [post]  api/v1/plans/create-diary
+     *
      * @param createDiaryRequest
      * @param request
      * @return ResponseEntity<CreateDiaryResponse>
@@ -91,9 +96,35 @@ public class DiaryApiController {
     }
 
 
+    @PostMapping(value = "/finish-diary/{planId}/{diaryId}")
+    public ResponseEntity<ResponseDto<CreateDiaryResponse>> finishDiary(@PathVariable Long planId, @PathVariable Long diaryId) {
+        String loginId = jwtService.getLoginId();
+        diaryService.completeDiary(loginId , planId , diaryId);
+        return null;
+    }
+
+
+    /** DiaryLikedRanking
+     * 좋아요순으로 다이어리 보여주기
+     */
+    @ApiOperation(value = "좋아요순으로 다이어리 보여주기" , notes = "특정 다이어리의 좋아요 갯수를 조회합니다.")
+    @PostMapping(value = "/liked-ranking")
+    public ResponseEntity<ResponseDto<PaginationDto<List<DiaryInquiryByLikedRankingResponse>>>> DiaryLikedRanking(@PageableDefault Pageable pageable) {
+
+        return ResponseEntity.ok(ResponseDto.create("모든 다이어리를 좋아요 순으로 조회합니다."
+                , this.diaryService.getDiaryByLikedRanking(pageable)));
+    }
+
+    /**
+     *
+     */
+
+
+
     /**
      * 다이어리 삭제 API
      * swagger url => [post]  api/v1/plans/delete-diary/{diaryId}
+     *
      * @param diaryId
      * @return ResponseEntity<CreateDiaryResponse>
      * author => 신동민
@@ -111,11 +142,12 @@ public class DiaryApiController {
     @PostMapping(value = "/delete-diary/{diaryId}")
     public ResponseEntity<ResponseDto<DeleteDiaryResponse>> DeleteDiary(@PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
-        return ResponseEntity.ok(ResponseDto.create("삭제가 완료 되었습니다" , diaryService.deleteDiary(diaryId, loginId)));
+        return ResponseEntity.ok(ResponseDto.create("삭제가 완료 되었습니다", diaryService.deleteDiary(diaryId, loginId)));
     }
 
     /**
      * 다이어리 수정 API
+     *
      * @param modifyDiaryRequest
      * @param request
      * @return ResponseEntity<String>
@@ -123,7 +155,7 @@ public class DiaryApiController {
      */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
     @PostMapping(value = "/modify-diary/{diaryId}")
-    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request){
+    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request) {
         String loginId = jwtService.getLoginId();
         Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
         return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
@@ -157,9 +189,9 @@ public class DiaryApiController {
 
     /**
      * 좋아요의 갯수 가져오기
+     *
      * @param diaryId
-     * @return
-     * author 신동민
+     * @return author 신동민
      */
 
     @ApiOperation(value = "좋아요 갯수 조회", notes = "특정 다이어리의 좋아요 갯수를 조회합니다.")
@@ -168,9 +200,9 @@ public class DiaryApiController {
         return ResponseEntity.ok(ResponseDto.create("테스트", diaryService.getDiaryViews(diaryId)));
     }
 
-
     /**
      * 홈 화면 여행 취향 다이어리 조회
+     *
      * @return
      * @Author 한규범
      */

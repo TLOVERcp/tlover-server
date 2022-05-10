@@ -54,9 +54,7 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                 .select(new QDiaryInquiryByScrapRankingResponse(
                         diary.diaryId,
                         diary.diaryTitle,
-                        diary.diaryPublicStatus,
                         diary.diaryStatus,
-                        diary.diaryContext,
                         diary.diaryStartDate,
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
@@ -77,9 +75,7 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                 .select(new QDiaryInquiryByScrapRankingResponse(
                         diary.diaryId,
                         diary.diaryTitle,
-                        diary.diaryPublicStatus,
                         diary.diaryStatus,
-                        diary.diaryContext,
                         diary.diaryStartDate,
                         diary.diaryWriteDate,
                         diary.diaryEndDate,

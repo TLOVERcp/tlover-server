@@ -1,34 +1,29 @@
 package com.example.tlover.domain.diary.dto;
 
-import com.example.tlover.domain.thema.entity.Thema;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
+@Builder
 @NoArgsConstructor
-@ApiModel(description = "다이어리 검색을 위한 객체")
-public class DiarySearchResponse {
+@ApiModel(description = "다이어리 좋아요 많은 순 조회 위한 객체")
+public class DiaryInquiryByLikedRankingResponse {
+
     private Long diaryId;
     private String diaryTitle;
-    private String  diaryPublicStatus;
     private String diaryStatus;
-    private String diaryContext;
     private String diaryStartDate;
     private String diaryWriteDate;
     private String diaryEndDate;
     private String diaryView;
-    private List<String> themaNames;
-    private List<String> regionNames;
-
+    private Long likedCount;
 
     @QueryProjection
-    public DiarySearchResponse(Long diaryId, String diaryTitle, String diaryStatus,
-                               String diaryStartDate, String diaryWriteDate, String diaryEndDate, String diaryView) {
+    public DiaryInquiryByLikedRankingResponse(Long diaryId, String diaryTitle, String diaryStatus,
+                                              String diaryStartDate, String diaryWriteDate, String diaryEndDate, String diaryView, Long likedCount) {
         this.diaryId = diaryId;
         this.diaryTitle = diaryTitle;
         this.diaryStatus = diaryStatus;
@@ -36,13 +31,7 @@ public class DiarySearchResponse {
         this.diaryWriteDate = diaryWriteDate;
         this.diaryEndDate = diaryEndDate;
         this.diaryView = diaryView;
+        this.likedCount = likedCount;
     }
 
-    public void setThemaNames(List<String> themaNames) {
-        this.themaNames = themaNames;
-    }
-
-    public void setRegionNames(List<String> regionNames) {
-        this.regionNames = regionNames;
-    }
 }
