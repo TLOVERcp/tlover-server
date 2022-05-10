@@ -13,10 +13,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class DiaryRegion {
 
-
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryRegionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
