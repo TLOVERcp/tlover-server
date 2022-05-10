@@ -1,4 +1,4 @@
-package com.example.tlover.domain.diary_connect.constant;
+package com.example.tlover.domain.diary_connection.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
