@@ -30,7 +30,7 @@ public class GetHistoryResponse {
                 .userNickName(user.getUserNickName())
                 .diaryId(history.getDiary().getDiaryId())
                 .diaryTitle(history.getDiary().getDiaryTitle())
-                .diaryContext(history.getDiary().getDiaryContext())
+//                .diaryContext(history.getDiary().getDiaryContext())
                 .relatedPlanId(history.getDiary().getPlan().getPlanId())
                 .relatedPlanTitle(history.getDiary().getPlan().getPlanTitle())
                 .relatedPlanContext(history.getDiary().getPlan().getPlanContext())

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +57,12 @@ public class MyFileServiceImpl implements MyFileService {
     @Override
     public List<MyFile> findByUserAndDiary(User user, Diary diary) {
         return this.myFileRepository.findByUserAndDiary(user , diary).orElseThrow(NotFoundMyFileException::new);
+    }
+
+    @Override
+    public Optional<List<MyFile>> findByDiaryAndDiaryDay(Diary diary, int diaryDay) {
+        return myFileRepository.findByDiaryAndDiaryDay(diary , diaryDay);
+
     }
 
 }

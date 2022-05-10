@@ -9,8 +9,8 @@ import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.exception.NoSuchElementException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
-import com.example.tlover.domain.diary_img.entity.DiaryImg;
-import com.example.tlover.domain.diary_img.repository.DiaryImgRepository;
+import com.example.tlover.domain.diary_context.entity.DiaryContext;
+import com.example.tlover.domain.diary_context.repository.DiaryContextRepository;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_region.repository.DiaryRegionRepository;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
@@ -20,9 +20,11 @@ import com.example.tlover.domain.diray_liked.repository.DiaryLikedRepository;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
+import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
+import com.example.tlover.domain.scrap.dto.DiaryInquiryByScrapRankingResponse;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
@@ -58,7 +60,6 @@ public class DiaryServiceImpl implements DiaryService{
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final MyFileService myFileService;
-    private final DiaryImgRepository diaryImgRepository;
     private final DiaryRegionRepository diaryRegionRepository;
     private final DiaryThemaRepository diaryThemaRepository;
     private final RegionRepository regionRepository;
@@ -66,6 +67,8 @@ public class DiaryServiceImpl implements DiaryService{
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
     private final DiaryLikedRepository diaryLikedRepository;
+
+    private final DiaryContextRepository diaryContextRepository;
     private final UserRegionRepository userRegionRepository;
     private final UserThemaRepository userThemaRepository;
     private final WeatherService weatherService;
@@ -75,41 +78,77 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
 
-            User user = userRepository.findByUserLoginId(loginId).get();
-            Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
+        User user = userRepository.findByUserLoginId(loginId).get();
+        Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
+        Optional<Diary> cdr = diaryRepository.findByPlan(plan);
 
-        Optional<Diary> cdr = diaryRepository.findByUserUserIdAndPlanPlanId(user.getUserId(), plan.getPlanId());
-
-        if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) throw new AlreadyExistDiaryException();
-        //의논하기
-//        else if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(DELETE.getValue())) {
-//            diaryRepository.delete(cdr.get());
-//        }
-
-        Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, user, plan));
+        Long diaryId =0L;
+        if(cdr.isEmpty()) {
+            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, user, plan));
+            diaryId = diary.getDiaryId();
             authorityDiaryService.addDiaryUser(diary , loginId);
 
-        for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-            MyFile myFile = myFileService.saveImage(diaryImgFileName);
-            myFile.setDiary(diary);
-            myFile.setUser(user);
-            DiaryImg diaryImg = DiaryImg.toEntity(myFile.getFileKey(), diary);
-            diaryImgRepository.save(diaryImg);
+            for (String regionName : createDiaryRequest.getRegionName()) {
+                Region region = regionRepository.findByRegionName(regionName).get();
+                DiaryRegion diaryRegion = DiaryRegion.toEntity(region, diary);
+                diaryRegionRepository.save(diaryRegion);
+            }
+
+            for (String themaName : createDiaryRequest.getThemaName()) {
+                Thema thema = themaRepository.findByThemaName(themaName);
+                DiaryThema diaryThema = DiaryThema.toEntity(thema, diary);
+                diaryThemaRepository.save(diaryThema);
+            }
+
+            saveDiaryImageAndContext(createDiaryRequest, user, diary);
+
         }
 
-        for (String regionName : createDiaryRequest.getRegionName()) {
-            Region region = regionRepository.findByRegionName(regionName).get();
-            DiaryRegion diaryRegion = DiaryRegion.toEntity(region, diary);
-            diaryRegionRepository.save(diaryRegion);
+        // 일차별로 구분해야함.
+        if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) {
+            Diary diary = cdr.get();
+            AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(NotFoundDiaryException::new);
+
+            String status = authorityDiary.getAuthorityDiaryStatus();
+
+            diary.getTime();
+
+            if(status.equals("HOST") || status.equals("ACCEPT")) {
+                diaryId = diary.getDiaryId();
+                saveDiaryImageAndContext(createDiaryRequest, user, diary);
+            } else if(status.equals("REJECT")) {
+                throw new RuntimeException("작성 권한이 없습니다.");
+            } else if(status.equals("REQUEST")) {
+                throw new RuntimeException("작성 권한이 없습니다.");
+            }
         }
 
-        for (String themaName : createDiaryRequest.getThemaName()) {
-            Thema thema = themaRepository.findByThemaName(themaName);
-            DiaryThema diaryThema = DiaryThema.toEntity(thema, diary);
-            diaryThemaRepository.save(diaryThema);
-        }
+        return CreateDiaryResponse.from(diaryId , true);
 
-        return CreateDiaryResponse.from(diary.getDiaryId() , true);
+    }
+
+    private void saveDiaryImageAndContext(CreateDiaryRequest createDiaryRequest, User user, Diary diary) {
+
+        //diaryDay
+        Optional<List<MyFile>> cmf = myFileService.findByDiaryAndDiaryDay(diary, createDiaryRequest.getDiaryDay());
+
+        Optional<DiaryContext> cdc =
+                diaryContextRepository.findByDiaryAndDiaryDay(diary , createDiaryRequest.getDiaryDay());
+
+        if(cmf.isEmpty() && cdc.isEmpty()) {
+            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
+                MyFile myFile = myFileService.saveImage(diaryImgFileName);
+                myFile.setDiaryDay(createDiaryRequest.getDiaryDay());
+                myFile.setDiary(diary);
+                myFile.setUser(user);
+            }
+            diaryContextRepository.save(DiaryContext.toEntity(
+                    createDiaryRequest.getDiaryContext(),
+                    createDiaryRequest.getDiaryDay(),
+                    diary));
+        } else {
+            throw new RuntimeException("이미 작성된 다이어리 입니다.");
+        }
 
     }
 
@@ -145,8 +184,8 @@ public class DiaryServiceImpl implements DiaryService{
         }
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
-        diaryImgRepository.deleteByDiary_DiaryId(diaryId);
         diaryThemaRepository.deleteByDiary_DiaryId(diaryId);
+        diaryContextRepository.deleteByDiary_DiaryId(diaryId);
         authorityDiaryRepository.deleteByDiary_DiaryId(diaryId);
 
         return DeleteDiaryResponse.from(diary.getDiaryId() , true);
@@ -159,8 +198,10 @@ public class DiaryServiceImpl implements DiaryService{
         Plan plan = planRepository.findByPlanId(modifyDiaryRequest.getPlanId()).get();
         Diary diary = diaryRepository.findByUserAndDiaryId(user,modifyDiaryRequest.getDiaryId());
 
+        if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("현재 수정중입니다.");
+
+        diary.setDiaryStatus("EDIT");
         diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
-        diary.setDiaryContext(modifyDiaryRequest.getDiaryContext());
         diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
         diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
         diary.setDiaryWriteDate(LocalDateTime.now().toString());
@@ -176,7 +217,9 @@ public class DiaryServiceImpl implements DiaryService{
 
 
 
-    @Override
+
+
+@Override
     @Transactional
     public DiaryLikedChangeResponse diaryLikedChange(Long diaryId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
@@ -200,6 +243,29 @@ public class DiaryServiceImpl implements DiaryService{
         throw new NoSuchElementException();
     }
 
+    @Override
+    @Transactional
+    public void completeDiary(String loginId, Long planId, Long diaryId) {
+
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+
+
+//        List<Diary> diaries = diaryRepository.findByUserAndPlan(user, plan).orElseThrow(NotFoundDiaryException::new);
+//        for (Diary diary : diaries) {
+////            diary.setDiaryStatus("COMPLETE");
+//        }
+    }
+
+    @Override
+    public  PaginationDto<List<DiaryInquiryByLikedRankingResponse>> getDiaryByLikedRanking(Pageable pageable) {
+
+        Page<DiaryInquiryByLikedRankingResponse> page = diaryRepository.findAllDiariesByLikedRanking(pageable);
+        List<DiaryInquiryByLikedRankingResponse> data = page.get().collect(Collectors.toList());
+        return PaginationDto.of(page, data);
+
+
+    }
 
 
 
@@ -214,7 +280,6 @@ public class DiaryServiceImpl implements DiaryService{
 
     }
 
-
     @Override
     public List<DiaryInquiryResponse> getGoingDiary() {
         Thema thema = themaRepository.findByThemaName("봄나들이");
@@ -224,14 +289,15 @@ public class DiaryServiceImpl implements DiaryService{
 
         User u = diaryThemas.get(0).getDiary().getUser();
         System.out.println(u.getUserId());
-        for(int i=0; i<diaryThemas.size(); i++){
+        for (int i = 0; i < diaryThemas.size(); i++) {
             Optional<Diary> diaries = diaryRepository.findByDiaryId(diaryThemas.get(i).getDiary().getDiaryId());
-            if(diaries.get().getDiaryStatus().equals("ACTIVE") || diaries.get().getDiaryStatus().equals("COMPLETE")){
-                diaryInquiryResponseList.add(DiaryInquiryResponse.from(diaries.get()));
-            }
+//            if(diaries.get().getDiaryStatus().equals("ACTIVE") || diaries.get().getDiaryStatus().equals("COMPLETE")){
+//                diaryInquiryResponseList.add(DiaryInquiryResponse.from(diaries.get()));
+//            }
         }
         return diaryInquiryResponseList;
     }
+
 
     @Override
     public List<DiaryPreferenceResponse> getDiaryPreference(String loginId) {

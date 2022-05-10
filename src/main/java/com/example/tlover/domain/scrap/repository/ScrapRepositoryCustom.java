@@ -13,5 +13,6 @@ public interface ScrapRepositoryCustom {
     Optional<Long> findScrapCountNotDeletedByDiary(Diary diary);
     Optional<Scrap> findByUserAndDiaryAndNotDeleted(User user, Diary diary);
     Page<DiaryInquiryByScrapRankingResponse> findAllDiariesByScrapRanking(Pageable pageable);
+
 }
 
