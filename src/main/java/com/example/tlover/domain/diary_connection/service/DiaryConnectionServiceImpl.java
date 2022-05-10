@@ -4,6 +4,7 @@ import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EDiaryConnectionServiceImpl;
+import com.example.tlover.domain.diary_connection.entity.DiaryConnection;
 import com.example.tlover.domain.diary_connection.repository.DiaryConnectionConnectionRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.service.UserService;

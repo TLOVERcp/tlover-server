@@ -17,7 +17,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         log.info("JWT 인터셉터 검증");
-        //jwtService.getLoginId();
+        jwtService.getLoginId();
         return true;
     }
 

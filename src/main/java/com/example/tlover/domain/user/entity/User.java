@@ -3,7 +3,7 @@ package com.example.tlover.domain.user.entity;
 import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary_connect.entity.DiaryConnection;
+import com.example.tlover.domain.diary_connection.entity.DiaryConnection;
 import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
 import com.example.tlover.domain.history.entity.History;
 import com.example.tlover.domain.myfile.entity.MyFile;
