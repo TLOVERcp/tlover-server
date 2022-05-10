@@ -28,6 +28,7 @@ import static com.example.tlover.domain.diray_liked.entity.QDiaryLiked.*;
 import static com.example.tlover.domain.region.entity.QRegion.region;
 import static com.example.tlover.domain.scrap.entity.QScrap.scrap;
 import static com.example.tlover.domain.thema.entity.QThema.thema;
+import static com.example.tlover.domain.diary_context.entity.QDiaryContext.diaryContext;
 
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         private final JPAQueryFactory queryFactory;
@@ -123,37 +124,42 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
         @Override
         public Page<DiarySearchResponse> findByKeywordCustom(String keyword, Pageable pageable) {
-//            List<DiarySearchResponse> content = queryFactory
-//                    .select(new QDiarySearchResponse(
-//                            diary.diaryId,
-//                            diary.diaryTitle,
-//                            diary.diaryStatus,
-//                            diary.diaryStartDate,
-//                            diary.diaryWriteDate,
-//                            diary.diaryEndDate,
-//                            diary.diaryView
-//                    ))
-//                    .from(diary)
-//                    .where(diary.diaryTitle.contains(keyword).or(diary.diaryContext.contains(keyword)), diary.diaryStatus.eq("COMPLETE"))
-//                    .offset(pageable.getOffset())
-//                    .limit(pageable.getPageSize())
-//                    .fetch();
-//
-//            JPAQuery<DiarySearchResponse> countQuery = queryFactory
-//                    .select(new QDiarySearchResponse(
-//                            diary.diaryId,
-//                            diary.diaryTitle,
-//                            diary.diaryStatus,
-//                            diary.diaryStartDate,
-//                            diary.diaryWriteDate,
-//                            diary.diaryEndDate,
-//                            diary.diaryView
-//                    ))
-//                    .from(diary)
-//                    .where(diary.diaryTitle.contains(keyword).or(diary.diaryContext.contains(keyword)), diary.diaryStatus.eq("COMPLETE"));
-//
-//            return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
-            return null;
+            List<DiarySearchResponse> content = queryFactory
+                    .select(new QDiarySearchResponse(
+                            diary.diaryId,
+                            diary.diaryTitle,
+                            diary.diaryStatus,
+                            diary.diaryStartDate,
+                            diary.diaryWriteDate,
+                            diary.diaryEndDate,
+                            diary.diaryView
+                    ))
+                    .from(diary)
+                    .leftJoin(diaryContext)
+                    .on(diary.diaryId.eq(diaryContext.diary.diaryId))
+                    .where(diary.diaryTitle.contains(keyword)
+                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq("COMPLETE"))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            JPAQuery<DiarySearchResponse> countQuery = queryFactory
+                    .select(new QDiarySearchResponse(
+                            diary.diaryId,
+                            diary.diaryTitle,
+                            diary.diaryStatus,
+                            diary.diaryStartDate,
+                            diary.diaryWriteDate,
+                            diary.diaryEndDate,
+                            diary.diaryView
+                    ))
+                    .from(diary)
+                    .leftJoin(diaryContext)
+                    .on(diary.diaryId.eq(diaryContext.diary.diaryId))
+                    .where(diary.diaryTitle.contains(keyword)
+                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq("COMPLETE"));
+
+            return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
         }
 
         @Override
