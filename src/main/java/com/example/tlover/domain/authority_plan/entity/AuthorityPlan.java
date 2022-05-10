@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class AuthorityPlan {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorityPlanId;
 
     private LocalDateTime authorityPlanShareDate;

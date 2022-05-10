@@ -10,6 +10,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Optional;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Getter
 @Setter
@@ -17,7 +19,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PlanRegion {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long planRegionId;
 
     @ManyToOne(fetch = FetchType.LAZY)

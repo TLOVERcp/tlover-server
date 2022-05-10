@@ -10,6 +10,7 @@ import java.util.HashMap;
 import static com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl.*;
 import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eNaver;
 import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -20,7 +21,7 @@ import static javax.persistence.GenerationType.AUTO;
 public class UserRefreshToken {
 
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = IDENTITY)
     private Long userRefreshtokenId;
 
     private String userRefreshtokenToken;

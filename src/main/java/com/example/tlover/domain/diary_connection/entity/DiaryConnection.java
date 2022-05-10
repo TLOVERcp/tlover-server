@@ -20,11 +20,11 @@ public class DiaryConnection extends BaseTimeEntity {
     private Long diaryConnectionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diaryId")
+    @JoinColumn(name = "diary_diaryId")
     private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_userId")
     private User user;
 
     /**
