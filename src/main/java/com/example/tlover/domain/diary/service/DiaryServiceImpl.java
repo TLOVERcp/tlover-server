@@ -7,6 +7,7 @@ import com.example.tlover.domain.diary.constant.DiaryConstants;
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.*;
+import com.example.tlover.domain.diary.exception.NoSuchElementException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
 import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_img.repository.DiaryImgRepository;
