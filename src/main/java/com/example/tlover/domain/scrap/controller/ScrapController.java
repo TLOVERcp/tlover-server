@@ -85,21 +85,21 @@ public class ScrapController {
     })
     @GetMapping("/whether")
     public ResponseEntity<ResponseDto<ScrapOrNotResponse>> getScrapOrNot(@Valid @RequestBody ScrapOrNotRequest scrapOrNotRequest) {
-        return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapOrNotMessage.getMessage()
-                , this.scrapService.getScrapOrNot(scrapOrNotRequest)));
-    }
+            return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapOrNotMessage.getMessage()
+                    , this.scrapService.getScrapOrNot(scrapOrNotRequest)));
+        }
 
-    /**
-     * 모든 다이어리 스크랩 많은 순 조회
-     * @param pageable
-     * @return ResponseDto<PaginationDto<List<DiaryInquiryByScrapRankingResponse>>>
-     * @author 김정우
-     */
+        /**
+         * 모든 다이어리 스크랩 많은 순 조회
+         * @param pageable
+         * @return ResponseDto<PaginationDto<List<DiaryInquiryByScrapRankingResponse>>>
+         * @author 김정우
+         */
 
-    @ApiOperation(value = "모든 다이어리 스크랩 많은 순 조회", notes = "모든 다이어리를 스크랩 많은 순으로 조회합니다.")
-    @GetMapping("/ranking")
-    public ResponseEntity<ResponseDto<PaginationDto<List<DiaryInquiryByScrapRankingResponse>>>> getDiariesByScrapRanking(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eGetDiariesByScrapRankingMessage.getMessage()
+        @ApiOperation(value = "모든 다이어리 스크랩 많은 순 조회", notes = "모든 다이어리를 스크랩 많은 순으로 조회합니다.")
+        @GetMapping("/ranking")
+        public ResponseEntity<ResponseDto<PaginationDto<List<DiaryInquiryByScrapRankingResponse>>>> getDiariesByScrapRanking(@PageableDefault Pageable pageable) {
+            return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eGetDiariesByScrapRankingMessage.getMessage()
                 , this.scrapService.getDiariesByScrapRanking(pageable)));
     }
 

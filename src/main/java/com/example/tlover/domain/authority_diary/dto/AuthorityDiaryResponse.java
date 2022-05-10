@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(description = "다이어리 권한 공유을 위한 응답 객체")
 public class AuthorityDiaryResponse {
-
     private String message;
 }

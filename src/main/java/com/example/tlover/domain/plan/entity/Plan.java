@@ -55,6 +55,9 @@ public class Plan {
     @OneToMany(mappedBy = "plan")
     private List<AuthorityPlan> authorityPlans = new ArrayList<>();
 
+//    @OneToOne(mappedBy = "plan")
+//    private DiaryState diaryState;
+
     public void setUser(User user) {
         this.user = user;
         user.getPlans().add(this);

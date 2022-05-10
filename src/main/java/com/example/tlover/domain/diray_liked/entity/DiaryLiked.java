@@ -42,7 +42,6 @@ public class DiaryLiked {
         DiaryLiked diaryLiked = DiaryLiked.builder()
                 .isLiked(true)
                 .build();
-
         diaryLiked.setDiary(diary);
         diaryLiked.setUser(user);
         return diaryLiked;

@@ -5,6 +5,7 @@ import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary_connect.entity.DiaryConnection;
 import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
+import com.example.tlover.domain.history.entity.History;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.reply.entity.Reply;
@@ -18,6 +19,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,6 +89,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<History> histories = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<MyFile> myFiles = new ArrayList<>();
