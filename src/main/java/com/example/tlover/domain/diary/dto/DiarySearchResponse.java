@@ -15,9 +15,9 @@ import java.util.List;
 public class DiarySearchResponse {
     private Long diaryId;
     private String diaryTitle;
-    private String  diaryPublicStatus;
+    //private String  diaryPublicStatus;
     private String diaryStatus;
-    private String diaryContext;
+    //private String diaryContext;
     private String diaryStartDate;
     private String diaryWriteDate;
     private String diaryEndDate;
