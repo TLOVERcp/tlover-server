@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,7 @@ public class DiaryApiController {
 
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
-     *
-     * @return ResponseEntity<List < DiaryInquiryResponse>>
+     * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 조회", notes = "다이어리를 조회합니다.")
@@ -53,8 +53,7 @@ public class DiaryApiController {
 
     /**
      * 갈만한 여행지 조회
-     *
-     * @return ResponseEntity<List < DiaryInquiryResponse>>
+     * @return ResponseEntity<List<DiaryInquiryResponse>>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 갈만한 여행지 조회", notes = "홈 화면의 두번째 조회 API입니다.")
@@ -71,7 +70,6 @@ public class DiaryApiController {
     /**
      * 다이어리 작성 api
      * swagger url => [post]  api/v1/plans/create-diary
-     *
      * @param createDiaryRequest
      * @param request
      * @return ResponseEntity<CreateDiaryResponse>
@@ -96,11 +94,12 @@ public class DiaryApiController {
     /**
      * 다이어리 삭제 API
      * swagger url => [post]  api/v1/plans/delete-diary/{diaryId}
-     *
      * @param diaryId
      * @return ResponseEntity<CreateDiaryResponse>
      * author => 신동민
      */
+
+
     @ApiOperation(value = "다이어리 삭제", notes = "다이어리를 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 403, message = "다이어리의 삭제 권한이 없습니다.",
@@ -112,12 +111,11 @@ public class DiaryApiController {
     @PostMapping(value = "/delete-diary/{diaryId}")
     public ResponseEntity<ResponseDto<DeleteDiaryResponse>> DeleteDiary(@PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
-        return ResponseEntity.ok(ResponseDto.create("삭제가 완료 되었습니다", diaryService.deleteDiary(diaryId, loginId)));
+        return ResponseEntity.ok(ResponseDto.create("삭제가 완료 되었습니다" , diaryService.deleteDiary(diaryId, loginId)));
     }
 
     /**
      * 다이어리 수정 API
-     *
      * @param modifyDiaryRequest
      * @param request
      * @return ResponseEntity<String>
@@ -125,7 +123,7 @@ public class DiaryApiController {
      */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
     @PostMapping(value = "/modify-diary/{diaryId}")
-    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request) {
+    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request){
         String loginId = jwtService.getLoginId();
         Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
         return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
@@ -159,9 +157,9 @@ public class DiaryApiController {
 
     /**
      * 좋아요의 갯수 가져오기
-     *
      * @param diaryId
-     * @return author 신동민
+     * @return
+     * author 신동민
      */
 
     @ApiOperation(value = "좋아요 갯수 조회", notes = "특정 다이어리의 좋아요 갯수를 조회합니다.")
@@ -170,13 +168,17 @@ public class DiaryApiController {
         return ResponseEntity.ok(ResponseDto.create("테스트", diaryService.getDiaryViews(diaryId)));
     }
 
+
     /**
      * 홈 화면 여행 취향 다이어리 조회
-     *
      * @return
      * @Author 한규범
      */
     @ApiOperation(value = "홈 화면 여행 취향 다이어리 조회", notes = "나와 여행 취향이 닮은 사람들에 대한 다이어리를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+    })
     @GetMapping(value = "/get-diary-prefer")
     public ResponseEntity<ResponseDto<List<DiaryPreferenceResponse>>> getDiaryPreference() {
         String loginId = jwtService.getLoginId();
@@ -229,8 +231,20 @@ public class DiaryApiController {
     })
     @GetMapping("/search")
     public ResponseEntity<ResponseDto<PaginationDto<List<DiarySearchResponse>>>> searchDiary(@RequestParam String keyword,
-                                                                                             @PageableDefault Pageable pageable) {
-        PaginationDto<List<DiarySearchResponse>> diarySearchResponse = diaryService.getSearchedDiary(keyword, pageable);
+                                                                                             @PageableDefault SpringDataWebProperties.Pageable pageable) {
+        PaginationDto<List<DiarySearchResponse>> diarySearchResponse = diaryService.getSearchedDiary(keyword, (Pageable) pageable);
         return ResponseEntity.ok(ResponseDto.create(diarySearchResponse));
+    }
+
+    @ApiOperation(value = "날씨기반 여행 추천", notes = "날씨 데이터를 불러와 맑은 날에 대해서 다이어리를 추천해줍니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+    })
+    @GetMapping(value = "/get-diary-weather")
+    public void getDairyWeather(){
+        diaryService.getWeather();
+//        weatherService.getWeather();
+
     }
 }

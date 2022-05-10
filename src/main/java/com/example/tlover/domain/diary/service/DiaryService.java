@@ -32,4 +32,6 @@ public interface DiaryService {
     PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
 
     List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
+
+    void getWeather();
 }
