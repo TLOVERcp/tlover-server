@@ -1,7 +1,7 @@
-package com.example.tlover.domain.diary_connect.repository;
+package com.example.tlover.domain.diary_connection.repository;
 
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary_connect.entity.DiaryConnection;
+import com.example.tlover.domain.diary_connection.entity.DiaryConnection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
