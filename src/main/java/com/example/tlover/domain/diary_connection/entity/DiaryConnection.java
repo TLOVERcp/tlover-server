@@ -1,4 +1,4 @@
-package com.example.tlover.domain.diary_connect.entity;
+package com.example.tlover.domain.diary_connection.entity;
 
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.user.entity.User;
@@ -6,10 +6,6 @@ import com.example.tlover.global.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashMap;
-
-import static com.example.tlover.domain.user.constant.UserConstants.EOAuth2UserServiceImpl.*;
-import static com.example.tlover.domain.user.constant.UserConstants.ESocialProvider.eKakao;
 
 @Entity
 @Getter
@@ -21,13 +17,14 @@ public class DiaryConnection extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long diaryConnectId;
+    private Long diaryConnectionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_diaryId")
+    @JoinColumn(name = "diaryId")
     private Diary diary;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_userId")
+    @JoinColumn(name = "userId")
     private User user;
 
     /**
