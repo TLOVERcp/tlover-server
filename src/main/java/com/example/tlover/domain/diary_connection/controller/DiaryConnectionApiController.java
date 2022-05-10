@@ -1,9 +1,9 @@
-package com.example.tlover.domain.diary_connect.controller;
+package com.example.tlover.domain.diary_connection.controller;
 
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
-import com.example.tlover.domain.diary_connect.constant.DiaryConnectionConstants.EDiaryConnectionResponseMessage;
-import com.example.tlover.domain.diary_connect.service.DiaryConnectionService;
+import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EDiaryConnectionResponseMessage;
+import com.example.tlover.domain.diary_connection.service.DiaryConnectionService;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.global.dto.ResponseDto;
 import io.swagger.annotations.Api;
