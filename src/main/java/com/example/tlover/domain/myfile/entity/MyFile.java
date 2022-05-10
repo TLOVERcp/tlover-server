@@ -17,22 +17,23 @@ import javax.persistence.*;
 public class MyFile extends BaseTimeEntity {
 
     @Setter(value = AccessLevel.NONE)
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long myFileId;
-    private String fileKey;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long myFileId;
+        private String fileKey;
+        private int diaryDay;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id")
-    private Diary diary;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "diary_id")
+        private Diary diary;
 
-    private boolean isDeleted;
+        private boolean isDeleted;
 
-    public void setUser(User user) {
+        public void setUser(User user) {
         this.user = user;
         user.getMyFiles().add(this);
     }

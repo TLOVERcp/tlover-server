@@ -1,7 +1,6 @@
 package com.example.tlover.domain.diary.dto;
 
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary_img.entity.DiaryImg;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.region.entity.Region;
@@ -32,7 +31,7 @@ public class DiaryPreferenceResponse {
         return DiaryPreferenceResponse.builder()
                 .diaryId(diary.getDiaryId())
                 .diaryTitle(diary.getDiaryTitle())
-                .startDate(diary.getDiaryStartDate())
+                .startDate(diary.getDiaryStartDate().toString())
                 .regionName(regionName)
                 .image(image)
                 .userNickName(diary.getUser().getUserNickName())
