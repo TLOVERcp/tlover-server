@@ -12,4 +12,5 @@ public interface MyFileRepository extends JpaRepository<MyFile, Long>, MyFileRep
 
     Optional<List<MyFile>> findByUserAndDiary(User user, Diary diary);
 
+    Optional<List<MyFile>> findByDiaryAndDiaryDay(Diary diary, int diaryDay);
 }

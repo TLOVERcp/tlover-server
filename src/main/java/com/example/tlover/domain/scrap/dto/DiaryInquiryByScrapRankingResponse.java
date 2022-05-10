@@ -17,9 +17,7 @@ import java.util.List;
 public class DiaryInquiryByScrapRankingResponse {
     private Long diaryId;
     private String diaryTitle;
-    private String  diaryPublicStatus;
     private String diaryStatus;
-    private String diaryContext;
     private String diaryStartDate;
     private String diaryWriteDate;
     private String diaryEndDate;
@@ -28,13 +26,11 @@ public class DiaryInquiryByScrapRankingResponse {
     private Long scrapCount;
 
     @QueryProjection
-    public DiaryInquiryByScrapRankingResponse(Long diaryId, String diaryTitle, String diaryPublicStatus, String diaryStatus, String diaryContext,
+    public DiaryInquiryByScrapRankingResponse(Long diaryId, String diaryTitle,  String diaryStatus,
                                               String diaryStartDate, String diaryWriteDate, String diaryEndDate, String diaryView, String myFileKey, Long scrapCount) {
         this.diaryId = diaryId;
         this.diaryTitle = diaryTitle;
-        this.diaryPublicStatus = diaryPublicStatus;
         this.diaryStatus = diaryStatus;
-        this.diaryContext = diaryContext;
         this.diaryStartDate = diaryStartDate;
         this.diaryWriteDate = diaryWriteDate;
         this.diaryEndDate = diaryEndDate;

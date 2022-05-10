@@ -5,6 +5,8 @@ spring:
     username: admin
     password: mango1030
     driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
+    initialize: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -26,6 +28,7 @@ spring:
         #default_batch_fetch_size: 100
     #open-in-view: false
     database-platform: org.hibernate.dialect.MySQL5Dialect
+    defer-datasource-initialization: true
 
   security:
     oauth2:
@@ -59,4 +62,6 @@ sms:
   access-key: JUARhMRAzpFrstZqd775
   secret-key: lgiOpHwGvTW5HjcIaCKkhATBHFB3qeRuWzaBOrZZ
 
+weather:
+  service-key: TafHkD6CilGs36dV%2B9czinbrrqD1AymCTtNo7U%2B9PpGxErWg76qqU7Iq0cRSqpi7lEbvLT872%2B19d6p0%2B7qE5g%3D%3D
 
