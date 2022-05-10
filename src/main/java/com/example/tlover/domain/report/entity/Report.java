@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Getter
 @Setter
@@ -18,7 +20,7 @@ import javax.persistence.*;
 public class Report {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long reportId;
 
     private String reportContext;

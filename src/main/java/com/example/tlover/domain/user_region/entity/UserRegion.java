@@ -7,6 +7,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Getter
 @Setter
@@ -16,7 +18,7 @@ import javax.persistence.*;
 public class UserRegion {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long userRegionId;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class History {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long historyId;
 
     private String date;
