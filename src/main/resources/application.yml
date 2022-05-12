@@ -1,4 +1,5 @@
 spring:
+  batch.job.enabled: false
   datasource:
     url: jdbc:mysql://soldout.cpiugfta2jm5.ap-northeast-2.rds.amazonaws.com:3306/tlover?
     autoReconnect: true

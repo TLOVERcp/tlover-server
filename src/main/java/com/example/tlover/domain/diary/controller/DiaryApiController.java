@@ -46,7 +46,6 @@ public class DiaryApiController {
     })
     @GetMapping("/get-diary")
     public ResponseEntity<List<DiaryInquiryResponse>> getDiary() {
-//        String loginId = userApiController.getLoginIdFromSession(request);
         List<DiaryInquiryResponse> diaryInquiryResponse = diaryService.getDiary();
         return ResponseEntity.ok(diaryInquiryResponse);
     }
@@ -88,7 +87,6 @@ public class DiaryApiController {
     @PostMapping(value = "/create-diary")
     public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
         String loginId = jwtService.getLoginId();
-
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
 
@@ -272,7 +270,7 @@ public class DiaryApiController {
     })
     @GetMapping(value = "/get-diary-weather")
     public void getDairyWeather(){
-        diaryService.getWeather();
+//        diaryService.getWeather();
 //        weatherService.getWeather();
 
     }

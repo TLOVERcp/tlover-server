@@ -34,7 +34,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> , DiaryRepos
 
     @Query(value = "select file_key" +
             " from my_file, diary" +
-            " where diary.diary_id = my_file.diary_id " +
+            " where diary.diary_id = my_file.diary_diary_id " +
             " and diary.diary_id= :diaryId", nativeQuery = true)
     List<String> diaryImg(@Param("diaryId") Long diaryId);
 

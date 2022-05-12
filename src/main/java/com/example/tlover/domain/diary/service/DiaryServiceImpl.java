@@ -24,7 +24,6 @@ import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
-import com.example.tlover.domain.scrap.dto.DiaryInquiryByScrapRankingResponse;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
@@ -34,7 +33,7 @@ import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
-import com.example.tlover.global.weather.service.WeatherService;
+import com.example.tlover.domain.weather.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -314,7 +313,8 @@ public class DiaryServiceImpl implements DiaryService{
 
         for (int i = 0; i < diaryThemas.size(); i++) {
             Diary diary = diaryThemas.get(i).getDiary();
-
+            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
+            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
             diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
         }
 
@@ -412,8 +412,4 @@ public class DiaryServiceImpl implements DiaryService{
         return PaginationDto.of(page, data);
     }
 
-    @Override
-    public void getWeather() {
-        weatherService.getWeather();
-    }
 }
