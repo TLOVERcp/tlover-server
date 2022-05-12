@@ -37,5 +37,4 @@ public interface DiaryService {
 
     List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
 
-    void getWeather();
 }

@@ -1,4 +1,4 @@
-package com.example.tlover.global.weather.Secret;
+package com.example.tlover.domain.weather.Secret;
 
 
 import org.springframework.beans.factory.annotation.Value;
