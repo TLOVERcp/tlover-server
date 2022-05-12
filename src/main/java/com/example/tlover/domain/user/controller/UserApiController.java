@@ -2,6 +2,7 @@ package com.example.tlover.domain.user.controller;
 
 
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.rating.service.RatingService;
 import com.example.tlover.domain.region.exception.NotFoundRegionNameException;
 import com.example.tlover.domain.thema.exception.NotFoundThemaNameException;
 import com.example.tlover.domain.user.dto.*;
@@ -51,6 +52,7 @@ public class UserApiController {
     private final OAuth2UserServiceKakao oAuth2UserServiceKakao;
     private final OAuth2UserServiceGoogle oAuth2UserServiceGoogle;
     private final UserThemaService userThemaService;
+    private final RatingService ratingService;
 
 
     /**
@@ -109,7 +111,7 @@ public class UserApiController {
         User user = userService.insertUser(signUpRequest);
         userRegionService.createUserRegion(signUpRequest, user.getUserId());
         userThemaService.insertUserThema(signUpRequest.getUserThemaName(), user);
-
+        ratingService.createRating(user);
         return ResponseEntity.ok(SignupResponse.builder()
                 .message(user.getUserNickName() + "님, 회원가입이 완료되었습니다.")
                 .build());
