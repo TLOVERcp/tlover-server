@@ -174,16 +174,6 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public List<DiaryInquiryResponse> getDiary() {
-        List<Diary> diaries = diaryRepository.findBy();
-        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
-        for(Diary d : diaries){
-            diaryInquiryResponseList.add(DiaryInquiryResponse.from(d));
-        }
-        return diaryInquiryResponseList;
-    }
-
-    @Override
     @Transactional
     public DeleteDiaryResponse deleteDiary(Long diaryId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
@@ -297,23 +287,6 @@ public class DiaryServiceImpl implements DiaryService{
 
     }
 
-    @Override
-    public List<DiaryInquiryResponse> getGoingDiary() {
-        Thema thema = themaRepository.findByThemaName("봄나들이");
-
-        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema);
-        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
-
-        User u = diaryThemas.get(0).getDiary().getUser();
-        System.out.println(u.getUserId());
-        for (int i = 0; i < diaryThemas.size(); i++) {
-            Optional<Diary> diaries = diaryRepository.findByDiaryId(diaryThemas.get(i).getDiary().getDiaryId());
-//            if(diaries.get().getDiaryStatus().equals("ACTIVE") || diaries.get().getDiaryStatus().equals("COMPLETE")){
-//                diaryInquiryResponseList.add(DiaryInquiryResponse.from(diaries.get()));
-//            }
-        }
-        return diaryInquiryResponseList;
-    }
 
 
     @Override
@@ -377,6 +350,33 @@ public class DiaryServiceImpl implements DiaryService{
             throw new NotFoundAcceptDiaryException();
         }
         return myDiaryListResponses;
+    }
+
+    @Override
+    public List<DiaryWeatherResponse> getDiaryWeather(String loginId) {
+        //결과를 위한 배열
+        List<DiaryWeatherResponse> diaryWeatherResponses = new ArrayList<>();
+
+        //유저 정보 가져와
+        User user = userRepository.findByUserLoginId(loginId).get();
+        //유저 테마 가져와
+        List<UserThema> userThemas = user.getUserThemas();
+
+        Optional<Thema> thema = themaRepository.findByThemaId(userThemas.get(0).getThema().getThemaId());
+
+        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema.get());
+
+        for (int i = 0; i < diaryThemas.size(); i++) {
+            Diary diary = diaryThemas.get(i).getDiary();
+            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
+            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
+//            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
+        }
+
+        Collections.shuffle(diaryWeatherResponses);
+
+        return diaryWeatherResponses;
+
     }
 
     private List<String> getDiaryRegions(List<String> diaryRegionNames, Diary diary) {
