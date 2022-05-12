@@ -12,11 +12,4 @@ public interface DiaryRepositoryCustom {
 
     Page<DiaryInquiryByLikedRankingResponse> findAllDiariesByLikedRanking(Pageable pageable);
 
-    Page<DiarySearchResponse> findByThemaKewordCustom(String keyword, Pageable pageable);
-
-    Page<DiarySearchResponse> findByKeywordCustom(String keyword, Pageable pageable);
-
-    List<String> findThemaNamesByDiaryId(Long diaryId);
-
-    List<String> findRegionNamesByDiaryId(Long diaryId);
 }

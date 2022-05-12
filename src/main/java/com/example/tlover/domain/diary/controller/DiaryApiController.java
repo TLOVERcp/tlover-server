@@ -247,22 +247,6 @@ public class DiaryApiController {
         return ResponseEntity.ok(ResponseDto.create(myDiaryListResponses));
     }
 
-    /**
-     * 다이어리 검색 조회
-     * @return ResponseEntity<PaginationDto<List<DiarySearchResponse>>>
-     * @author 윤여찬
-     */
-    @ApiOperation(value = "다이어리 검색",notes = "다이어리를 검색합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "검색된 다이어리가 없습니다.", response = NotFoundSearchDiaryException.class)
-    })
-    @GetMapping("/search")
-    public ResponseEntity<ResponseDto<PaginationDto<List<DiarySearchResponse>>>> searchDiary(@RequestParam String keyword,
-                                                                                             @PageableDefault Pageable pageable) {
-        PaginationDto<List<DiarySearchResponse>> diarySearchResponse = diaryService.getSearchedDiary(keyword, pageable);
-        return ResponseEntity.ok(ResponseDto.create(diarySearchResponse));
-    }
-
     @ApiOperation(value = "날씨기반 여행 추천", notes = "날씨 데이터를 불러와 맑은 날에 대해서 다이어리를 추천해줍니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
