@@ -28,18 +28,16 @@ public class CreateDiaryRequest {
     private String diaryTitle;
 
     @ApiModelProperty(notes = "여행 내용을 입력해 주세요.")
+    @NotBlank(message = "여행 내용을 입력해주세요.")
     private String diaryContext;
 
-//     @NotNull(message = "여행시에 찍었던 사진들")
     @ApiModelProperty(notes = "여행시에 찍었던 사진들")
     private List<MultipartFile> diaryImages;
 
-    @NotNull(message = "여행 시작 날짜를 입력해주세요.")
     @ApiModelProperty(notes = "여행 시작 날짜를 입력해 주세요.")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime diaryStartDate;
 
-    @NotNull(message = "여행 마지막 날짜를 입력해주세요.")
     @ApiModelProperty(notes = "여행 마지막 날짜를 입력해 주세요.")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime diaryEndDate;
@@ -52,6 +50,7 @@ public class CreateDiaryRequest {
     @ApiModelProperty(notes = "여행 테마를 입력해주세요.")
     private String[] themaName;
 
+    @NotNull
     @ApiModelProperty(notes = "계획의 Id를 입력해주세요.")
     private Long planId;
 
