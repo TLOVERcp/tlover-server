@@ -44,15 +44,20 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public void updateRating(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Rating rating = ratingRepository.findByUser(user).orElseThrow(NotFoundRatingException::new);
+        if(rating.getRating()<5){
         Optional<List<Diary>> diaries = diaryRepository.findByUser(user);
-        if(diaries.isPresent()){
+        if(diaries.isPresent()) {
             long num = diaries.get().size();
-            for(Diary d : diaries.get()){
+            for (Diary d : diaries.get()) {
                 num += scrapRepository.findScrapCountNotDeletedByDiary(d).get();
-                num += diaryLikedRepository.countByDiaryAndIsLiked(d,true).get();
+                num += diaryLikedRepository.countByDiaryAndIsLiked(d, true).get();
             }
-            Rating rating = ratingRepository.findByUser(user).orElseThrow(NotFoundRatingException::new);
+            if(num>=50){
+                num = 50;
+            }
             rating.updateRating(num, rating);
+        }
         }
 
 
