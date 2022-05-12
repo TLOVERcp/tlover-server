@@ -32,7 +32,9 @@ public class Diary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryId;
+
     private String diaryTitle;
+
     private String diaryStatus;
 
     private String diaryView;
@@ -96,25 +98,15 @@ public class Diary {
         plan.getDiaries().add(this);
     }
 
-    public void getTime(){
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
-        LocalDateTime startDate = LocalDateTime.parse(getDiaryStartDate(), formatter);
-        LocalDateTime endDate = LocalDateTime.parse(getDiaryEndDate(), formatter);
-
-        System.out.println((endDate.getDayOfMonth()- startDate.getDayOfMonth()) +1);
-
-    }
-
-    public static Diary toEntity(CreateDiaryRequest createDiaryRequest , User user , Plan plan){
+    public static Diary toEntity(CreateDiaryRequest createDiaryRequest ,
+                                 int planDay, User user , Plan plan){
         Diary diary = new Diary();
            diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
            diary.setDiaryWriteDate(LocalDateTime.now().toString());
            diary.setDiaryStartDate(createDiaryRequest.getDiaryStartDate().toString());
            diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate().toString());
            diary.setTotalCost(createDiaryRequest.getTotalCost());
-           diary.setDiaryPlanDays(plan.getPlanEndDate().getDayOfMonth() - plan.getPlanStartDate().getDayOfMonth()+1);
+           diary.setDiaryPlanDays(planDay);
            diary.setDiaryStatus("ACTIVE");
            diary.setUser(user);
            diary.setPlan(plan);
