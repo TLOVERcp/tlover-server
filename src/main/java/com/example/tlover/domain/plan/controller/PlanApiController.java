@@ -28,13 +28,9 @@ import java.util.List;
 @Api(tags = "Plan API")
 public class PlanApiController {
 
-    @Autowired
     private final PlanService planService;
-    @Autowired
     private final PlanRegionService planRegionService;
-    @Autowired
     private final AuthorityPlanService authorityPlanService;
-    @Autowired
     private final JwtService jwtService;
 
     /**
