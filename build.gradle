@@ -53,6 +53,10 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.querydsl:querydsl-jpa'
 
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
+
 }
 
 tasks.named('test') {
