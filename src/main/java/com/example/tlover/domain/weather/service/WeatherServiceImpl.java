@@ -1,5 +1,6 @@
 package com.example.tlover.domain.weather.service;
 
+import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.weather.Secret.WeatherSecretKey;
 import com.example.tlover.domain.weather.dto.WeatherResultContext;
 import com.example.tlover.domain.weather.entity.Weather;
@@ -23,29 +24,20 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.example.tlover.domain.weather.Secret.WeatherSecretKey.*;
+
 @Service
 @RequiredArgsConstructor
 public class WeatherServiceImpl implements WeatherService{
 
-    final String[] MAPKEY = {"body","items","item"};
-    final String[] AREAKEY = {"1156000000", //서울시
-                                "4136000000", //경기도-남양주시
-                                "4711100000", //경상북도-포항시
-                                "4822000000", //경상남도-통영시
-                                "5011000000", //제주도-제주시
-                                "4413100000", //충청남도-천안시
-                                "4313000000", //충청북도-충주시
-                                "4513000000", //전라북도-군산시
-                                "4613000000", //전라남도-여수시
-                                "4215000000"}; //강원도-강릉시
-
     private final WeatherRepository weatherRepository;
+    private final RegionRepository regionRepository;
 
     @Scheduled(fixedDelay = 86400 * 1000L)
     @Transactional
     public void saveWeather(){
         System.out.println("날씨조회");
-        for(int i= 0; i<AREAKEY.length; i++){
+        for(int i= 0; i<MAPKEY.length; i++){
             WeatherResultContext resultContext = new WeatherResultContext();
             resultContext = getWeather(AREAKEY[i],resultContext);
 
@@ -57,21 +49,17 @@ public class WeatherServiceImpl implements WeatherService{
                 weather.get().setWeatherTciGrade(resultContext.getWeatherTciGrade());
                 weather.get().setKmaTci(resultContext.getKmaTci());
                 weather.get().setTime(resultContext.getTime());
+                weather.get().setRegion(regionRepository.findByRegionName(resultContext.getWeatherRegion()).get());
             }
         }
-
-
-
     }
 
     @SneakyThrows
     public WeatherResultContext getWeather(String cityCode, WeatherResultContext weatherResultContext){
-
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         DateFormat df = new SimpleDateFormat("yyyyMMdd");
         weatherResultContext.setTime(df.format(cal.getTime()));
-
 
         String apiUrl = "http://apis.data.go.kr/1360000/TourStnInfoService/getCityTourClmIdx";
 
@@ -81,7 +69,7 @@ public class WeatherServiceImpl implements WeatherService{
         String dataType = "JSON";	//데이터 타입
         String CURRENT_DATE = df.format(cal.getTime());
         String CITY_AREA_ID = cityCode;
-        String DAY = "5";
+        String DAY = "3";
 
 
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
@@ -125,11 +113,11 @@ public class WeatherServiceImpl implements WeatherService{
         List<LinkedTreeMap> items = new ArrayList<>();
 
         //지역 값 빼오기
-        for(int i=0; i<this.MAPKEY.length; i++){
-            if(this.MAPKEY[i].equals("item")){
-                items = (List<LinkedTreeMap>) treeMap.get(this.MAPKEY[i]);
+        for(int i=0; i<MAPKEY.length; i++){
+            if(MAPKEY[i].equals("item")){
+                items = (List<LinkedTreeMap>) treeMap.get(MAPKEY[i]);
             }else{
-                treeMap = (LinkedTreeMap) treeMap.get(this.MAPKEY[i]);
+                treeMap = (LinkedTreeMap) treeMap.get(MAPKEY[i]);
             }
         }
 
@@ -149,7 +137,38 @@ public class WeatherServiceImpl implements WeatherService{
             weatherResultContext.setWeatherTciGrade("나쁨");
         }
 
-        weatherResultContext.setWeatherRegion((String) items.get(0).get("doName"));
+        switch (items.get(0).get("doName").toString()){
+            case "강원":
+                weatherResultContext.setWeatherRegion("강원도");
+                break;
+            case "전남":
+                weatherResultContext.setWeatherRegion("전라남도");
+                break;
+            case "전북":
+                weatherResultContext.setWeatherRegion("전라북도");
+                break;
+            case "충북":
+                weatherResultContext.setWeatherRegion("충청북도");
+                break;
+            case "충남":
+                weatherResultContext.setWeatherRegion("충청남도");
+                break;
+            case "제주":
+                weatherResultContext.setWeatherRegion("제주도");
+                break;
+            case "경남":
+                weatherResultContext.setWeatherRegion("경상남도");
+                break;
+            case "경북":
+                weatherResultContext.setWeatherRegion("경상북도");
+                break;
+            case "경기":
+                weatherResultContext.setWeatherRegion("경기도");
+                break;
+            case "서울":
+                weatherResultContext.setWeatherRegion("서울");
+                break;
+        }
 
         return weatherResultContext;
     }

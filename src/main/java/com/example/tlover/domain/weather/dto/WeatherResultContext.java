@@ -27,6 +27,8 @@ public class WeatherResultContext {
 
     private String time;
 
+    private Long regionId;
+
     public Weather toEntity(){
         Weather weather = new Weather();
         weather.setWeatherRegion(this.weatherRegion);

@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface DiaryService {
 
-    List<DiaryInquiryResponse> getDiary();
-
     CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId);
 
     DeleteDiaryResponse deleteDiary(Long diaryId, String loginId);
@@ -27,7 +25,6 @@ public interface DiaryService {
 
     PaginationDto<List<DiaryInquiryByLikedRankingResponse>> getDiaryByLikedRanking(Pageable pageable);
 
-    List<DiaryInquiryResponse> getGoingDiary();
 
     List<DiaryPreferenceResponse> getDiaryPreference(String loginId);
 
@@ -37,4 +34,5 @@ public interface DiaryService {
 
     List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
 
+    List<DiaryWeatherResponse> getDiaryWeather(String loginId);
 }
