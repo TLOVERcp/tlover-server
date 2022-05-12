@@ -2,12 +2,10 @@ package com.example.tlover.domain.reply.controller;
 
 
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
-import com.example.tlover.domain.diary.exception.NotFoundSearchDiaryException;
 import com.example.tlover.domain.reply.dto.*;
 import com.example.tlover.domain.reply.exception.NotEqualUserIdException;
 import com.example.tlover.domain.reply.exception.NotFindReplyException;
 import com.example.tlover.domain.reply.service.ReplyService;
-import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
@@ -15,15 +13,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
