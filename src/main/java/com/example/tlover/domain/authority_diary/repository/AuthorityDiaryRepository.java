@@ -25,4 +25,6 @@ public interface AuthorityDiaryRepository extends JpaRepository<AuthorityDiary, 
     Optional<List<AuthorityDiary>> findByUserAndAuthorityDiaryStatus(User user, String request);
 
     Optional<AuthorityDiary> findByDiaryAndUser(Diary diary, User user);
+
+//    Optional<List<AuthorityDiary>> findByDiaryAndNotAuthorityDiaryStatus(Diary diary, String host);
 }
