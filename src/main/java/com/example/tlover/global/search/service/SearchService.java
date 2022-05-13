@@ -11,7 +11,7 @@ public interface SearchService {
 
     PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
 
-    PaginationDto<List<UserSearchResponse>> getSearchedUser(String keyword, Pageable pageable);
+    UserSearchResponse getSearchedUser(String keyword);
 
 
 }

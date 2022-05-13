@@ -148,7 +148,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
         }
 
     @Override
-    public Page<UserSearchResponse> findUserByKeyword(String keyword, Pageable pageable) {
+    public List<UserSearchResponse> findUserByKeyword(String keyword) {
 
         List<UserSearchResponse> content = queryFactory
                 .select(new QUserSearchResponse(
@@ -156,20 +156,10 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                         user.userNickName
                 ))
                 .from(user)
-                .where(user.userNickName.contains(keyword), user.userState.eq("active"))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(user.userNickName.eq(keyword), user.userState.eq("active"))
                 .fetch();
 
-        JPAQuery<UserSearchResponse> countQuery = queryFactory
-                .select(new QUserSearchResponse(
-                        user.userId,
-                        user.userNickName
-                ))
-                .from(user)
-                .where(user.userNickName.contains(keyword), user.userState.eq("active"));
-
-        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
+        return content;
 
 
     }
