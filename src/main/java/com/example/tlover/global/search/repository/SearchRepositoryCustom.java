@@ -17,5 +17,5 @@ public interface SearchRepositoryCustom {
 
     List<String> findRegionNamesByDiaryId(Long diaryId);
 
-    Page<UserSearchResponse> findUserByKeyword(String keyword, Pageable pageable);
+    List<UserSearchResponse> findUserByKeyword(String keyword);
 }

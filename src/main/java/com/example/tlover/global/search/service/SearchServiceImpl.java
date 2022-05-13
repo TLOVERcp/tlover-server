@@ -57,14 +57,13 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public PaginationDto<List<UserSearchResponse>> getSearchedUser(String keyword, Pageable pageable) {
+    public UserSearchResponse getSearchedUser(String keyword) {
 
-        Page<UserSearchResponse> page = this.searchRepository.findUserByKeyword(keyword, pageable);
-        List<UserSearchResponse> data = page.get().collect(Collectors.toList());
+        List<UserSearchResponse> userSearchResponse = this.searchRepository.findUserByKeyword(keyword);
 
-        if (data.isEmpty()) throw new NotFoundSearchUserException();
+        if (userSearchResponse.isEmpty()) throw new NotFoundSearchUserException();
 
-        return PaginationDto.of(page, data);
+        return userSearchResponse.get(0);
     }
 
 }
