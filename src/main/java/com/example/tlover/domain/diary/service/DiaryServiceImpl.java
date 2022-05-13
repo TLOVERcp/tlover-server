@@ -80,20 +80,13 @@ public class DiaryServiceImpl implements DiaryService{
 
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
-
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
 
         Long diaryId =0L;
-
         if(cdr.isEmpty()) {
-
-            checkOverPlanDay(createDiaryRequest);
-
-            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest,  getPlanDay(createDiaryRequest), user, plan));
+            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, getPlanDay(plan), user, plan));
             diaryId = diary.getDiaryId();
-
             authorityDiaryService.addDiaryUser(diary , loginId);
-
 
             for (String regionName : createDiaryRequest.getRegionName()) {
                 Region region = regionRepository.findByRegionName(regionName).get();
@@ -113,15 +106,12 @@ public class DiaryServiceImpl implements DiaryService{
 
         // 일차별로 구분해야함.
         if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) {
-
             Diary diary = cdr.get();
+
             AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(NotFoundDiaryException::new);
             String status = authorityDiary.getAuthorityDiaryStatus();
 
             if(status.equals("HOST") || status.equals("ACCEPT")) {
-
-                checkOverPlanDay(createDiaryRequest);
-
                 diaryId = diary.getDiaryId();
                 saveDiaryImageAndContext(createDiaryRequest, user, diary);
             } else if(status.equals("REJECT")) {
@@ -135,20 +125,19 @@ public class DiaryServiceImpl implements DiaryService{
 
     }
 
-    private void checkOverPlanDay(CreateDiaryRequest createDiaryRequest) {
-        if(createDiaryRequest.getDiaryDay() > getPlanDay(createDiaryRequest))
-            throw new RuntimeException("총 여행일보다 크면 안됩니다.");
-    }
 
-    private int getPlanDay(CreateDiaryRequest createDiaryRequest) {
-        LocalDateTime startDate = LocalDateTime.parse( createDiaryRequest.getDiaryStartDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        LocalDateTime endDate = LocalDateTime.parse(createDiaryRequest.getDiaryEndDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    private int getPlanDay(Plan plan) {
+        LocalDateTime startDate = LocalDateTime.parse(plan.getPlanStartDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime endDate = LocalDateTime.parse(plan.getPlanEndDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         int result = (endDate.getDayOfMonth() - startDate.getDayOfMonth()) + 1;
         if(result <= 0) throw new RuntimeException("계획 날짜 오류");
         return result;
     }
 
     private void saveDiaryImageAndContext(CreateDiaryRequest createDiaryRequest, User user, Diary diary) {
+
+        if(createDiaryRequest.getDiaryDay() > diary.getDiaryPlanDays())
+            throw new RuntimeException("총 여행일보다 크면 안됩니다.");
 
         //diaryDay
         Optional<List<MyFile>> cmf = myFileService.findByDiaryAndDiaryDay(diary, createDiaryRequest.getDiaryDay());
@@ -221,7 +210,6 @@ public class DiaryServiceImpl implements DiaryService{
 
         if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("현재 수정중입니다.");
 
-        diary.setDiaryStatus("EDIT");
         diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
         diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
         diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
@@ -235,7 +223,6 @@ public class DiaryServiceImpl implements DiaryService{
     public Diary getDiaryByDiaryId(Long diaryId) {
         return this.diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
     }
-
 
 
 

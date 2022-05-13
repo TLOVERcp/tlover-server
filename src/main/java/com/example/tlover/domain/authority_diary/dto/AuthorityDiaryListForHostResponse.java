@@ -1,4 +1,7 @@
 package com.example.tlover.domain.authority_diary.dto;
 
-public class AuthorityDiaryRequest {
+public class AuthorityDiaryListForHostResponse {
+
+
+
 }
