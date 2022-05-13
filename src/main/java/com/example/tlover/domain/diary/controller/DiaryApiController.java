@@ -33,6 +33,18 @@ public class DiaryApiController {
     private final DiaryService diaryService;
     private final JwtService jwtService;
 
+
+    @ApiOperation(value = "다이어리 상태를 수정중으로 변환", notes = "다이어리를 수정하거나 등록을 시작하는 시점에 상태를 수정중으로 변환합니다.")
+    @PostMapping("/update-diary-editing/{diaryId}")
+    public ResponseEntity<ResponseDto<UpdateDiaryStatusResponse>> updateDiaryStatusEditing(@PathVariable Long diaryId) {
+        String loginId = jwtService.getLoginId();
+        return ResponseEntity.ok(ResponseDto.create("다이어리의 변환된 상태를 반환" , diaryService.updateDiaryEditing(loginId, diaryId)));
+    }
+
+
+
+
+
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
      * @return ResponseEntity<List < DiaryInquiryResponse>>

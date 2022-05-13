@@ -35,4 +35,6 @@ public interface DiaryService {
 
     List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
 
+    UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId);
+
 }
