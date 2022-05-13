@@ -2,6 +2,7 @@ package com.example.tlover.domain.authority_diary.controller;
 
 import com.example.tlover.domain.authority_diary.dto.AuthorityDiaryListResponse;
 import com.example.tlover.domain.authority_diary.dto.AuthorityDiaryResponse;
+import com.example.tlover.domain.authority_diary.dto.CheckAuthorityDiaryResponse;
 import com.example.tlover.domain.authority_diary.service.AuthorityDiaryService;
 import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
 import com.example.tlover.domain.user.controller.UserApiController;
@@ -67,6 +68,15 @@ public class AuthorityDiaryController {
         authorityDiaryService.getListHostAuthor(loginId);
 
         return null;
+    }
+
+    @ApiOperation(value = "해당 다이어리의 권한을 확인", notes = "다이어리를 작성/수정을 시도하는 시점에 권한을 확인함")
+    @PostMapping("/check-authority-diary/{diaryId}")
+    public ResponseEntity<ResponseDto<CheckAuthorityDiaryResponse>> checkAuthorityDiary(@PathVariable Long diaryId) {
+
+        String loginId = jwtService.getLoginId();
+        return ResponseEntity.ok(ResponseDto.create("해당 다이어리에 대한 권한 확인" ,  authorityDiaryService.checkAuthorityDiary(loginId , diaryId)));
+
     }
 
 

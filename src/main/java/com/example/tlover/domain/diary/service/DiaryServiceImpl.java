@@ -78,6 +78,16 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
 
+        /*
+        다이어리를 생성하는 부분과 작성하는 부분을 나눈다?
+        why?
+        현재는 처음 다이어리를 생성(createDiary)을할때에 생성한 user가 host로 authority_diary table에서 생성이 된다.
+        이후에 다이어리를 일차별로 작성을 하는 과정에서 꼭 user host가 아니여도 권한을 부여받았다면 특정 다이어리에서 작성이 가능해야 하는데
+        host가 아닌 user가 권한을 확인하는 과정에서 diary table에서 diaryId를 가져올수있는 방법이 없음 .
+        유일하게 가져올 방법은 외부에서 입력을 해주어야하는데 따라서 이미 생성된 다이어리에서 일차별로 작성하는 식으로 구현하면 가능하다
+        요약을 하자면 다이어리를 생성하는 부분과 다이어리를 작성하는 부분은 다르게 되어야한다.
+         */
+
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
@@ -364,6 +374,25 @@ public class DiaryServiceImpl implements DiaryService{
             throw new NotFoundAcceptDiaryException();
         }
         return myDiaryListResponses;
+    }
+
+    @Override
+    @Transactional
+    public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+        AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(() -> new RuntimeException("권한이없습니다."));
+
+        if(authorityDiary.getAuthorityDiaryStatus().equals("REQUEST")) throw new RuntimeException("권한이 없습니다.");
+        if(authorityDiary.getAuthorityDiaryStatus().equals("REJECT")) throw new RuntimeException("권한이 없습니다.");
+        if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("이미 수정중입니다.");
+
+        if(diary.getDiaryStatus().equals("ACTIVE") || diary.getDiaryStatus().equals("COMPLETE")) {
+            diary.setDiaryStatus("EDIT");
+        }
+
+        return UpdateDiaryStatusResponse.from(diary);
+
     }
 
     private List<String> getDiaryRegions(List<String> diaryRegionNames, Diary diary) {
