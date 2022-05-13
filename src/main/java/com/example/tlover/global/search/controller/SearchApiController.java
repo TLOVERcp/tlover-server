@@ -53,9 +53,8 @@ public class SearchApiController {
             @ApiResponse(code = 404, message = "검색된 사용자가 없습니다.(S0002)", response = NotFoundSearchUserException.class)
     })
     @GetMapping("/get-user")
-    public ResponseEntity<ResponseDto<PaginationDto<List<UserSearchResponse>>>> searchUser(@RequestParam String keyword,
-                                                                                           @PageableDefault Pageable pageable) {
-        PaginationDto<List<UserSearchResponse>> diarySearchResponse = searchService.getSearchedUser(keyword, pageable);
+    public ResponseEntity<ResponseDto<UserSearchResponse>> searchUser(@RequestParam String keyword) {
+        UserSearchResponse diarySearchResponse = searchService.getSearchedUser(keyword);
         return ResponseEntity.ok(ResponseDto.create(diarySearchResponse));
     }
 
