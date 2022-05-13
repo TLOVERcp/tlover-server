@@ -35,10 +35,10 @@ public class DiaryApiController {
 
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
-     *
      * @return ResponseEntity<List < DiaryInquiryResponse>>
      * @author 한규범
      */
+
     @ApiOperation(value = "다이어리 조회", notes = "다이어리를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다.", response = ApiErrorResponse.class),
@@ -52,7 +52,6 @@ public class DiaryApiController {
 
     /**
      * 갈만한 여행지 조회
-     *
      * @return ResponseEntity<List < DiaryInquiryResponse>>
      * @author 한규범
      */
@@ -158,7 +157,6 @@ public class DiaryApiController {
 
     /**
      * 다이어리에 좋아요를 누르거나 좋아요 취소하기
-     *
      * @param diaryId author 신동민
      */
 
