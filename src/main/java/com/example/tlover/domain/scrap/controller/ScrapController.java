@@ -2,6 +2,7 @@ package com.example.tlover.domain.scrap.controller;
 
 import com.example.tlover.domain.diary.exception.DiaryExceptionList;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.scrap.constant.ScrapConstants;
 import com.example.tlover.domain.scrap.constant.ScrapConstants.EScrapResponseMessage;
 import com.example.tlover.domain.scrap.dto.*;
 import com.example.tlover.domain.scrap.service.ScrapService;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -59,8 +61,8 @@ public class ScrapController {
             @ApiResponse(code = 400 , message = "[U0002] 해당 아이디를 찾을 수 없습니다.", response = NotFoundUserException.class),
     })
     @PostMapping
-    public ResponseEntity<ResponseDto<ScrapChangeResponse>> changeScrap(@Valid @RequestBody ScrapChangeRequest scrapChangeRequest) {
-        ScrapChangeResponse scrapChangeResponse = this.scrapService.changeScrap(scrapChangeRequest);
+    public ResponseEntity<ResponseDto<ScrapChangeResponse>> changeScrap(@Valid @RequestBody ScrapChangeRequest scrapChangeRequest, HttpServletRequest request) {
+        ScrapChangeResponse scrapChangeResponse = this.scrapService.changeScrap(scrapChangeRequest, (Long)request.getAttribute(ScrapConstants.EHttpServletRequestAttribute.eUserId.getAttribute()));
         if(scrapChangeResponse.isCreated()){
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{scrapId}")
@@ -83,9 +85,9 @@ public class ScrapController {
             @ApiResponse(code = 400 , message = "[U0002] 해당 아이디를 찾을 수 없습니다.", response = NotFoundUserException.class),
     })
     @GetMapping("/whether")
-    public ResponseEntity<ResponseDto<ScrapOrNotResponse>> getScrapOrNot(@Valid @RequestBody ScrapOrNotRequest scrapOrNotRequest) {
-            return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapOrNotMessage.getMessage()
-                    , this.scrapService.getScrapOrNot(scrapOrNotRequest)));
+    public ResponseEntity<ResponseDto<ScrapOrNotResponse>> getScrapOrNot(@Valid @RequestBody ScrapOrNotRequest scrapOrNotRequest, HttpServletRequest request) {
+        return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapOrNotMessage.getMessage()
+                    , this.scrapService.getScrapOrNot(scrapOrNotRequest, (Long)request.getAttribute(ScrapConstants.EHttpServletRequestAttribute.eUserId.getAttribute()))));
         }
 
         /**

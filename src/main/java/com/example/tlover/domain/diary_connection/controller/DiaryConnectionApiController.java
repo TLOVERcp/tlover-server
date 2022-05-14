@@ -2,6 +2,7 @@ package com.example.tlover.domain.diary_connection.controller;
 
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EHttpServletRequestAttribute;
 import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EDiaryConnectionResponseMessage;
 import com.example.tlover.domain.diary_connection.service.DiaryConnectionService;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
@@ -33,7 +34,7 @@ public class DiaryConnectionApiController {
             @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002)", response = NotFoundUserException.class),    })
     @PostMapping("/{diaryId}")
     public ResponseEntity<ResponseDto<DiaryInquiryResponse>> getDiaryDetails(@PathVariable Long diaryId, HttpServletRequest httpServletRequest) {
-        Long userId = (Long) httpServletRequest.getAttribute("userId");
+        Long userId = (Long) httpServletRequest.getAttribute(EHttpServletRequestAttribute.eUserId.getAttribute());
         return ResponseEntity.ok(ResponseDto.create(EDiaryConnectionResponseMessage.eGetDiaryDetailsSuccessMessage.getMessage()
                 , this.diaryConnectionService.getDiaryDetails(diaryId, userId)));
     }
