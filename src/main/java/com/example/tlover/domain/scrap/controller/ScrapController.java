@@ -1,6 +1,5 @@
 package com.example.tlover.domain.scrap.controller;
 
-import com.example.tlover.domain.diary.exception.AlreadyExistDiaryException;
 import com.example.tlover.domain.diary.exception.DiaryExceptionList;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.scrap.constant.ScrapConstants.EScrapResponseMessage;

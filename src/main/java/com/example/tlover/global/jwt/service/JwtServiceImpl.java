@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -20,11 +21,13 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
+@Getter
 public class JwtServiceImpl implements JwtService {
 
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 2 * 1000L;   // 2시간
     private final long REFRESH_TOKEN_VALID_TIME  = 60 * 60 * 24 * 7 * 1000L;   // 1 달
+    private Long userId;
 
     /**
      * 엑세스 토큰 생성
@@ -123,7 +126,7 @@ public class JwtServiceImpl implements JwtService {
             //리프레시토큰 DB에서 가져오기
             UserRefreshToken userRefreshTokenRepo = userRefreshTokenRepository.findByUserRefreshtokenId(userRefreshTokenId);
             String userRefreshToken = userRefreshTokenRepo.getUserRefreshtokenToken();
-
+            userId = userRefreshTokenRepo.getUser().getUserId();
             claims = Jwts.parser()
                     .setSigningKey(SecretKey.JWT_REFRESH_SECRET_KEY)
                     .parseClaimsJws(userRefreshToken);  // 파싱 및 검증, 실패 시 에러
