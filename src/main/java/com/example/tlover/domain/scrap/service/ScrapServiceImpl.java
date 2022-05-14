@@ -34,8 +34,8 @@ public class ScrapServiceImpl implements ScrapService{
 
     @Override
     @Transactional
-    public ScrapChangeResponse changeScrap(ScrapChangeRequest scrapChangeRequest) {
-        User user = this.userService.getUserByUserId(scrapChangeRequest.getUserId());
+    public ScrapChangeResponse changeScrap(ScrapChangeRequest scrapChangeRequest, Long userId) {
+        User user = this.userService.getUserByUserId(userId);
         Diary diary = this.diaryService.getDiaryByDiaryId(scrapChangeRequest.getDiaryId());
         Optional<Scrap> scrap = this.scrapRepository.findByUserAndDiary(user, diary);
         if(scrap.isEmpty()) {
@@ -50,8 +50,8 @@ public class ScrapServiceImpl implements ScrapService{
     }
 
     @Override
-    public ScrapOrNotResponse getScrapOrNot(ScrapOrNotRequest scrapOrNotRequest) {
-        User user = this.userService.getUserByUserId(scrapOrNotRequest.getUserId());
+    public ScrapOrNotResponse getScrapOrNot(ScrapOrNotRequest scrapOrNotRequest, Long userId) {
+        User user = this.userService.getUserByUserId(userId);
         Diary diary = this.diaryService.getDiaryByDiaryId(scrapOrNotRequest.getDiaryId());
         if(this.scrapRepository.findByUserAndDiaryAndNotDeleted(user, diary).isEmpty()) return ScrapOrNotResponse.from(false);
         else return ScrapOrNotResponse.from(true);

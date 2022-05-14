@@ -17,4 +17,11 @@ public class DiaryConnectionConstants {
         eThirtyMinutes(30);
         private final int value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum EHttpServletRequestAttribute{
+        eUserId("userId");
+        private final String attribute;
+    }
 }

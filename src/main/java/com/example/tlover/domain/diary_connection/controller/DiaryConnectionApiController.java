@@ -2,6 +2,7 @@ package com.example.tlover.domain.diary_connection.controller;
 
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EHttpServletRequestAttribute;
 import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EDiaryConnectionResponseMessage;
 import com.example.tlover.domain.diary_connection.service.DiaryConnectionService;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("api/v1/diaries/connections")
 @RequiredArgsConstructor
@@ -29,8 +32,9 @@ public class DiaryConnectionApiController {
     @ApiResponses(value = {
             @ApiResponse(code = 404 , message = "해당 diaryId로 Diary를 찾을 수 없습니다.(D0004)" , response = NotFoundDiaryException.class),
             @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002)", response = NotFoundUserException.class),    })
-    @PostMapping("/{diaryId}/{userId}")
-    public ResponseEntity<ResponseDto<DiaryInquiryResponse>> getDiaryDetails(@PathVariable Long diaryId, @PathVariable Long userId) {
+    @PostMapping("/{diaryId}")
+    public ResponseEntity<ResponseDto<DiaryInquiryResponse>> getDiaryDetails(@PathVariable Long diaryId, HttpServletRequest httpServletRequest) {
+        Long userId = (Long) httpServletRequest.getAttribute(EHttpServletRequestAttribute.eUserId.getAttribute());
         return ResponseEntity.ok(ResponseDto.create(EDiaryConnectionResponseMessage.eGetDiaryDetailsSuccessMessage.getMessage()
                 , this.diaryConnectionService.getDiaryDetails(diaryId, userId)));
     }
