@@ -14,11 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 public class JwtInterceptor implements HandlerInterceptor {
     private final JwtService jwtService;
 
-//    @Override
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
-//        log.info("JWT 인터셉터 검증");
-//        jwtService.getLoginId();
-//        return true;
-//    }
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
+        log.info("JWT 인터셉터 검증");
+        jwtService.getLoginId();
+        request.setAttribute("userId", jwtService.getUserId());
+        return true;
+    }
 
 }
