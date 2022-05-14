@@ -11,8 +11,8 @@ import java.util.List;
 public interface ScrapService {
 
     ScrapCountResponse getScrapCount(Long diaryId);
-    ScrapChangeResponse changeScrap(ScrapChangeRequest scrapChangeRequest);
-    ScrapOrNotResponse getScrapOrNot(ScrapOrNotRequest scrapOrNotRequest);
+    ScrapChangeResponse changeScrap(ScrapChangeRequest scrapChangeRequest, Long userId);
+    ScrapOrNotResponse getScrapOrNot(ScrapOrNotRequest scrapOrNotRequest, Long userId);
     PaginationDto<List<DiaryInquiryByScrapRankingResponse>> getDiariesByScrapRanking(Pageable pageable);
 
 }
