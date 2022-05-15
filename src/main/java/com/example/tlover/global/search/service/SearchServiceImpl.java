@@ -1,6 +1,8 @@
 package com.example.tlover.global.search.service;
 
 
+import com.example.tlover.domain.region.entity.Region;
+import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.global.dto.PaginationDto;
@@ -23,6 +25,7 @@ public class SearchServiceImpl implements SearchService {
 
     private final SearchRepository searchRepository;
     private final ThemaRepository themaRepository;
+    private final RegionRepository regionRepository;
 
     /**
      * 다이어리 검색 조회
@@ -34,12 +37,15 @@ public class SearchServiceImpl implements SearchService {
 
         Page<DiarySearchResponse> page;
         Thema thema = themaRepository.findByThemaName(keyword);
+        Region region = regionRepository.findByRegionName(keyword).get();
 
-        // 키워드가 테마이름인지 확인
+        // 키워드가 테마이름인지 지역이름인지 확인
         if (thema != null) {
-            page = this.searchRepository.findThemaByKeword(keyword, pageable);
+            page = this.searchRepository.findDiaryByThema(keyword, pageable);
+        } else if (region != null) {
+            page = this.searchRepository.findDiaryByRegion(keyword, pageable);
         } else {
-            page = this.searchRepository.findDiaryByKeywordCustom(keyword, pageable);
+            page = this.searchRepository.findDiaryByKeyword(keyword, pageable);
         }
 
         List<DiarySearchResponse> data = page.get().collect(Collectors.toList());
