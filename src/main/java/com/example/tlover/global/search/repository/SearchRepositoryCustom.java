@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface SearchRepositoryCustom {
 
-    Page<DiarySearchResponse> findThemaByKeword(String keyword, Pageable pageable);
+    Page<DiarySearchResponse> findDiaryByThema(String keyword, Pageable pageable);
 
-    Page<DiarySearchResponse> findDiaryByKeywordCustom(String keyword, Pageable pageable);
+    Page<DiarySearchResponse> findDiaryByRegion(String keyword, Pageable pageable);
+
+    Page<DiarySearchResponse> findDiaryByKeyword(String keyword, Pageable pageable);
 
     List<String> findThemaNamesByDiaryId(Long diaryId);
 

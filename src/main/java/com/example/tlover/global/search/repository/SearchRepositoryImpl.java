@@ -30,7 +30,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
     }
 
         @Override
-        public Page<DiarySearchResponse> findThemaByKeword(String keyword, Pageable pageable) {
+        public Page<DiarySearchResponse> findDiaryByThema(String keyword, Pageable pageable) {
 
             List<DiarySearchResponse> content = queryFactory
                     .select(new QDiarySearchResponse(
@@ -74,8 +74,53 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
 
         }
 
+    @Override
+    public Page<DiarySearchResponse> findDiaryByRegion(String keyword, Pageable pageable) {
+
+        List<DiarySearchResponse> content = queryFactory
+                .select(new QDiarySearchResponse(
+                        diary.diaryId,
+                        diary.diaryTitle,
+                        diary.diaryStatus,
+                        diary.diaryStartDate,
+                        diary.diaryWriteDate,
+                        diary.diaryEndDate,
+                        diary.diaryView
+                ))
+                .from(diary)
+                .leftJoin(diaryRegion)
+                .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
+                .leftJoin(region)
+                .on(diaryRegion.region.regionId.eq(region.regionId))
+                .where(region.regionName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryRegion.diaryRegionId.isNotNull())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<DiarySearchResponse> countQuery = queryFactory
+                .select(new QDiarySearchResponse(
+                        diary.diaryId,
+                        diary.diaryTitle,
+                        diary.diaryStatus,
+                        diary.diaryStartDate,
+                        diary.diaryWriteDate,
+                        diary.diaryEndDate,
+                        diary.diaryView
+                ))
+                .from(diary)
+                .leftJoin(diaryRegion)
+                .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
+                .leftJoin(region)
+                .on(diaryRegion.region.regionId.eq(region.regionId))
+                .where(region.regionName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryRegion.diaryRegionId.isNotNull());
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
+
+
+    }
+
         @Override
-        public Page<DiarySearchResponse> findDiaryByKeywordCustom(String keyword, Pageable pageable) {
+        public Page<DiarySearchResponse> findDiaryByKeyword(String keyword, Pageable pageable) {
             List<DiarySearchResponse> content = queryFactory
                     .select(new QDiarySearchResponse(
                             diary.diaryId,
