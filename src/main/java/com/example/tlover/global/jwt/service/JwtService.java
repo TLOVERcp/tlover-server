@@ -8,4 +8,5 @@ public interface JwtService {
     String resolveAccessToken();
     Long resolveRefreshToken();
     String getLoginId();
+    Long getUserId();
 }
