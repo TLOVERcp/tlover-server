@@ -17,5 +17,12 @@ public class ScrapConstants {
         private final String message;
     }
 
+    @Getter
+    @RequiredArgsConstructor
+    public enum EHttpServletRequestAttribute{
+        eUserId("userId");
+        private final String attribute;
+    }
+
 }
 
