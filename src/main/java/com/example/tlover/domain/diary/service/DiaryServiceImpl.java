@@ -80,11 +80,9 @@ public class DiaryServiceImpl implements DiaryService{
 
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
-
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
 
         Long diaryId =0L;
-
         if(cdr.isEmpty()) {
 
             checkOverPlanDay(createDiaryRequest);
@@ -113,8 +111,8 @@ public class DiaryServiceImpl implements DiaryService{
 
         // 일차별로 구분해야함.
         if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) {
-
             Diary diary = cdr.get();
+
             AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(NotFoundDiaryException::new);
             String status = authorityDiary.getAuthorityDiaryStatus();
 
@@ -225,7 +223,6 @@ public class DiaryServiceImpl implements DiaryService{
     public Diary getDiaryByDiaryId(Long diaryId) {
         return this.diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
     }
-
 
 
 
@@ -395,39 +392,6 @@ public class DiaryServiceImpl implements DiaryService{
             diaryThemaNames.add(diaryThemaName);
         }
         return diaryThemaNames;
-    }
-
-
-    /**
-     * 다이어리 검색 조회
-     * @return PaginationDto<List<DiarySearchResponse>>
-     * @author 윤여찬
-     */
-    @Override
-    public PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable) {
-
-        Page<DiarySearchResponse> page;
-        Thema thema = themaRepository.findByThemaName(keyword);
-
-        // 키워드가 테마이름인지 확인
-        if (thema != null) {
-            page = this.diaryRepository.findByThemaKewordCustom(keyword, pageable);
-        } else {
-            page = this.diaryRepository.findByKeywordCustom(keyword, pageable);
-        }
-
-        List<DiarySearchResponse> data = page.get().collect(Collectors.toList());
-
-        for (DiarySearchResponse diary : data) {
-            List<String> themaNames = diaryRepository.findThemaNamesByDiaryId(diary.getDiaryId());
-            List<String> regionNames = diaryRepository.findRegionNamesByDiaryId(diary.getDiaryId());
-            if (themaNames != null) diary.setThemaNames(themaNames);
-            if (regionNames != null) diary.setRegionNames(regionNames);
-        }
-
-        if (data.isEmpty()) throw new NotFoundSearchDiaryException();
-
-        return PaginationDto.of(page, data);
     }
 
 }

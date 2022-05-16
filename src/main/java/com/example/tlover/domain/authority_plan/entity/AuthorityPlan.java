@@ -21,7 +21,7 @@ public class AuthorityPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorityPlanId;
 
-    private LocalDateTime authorityPlanShareDate;
+    private String authorityPlanShareDate;
 
     private String authorityPlanStatus;
 
@@ -48,7 +48,7 @@ public class AuthorityPlan {
         authorityPlan.setPlan(plan);
         authorityPlan.setUser(user);
         authorityPlan.setAuthorityPlanStatus(status);
-        authorityPlan.setAuthorityPlanShareDate(LocalDateTime.now());
+        authorityPlan.setAuthorityPlanShareDate(LocalDateTime.now().toString());
         return authorityPlan;
 
     }
