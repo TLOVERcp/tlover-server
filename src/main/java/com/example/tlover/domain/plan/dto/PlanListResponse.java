@@ -33,12 +33,12 @@ public class PlanListResponse {
     private Long expense;
 
     @QueryProjection
-    public PlanListResponse(Long planId, String planTitle,  LocalDateTime planStartDate
-            , LocalDateTime planEndDate,  Long day, String[] regionName, Long expense){
+    public PlanListResponse(Long planId, String planTitle, String planStartDate
+            ,String planEndDate,  Long day, String[] regionName, Long expense){
         this.planId = planId;
         this.planTitle = planTitle;
-        this.planStartDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planStartDate);
-        this.planEndDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planEndDate);
+        this.planStartDate = planStartDate;
+        this.planEndDate = planEndDate;
         this.day = day;
         this.regionName = regionName;
         this.expense = expense;
@@ -49,9 +49,9 @@ public class PlanListResponse {
        for(int i=0; i< regionName.length; i++){
            regionName[i] = planRegions.get(i).getRegion().getRegionName();
        }
-       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-       long period = ChronoUnit.DAYS.between(LocalDate.parse(plan.getPlanStartDate(),formatter), LocalDate.parse(plan.getPlanEndDate(),formatter))+1;
-       long day = ChronoUnit.DAYS.between(LocalDate.parse(plan.getPlanStartDate(),formatter), LocalDateTime.now().toLocalDate())+1;;
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+       long period = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDateTime.parse(plan.getPlanEndDate(),formatter).toLocalDate())+1;
+       long day = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDate.now())+1;
        if(period-day<0||day<0){
            day = -1;
        }

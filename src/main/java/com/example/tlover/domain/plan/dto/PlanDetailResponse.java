@@ -60,9 +60,9 @@ public class PlanDetailResponse {
         for(int i=0; i< authorityPlans.size(); i++){
             users[i] = authorityPlans.get(i).getUser().getUserNickName();
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        long period = ChronoUnit.DAYS.between(LocalDate.parse(plan.getPlanStartDate(),formatter), LocalDate.parse(plan.getPlanEndDate(),formatter))+1;
-        long day = ChronoUnit.DAYS.between(LocalDate.parse(plan.getPlanStartDate(),formatter), LocalDateTime.now().toLocalDate())+1;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        long period = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDateTime.parse(plan.getPlanEndDate(),formatter).toLocalDate())+1;
+        long day = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDate.now())+1;
         if(period-day<0||day<0){
             day = -1;
         }
