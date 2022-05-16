@@ -8,7 +8,6 @@ public class HistoryConstants {
     @RequiredArgsConstructor
     public enum EHistory {
         eComplete("COMPLETE"),
-        eFinish("FINISH"),
         eDelete("DELETE");
 
         private final String value;

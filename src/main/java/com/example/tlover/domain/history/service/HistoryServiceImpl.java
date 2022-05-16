@@ -3,7 +3,6 @@ package com.example.tlover.domain.history.service;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
-import com.example.tlover.domain.history.dto.CreateHistoryRequest;
 import com.example.tlover.domain.history.dto.GetHistoryResponse;
 import com.example.tlover.domain.history.exception.NotFoundHistoryException;
 import com.example.tlover.domain.history.exception.RejectDeletedDiaryException;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.example.tlover.domain.history.constant.HistoryConstants.*;
@@ -31,18 +29,21 @@ public class HistoryServiceImpl implements HistoryService{
     private final HistoryRepository historyRepository;
 
     @Override
-    public void createHistory(String loginId, CreateHistoryRequest createHistoryRequest) {
-        User user = userRepository.findByUserLoginId(loginId).get();
-        Diary diary = diaryRepository.findByDiaryId(createHistoryRequest.getDiaryId())
+    public void createHistory(Long diaryId, Long userId) {
+        User user = userRepository.findByUserId(userId).get();
+        Diary diary = diaryRepository.findByDiaryId(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
         if (diary.getDiaryStatus().equals(EHistory.eComplete.getValue())) {
-            History history = historyRepository.findByDiary_DiaryIdAndUser_UserId(diary.getDiaryId(), user.getUserId())
-                    .map(entity -> entity.updateEntity(createHistoryRequest.getDate().toString()))
-                    .orElse(History.toEntity(createHistoryRequest, user, diary));
-            historyRepository.save(history);
+            Optional<History> history = historyRepository.findByDiaryAndUser(diary, user);
+            if (history.isEmpty()) {
+                historyRepository.save(History.toEntity(user, diary, LocalDateTime.now()));
+            } else {
+                historyRepository.deleteByHistoryId(history.get().getHistoryId());
+                historyRepository.save(History.toEntity(user, diary, LocalDateTime.now()));
+            }
         } else if (diary.getDiaryStatus().equals(EHistory.eDelete.getValue())) {
             throw new RejectDeletedDiaryException();
-        } else {
+        }else {
             throw new RejectGetDiaryException();
         }
     }
@@ -55,9 +56,7 @@ public class HistoryServiceImpl implements HistoryService{
         List<GetHistoryResponse> historyResponses = new ArrayList<>();
 
         for (History history : histories) {
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-            LocalDateTime dateTime = LocalDateTime.parse(history.getDate(), formatter);
-            int compare = LocalDateTime.now().minusMonths(1).compareTo(dateTime);
+            int compare = LocalDateTime.now().minusMonths(1).compareTo(history.getDate());
             if (compare > 0) {
                 historyRepository.deleteByUserAndAndHistoryId(user, history.getHistoryId());
             }
@@ -66,11 +65,10 @@ public class HistoryServiceImpl implements HistoryService{
         for (History newHistory : newHistories) {
             historyResponses.add(GetHistoryResponse.from(newHistory, user));
         }
-
         Collections.sort(historyResponses, new Comparator<GetHistoryResponse>() {
             @Override
             public int compare(GetHistoryResponse o1, GetHistoryResponse o2) {
-                return o2.getDate().compareTo(o1.getDate());
+                return o2.getDateTime().compareTo(o1.getDateTime());
             }
         });
         if (historyResponses.isEmpty()) {
