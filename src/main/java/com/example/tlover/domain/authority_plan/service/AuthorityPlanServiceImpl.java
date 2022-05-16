@@ -1,5 +1,6 @@
 package com.example.tlover.domain.authority_plan.service;
 
+import com.example.tlover.domain.authority_plan.constant.AuthorityPlanConstant;
 import com.example.tlover.domain.authority_plan.dto.AuthorityPlanListResponse;
 import com.example.tlover.domain.authority_plan.dto.SharePlanRequest;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
@@ -11,7 +12,6 @@ import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,12 +35,12 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
         Optional<List<AuthorityPlan>> sharePlan = authorityPlanRepository.findAllByUserAndPlan(user,plan);
         if(sharePlan.isPresent()) {
             for (AuthorityPlan authorityPlan : sharePlan.get()) {
-                if (authorityPlan.getAuthorityPlanStatus().equals("ACCEPT")) throw new DeniedShareAcceptException();
-                if (authorityPlan.getAuthorityPlanStatus().equals("REQUEST")) throw new DeniedShareRequestException();
-                if (authorityPlan.getAuthorityPlanStatus().equals("HOST")) throw new DeniedShareHostException();
+                if (authorityPlan.getAuthorityPlanStatus().equals(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.ACCEPT))) throw new DeniedShareAcceptException();
+                if (authorityPlan.getAuthorityPlanStatus().equals(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.REQUEST))) throw new DeniedShareRequestException();
+                if (authorityPlan.getAuthorityPlanStatus().equals(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.HOST))) throw new DeniedShareHostException();
             }
         }
-            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,"REQUEST");
+            AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user,String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.REQUEST));
             authorityPlanRepository.save(authorityPlan);
     }
 
@@ -48,7 +48,7 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     @Override
     public void addPlanUser(Plan plan, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
-        AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user, "HOST");
+        AuthorityPlan authorityPlan = AuthorityPlan.toEntity(plan, user, String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.HOST));
         authorityPlanRepository.save(authorityPlan);
     }
 
@@ -62,8 +62,8 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     public List<AuthorityPlanListResponse> getSharePlanList(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<AuthorityPlan> authorityPlans = new ArrayList<>();
-        if(authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, "REQUEST").isPresent())
-            authorityPlans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, "REQUEST").get();
+        if(authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.REQUEST)).isPresent())
+            authorityPlans = authorityPlanRepository.findAllByUserAndAuthorityPlanStatus(user, String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.REQUEST)).get();
         List<AuthorityPlanListResponse> authorityPlanList = new ArrayList<>();
         for(int i=0; i<authorityPlans.size(); i++)
             authorityPlanList.add(AuthorityPlanListResponse.from(authorityPlans.get(i)));
@@ -86,14 +86,14 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
     @Transactional
     public void updateAcceptAuthorityPlan(Long authorityPlanId) {
         AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundAuthorityPlanException::new);
-        authorityPlan.setAuthorityPlanStatus("ACCEPT");
+        authorityPlan.setAuthorityPlanStatus(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.ACCEPT));
     }
 
     @Override
     @Transactional
     public void updateRejectAuthorityPlan(Long authorityPlanId) {
         AuthorityPlan authorityPlan = authorityPlanRepository.findByAuthorityPlanId(authorityPlanId).orElseThrow(NotFoundAuthorityPlanException::new);
-        authorityPlan.setAuthorityPlanStatus("REJECT");
+        authorityPlan.setAuthorityPlanStatus(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.REJECT));
     }
 
     @Override
@@ -103,7 +103,7 @@ public class AuthorityPlanServiceImpl implements AuthorityPlanService{
         Optional<List<AuthorityPlan>> sharePlan = authorityPlanRepository.findAllByUserAndPlan(user,plan);
         if(sharePlan.isPresent()){
             for(AuthorityPlan authorityPlan : sharePlan.get()){
-                if(authorityPlan.getAuthorityPlanStatus().equals("HOST")) return true;
+                if(authorityPlan.getAuthorityPlanStatus().equals(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.HOST))) return true;
             }
         }
 
