@@ -57,6 +57,7 @@ public class RatingServiceImpl implements RatingService {
                 num = 50;
             }
             rating.updateRating(num, rating);
+            ratingRepository.save(rating);
         }
         }
 
