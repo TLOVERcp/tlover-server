@@ -24,6 +24,7 @@ import static com.example.tlover.domain.user.entity.QUser.user;
 
 public class SearchRepositoryImpl implements SearchRepositoryCustom {
         private final JPAQueryFactory queryFactory;
+        private final String diaryStatus = "ACTIVE";
 
     public SearchRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
@@ -47,7 +48,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                     .on(diary.diaryId.eq(diaryThema.diary.diaryId))
                     .leftJoin(thema)
                     .on(diaryThema.thema.themaId.eq(thema.themaId))
-                    .where(thema.themaName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull())
+                    .where(thema.themaName.eq(keyword), diary.diaryStatus.eq(diaryStatus), diaryThema.diaryThemaId.isNotNull())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -67,7 +68,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                     .on(diary.diaryId.eq(diaryThema.diary.diaryId))
                     .leftJoin(thema)
                     .on(diaryThema.thema.themaId.eq(thema.themaId))
-                    .where(thema.themaName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull());
+                    .where(thema.themaName.eq(keyword), diary.diaryStatus.eq(diaryStatus), diaryThema.diaryThemaId.isNotNull());
 
             return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
 
@@ -92,7 +93,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                 .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
                 .leftJoin(region)
                 .on(diaryRegion.region.regionId.eq(region.regionId))
-                .where(region.regionName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryRegion.diaryRegionId.isNotNull())
+                .where(region.regionName.eq(keyword), diary.diaryStatus.eq(diaryStatus), diaryRegion.diaryRegionId.isNotNull())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -112,7 +113,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                 .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
                 .leftJoin(region)
                 .on(diaryRegion.region.regionId.eq(region.regionId))
-                .where(region.regionName.eq(keyword), diary.diaryStatus.eq("COMPLETE"), diaryRegion.diaryRegionId.isNotNull());
+                .where(region.regionName.eq(keyword), diary.diaryStatus.eq(diaryStatus), diaryRegion.diaryRegionId.isNotNull());
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
 
@@ -135,7 +136,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                     .leftJoin(diaryContext)
                     .on(diary.diaryId.eq(diaryContext.diary.diaryId))
                     .where(diary.diaryTitle.contains(keyword)
-                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq("COMPLETE"))
+                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq(diaryStatus))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -154,7 +155,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                     .leftJoin(diaryContext)
                     .on(diary.diaryId.eq(diaryContext.diary.diaryId))
                     .where(diary.diaryTitle.contains(keyword)
-                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq("COMPLETE"));
+                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq(diaryStatus));
 
             return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
         }
@@ -169,7 +170,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                     .on(diary.diaryId.eq(diaryThema.diary.diaryId))
                     .leftJoin(thema)
                     .on(diaryThema.thema.themaId.eq(thema.themaId))
-                    .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq("COMPLETE"), diaryThema.diaryThemaId.isNotNull())
+                    .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq(diaryStatus), diaryThema.diaryThemaId.isNotNull())
                     .fetch();
 
             return content;
@@ -186,7 +187,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                     .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
                     .leftJoin(region)
                     .on(diaryRegion.region.regionId.eq(region.regionId))
-                    .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq("COMPLETE"), diaryRegion.diaryRegionId.isNotNull())
+                    .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq(diaryStatus), diaryRegion.diaryRegionId.isNotNull())
                     .fetch();
 
             return content;
