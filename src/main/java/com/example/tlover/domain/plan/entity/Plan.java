@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,9 +71,9 @@ public class Plan {
         Plan plan = new Plan();
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
         plan.setPlanContext(createPlanRequest.getPlanContext());
-        plan.setPlanStartDate(createPlanRequest.getPlanStartDate().toString());
-        plan.setPlanEndDate(createPlanRequest.getPlanEndDate().toString());
-        plan.setPlanWriteDate(LocalDateTime.now().toString());
+        plan.setPlanStartDate(createPlanRequest.getPlanStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        plan.setPlanEndDate(createPlanRequest.getPlanEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        plan.setPlanWriteDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanStatus("ACTIVE");
         plan.setUser(user);
         plan.setExpense(createPlanRequest.getExpense());
@@ -84,9 +85,9 @@ public class Plan {
     public static Plan updatePlan(CreatePlanRequest createPlanRequest, Plan plan) {
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
         plan.setPlanContext(createPlanRequest.getPlanContext());
-        plan.setPlanStartDate(createPlanRequest.getPlanStartDate().toString());
-        plan.setPlanEndDate(createPlanRequest.getPlanEndDate().toString());
-        plan.setPlanWriteDate(LocalDateTime.now().toString());
+        plan.setPlanStartDate(createPlanRequest.getPlanStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        plan.setPlanEndDate(createPlanRequest.getPlanEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        plan.setPlanWriteDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanStatus("ACTIVE");
         return plan;
     }
