@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -48,8 +49,9 @@ public class PlanListResponse {
        for(int i=0; i< regionName.length; i++){
            regionName[i] = planRegions.get(i).getRegion().getRegionName();
        }
-       long period = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), plan.getPlanEndDate().toLocalDate())+1;
-       long day = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), LocalDateTime.now().toLocalDate())+1;
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+       long period = ChronoUnit.DAYS.between(LocalDate.parse(plan.getPlanStartDate(),formatter), LocalDate.parse(plan.getPlanEndDate(),formatter))+1;
+       long day = ChronoUnit.DAYS.between(LocalDate.parse(plan.getPlanStartDate(),formatter), LocalDateTime.now().toLocalDate())+1;;
        if(period-day<0||day<0){
            day = -1;
        }
@@ -58,8 +60,8 @@ public class PlanListResponse {
                 .planId(plan.getPlanId())
                 .planTitle(plan.getPlanTitle())
                 .planStatus(plan.getPlanStatus())
-                .planStartDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanStartDate()))
-                .planEndDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanEndDate()))
+                .planStartDate(plan.getPlanStartDate())
+                .planEndDate(plan.getPlanEndDate())
                 .day(day)
                 .regionName(regionName)
                 .build();
