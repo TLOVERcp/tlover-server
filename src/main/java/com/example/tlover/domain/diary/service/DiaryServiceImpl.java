@@ -78,25 +78,20 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
 
-        /*
-        다이어리를 생성하는 부분과 작성하는 부분을 나눈다?
-        why?
-        현재는 처음 다이어리를 생성(createDiary)을할때에 생성한 user가 host로 authority_diary table에서 생성이 된다.
-        이후에 다이어리를 일차별로 작성을 하는 과정에서 꼭 user host가 아니여도 권한을 부여받았다면 특정 다이어리에서 작성이 가능해야 하는데
-        host가 아닌 user가 권한을 확인하는 과정에서 diary table에서 diaryId를 가져올수있는 방법이 없음 .
-        유일하게 가져올 방법은 외부에서 입력을 해주어야하는데 따라서 이미 생성된 다이어리에서 일차별로 작성하는 식으로 구현하면 가능하다
-        요약을 하자면 다이어리를 생성하는 부분과 다이어리를 작성하는 부분은 다르게 되어야한다.
-         */
-
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
 
         Long diaryId =0L;
         if(cdr.isEmpty()) {
-            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest, getPlanDay(plan), user, plan));
+
+            checkOverPlanDay(createDiaryRequest);
+
+            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest,  getPlanDay(createDiaryRequest), user, plan));
             diaryId = diary.getDiaryId();
+
             authorityDiaryService.addDiaryUser(diary , loginId);
+
 
             for (String regionName : createDiaryRequest.getRegionName()) {
                 Region region = regionRepository.findByRegionName(regionName).get();
@@ -122,6 +117,9 @@ public class DiaryServiceImpl implements DiaryService{
             String status = authorityDiary.getAuthorityDiaryStatus();
 
             if(status.equals("HOST") || status.equals("ACCEPT")) {
+
+                checkOverPlanDay(createDiaryRequest);
+
                 diaryId = diary.getDiaryId();
                 saveDiaryImageAndContext(createDiaryRequest, user, diary);
             } else if(status.equals("REJECT")) {
@@ -135,19 +133,20 @@ public class DiaryServiceImpl implements DiaryService{
 
     }
 
+    private void checkOverPlanDay(CreateDiaryRequest createDiaryRequest) {
+        if(createDiaryRequest.getDiaryDay() > getPlanDay(createDiaryRequest))
+            throw new RuntimeException("총 여행일보다 크면 안됩니다.");
+    }
 
-    private int getPlanDay(Plan plan) {
-        LocalDateTime startDate = LocalDateTime.parse(plan.getPlanStartDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        LocalDateTime endDate = LocalDateTime.parse(plan.getPlanEndDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    private int getPlanDay(CreateDiaryRequest createDiaryRequest) {
+        LocalDateTime startDate = LocalDateTime.parse( createDiaryRequest.getDiaryStartDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime endDate = LocalDateTime.parse(createDiaryRequest.getDiaryEndDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         int result = (endDate.getDayOfMonth() - startDate.getDayOfMonth()) + 1;
         if(result <= 0) throw new RuntimeException("계획 날짜 오류");
         return result;
     }
 
     private void saveDiaryImageAndContext(CreateDiaryRequest createDiaryRequest, User user, Diary diary) {
-
-        if(createDiaryRequest.getDiaryDay() > diary.getDiaryPlanDays())
-            throw new RuntimeException("총 여행일보다 크면 안됩니다.");
 
         //diaryDay
         Optional<List<MyFile>> cmf = myFileService.findByDiaryAndDiaryDay(diary, createDiaryRequest.getDiaryDay());
@@ -170,16 +169,6 @@ public class DiaryServiceImpl implements DiaryService{
             throw new RuntimeException("해당 날짜에 이미 작성되어있습니다");
         }
 
-    }
-
-    @Override
-    public List<DiaryInquiryResponse> getDiary() {
-        List<Diary> diaries = diaryRepository.findBy();
-        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
-        for(Diary d : diaries){
-            diaryInquiryResponseList.add(DiaryInquiryResponse.from(d));
-        }
-        return diaryInquiryResponseList;
     }
 
     @Override
@@ -220,6 +209,7 @@ public class DiaryServiceImpl implements DiaryService{
 
         if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("현재 수정중입니다.");
 
+        diary.setDiaryStatus("EDIT");
         diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
         diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
         diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
@@ -294,23 +284,6 @@ public class DiaryServiceImpl implements DiaryService{
 
     }
 
-    @Override
-    public List<DiaryInquiryResponse> getGoingDiary() {
-        Thema thema = themaRepository.findByThemaName("봄나들이");
-
-        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema);
-        List<DiaryInquiryResponse> diaryInquiryResponseList = new ArrayList<>();
-
-        User u = diaryThemas.get(0).getDiary().getUser();
-        System.out.println(u.getUserId());
-        for (int i = 0; i < diaryThemas.size(); i++) {
-            Optional<Diary> diaries = diaryRepository.findByDiaryId(diaryThemas.get(i).getDiary().getDiaryId());
-//            if(diaries.get().getDiaryStatus().equals("ACTIVE") || diaries.get().getDiaryStatus().equals("COMPLETE")){
-//                diaryInquiryResponseList.add(DiaryInquiryResponse.from(diaries.get()));
-//            }
-        }
-        return diaryInquiryResponseList;
-    }
 
 
     @Override
@@ -377,21 +350,29 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    @Transactional
-    public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
-        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
-        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
-        AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(() -> new RuntimeException("권한이없습니다."));
+    public List<DiaryWeatherResponse> getDiaryWeather(String loginId) {
+        //결과를 위한 배열
+        List<DiaryWeatherResponse> diaryWeatherResponses = new ArrayList<>();
 
-        if(authorityDiary.getAuthorityDiaryStatus().equals("REQUEST")) throw new RuntimeException("권한이 없습니다.");
-        if(authorityDiary.getAuthorityDiaryStatus().equals("REJECT")) throw new RuntimeException("권한이 없습니다.");
-        if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("이미 수정중입니다.");
+        //유저 정보 가져와
+        User user = userRepository.findByUserLoginId(loginId).get();
+        //유저 테마 가져와
+        List<UserThema> userThemas = user.getUserThemas();
 
-        if(diary.getDiaryStatus().equals("ACTIVE") || diary.getDiaryStatus().equals("COMPLETE")) {
-            diary.setDiaryStatus("EDIT");
+        Optional<Thema> thema = themaRepository.findByThemaId(userThemas.get(0).getThema().getThemaId());
+
+        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema.get());
+
+        for (int i = 0; i < diaryThemas.size(); i++) {
+            Diary diary = diaryThemas.get(i).getDiary();
+            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
+            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
+//            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
         }
 
-        return UpdateDiaryStatusResponse.from(diary);
+        Collections.shuffle(diaryWeatherResponses);
+
+        return diaryWeatherResponses;
 
     }
 
