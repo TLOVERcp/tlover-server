@@ -20,7 +20,7 @@
 
 ## <p align="center"> 🚀 Back-end CI/CD </p>
 
-<p align="center"><img src="https://user-images.githubusercontent.com/61726631/168746841-5b2a19f9-3bf8-4c1b-b9fa-a8f54315dd37.jpg"/><p>
+<p align="center"><img src="https://user-images.githubusercontent.com/61726631/168770122-3a8965c6-130d-4d72-b258-5ff6287bcd54.jpg"/><p>
   
 ## <p align="center"> 🌈 Member</p>
 
