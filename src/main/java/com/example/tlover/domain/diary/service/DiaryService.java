@@ -12,6 +12,8 @@ public interface DiaryService {
     CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId);
 
     DeleteDiaryResponse deleteDiary(Long diaryId, String loginId);
+    
+    
 
     Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId);
 
@@ -35,4 +37,7 @@ public interface DiaryService {
     List<DiaryWeatherResponse> getDiaryWeather(String loginId);
     UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId);
 
+    List<DiaryInquiryResponse> getGoingDiary();
+
+    List<DiaryInquiryResponse> getDiary();
 }
