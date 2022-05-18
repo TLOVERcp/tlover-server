@@ -110,9 +110,9 @@ public class DiaryServiceImpl implements DiaryService{
         }
 
         // 일차별로 구분해야함.
-        if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(ACTIVE.getValue())) {
+        if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(EDIT.getValue())) {
             Diary diary = cdr.get();
-
+            diary.setDiaryStatus("ACTIVE");
             AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(NotFoundDiaryException::new);
             String status = authorityDiary.getAuthorityDiaryStatus();
 
@@ -374,6 +374,21 @@ public class DiaryServiceImpl implements DiaryService{
 
         return diaryWeatherResponses;
 
+    }
+
+    @Override
+    public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
+        return null;
+    }
+
+    @Override
+    public List<DiaryInquiryResponse> getGoingDiary() {
+        return null;
+    }
+
+    @Override
+    public List<DiaryInquiryResponse> getDiary() {
+        return null;
     }
 
     private List<String> getDiaryRegions(List<String> diaryRegionNames, Diary diary) {
