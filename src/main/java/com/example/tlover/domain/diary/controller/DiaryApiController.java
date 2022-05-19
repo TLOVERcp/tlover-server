@@ -44,7 +44,6 @@ public class DiaryApiController {
 
 
 
-
     /**
      * 뷰가 정확하게 나오지 않아서 그냥 다 조회해버렸습니다 ^~^
      * @return ResponseEntity<List < DiaryInquiryResponse>>
@@ -169,6 +168,7 @@ public class DiaryApiController {
 
     /**
      * 다이어리에 좋아요를 누르거나 좋아요 취소하기
+     *
      * @param diaryId author 신동민
      */
 
@@ -263,9 +263,9 @@ public class DiaryApiController {
             @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
     })
     @GetMapping(value = "/get-diary-weather")
-    public void getDairyWeather(){
-//        diaryService.getWeather();
-//        weatherService.getWeather();
+    public  ResponseEntity<ResponseDto<List<DiaryWeatherResponse>>>  getDairyWeather(){
 
+
+        return ResponseEntity.ok(ResponseDto.create(diaryService.getDiaryWeather(jwtService.getLoginId())));
     }
 }

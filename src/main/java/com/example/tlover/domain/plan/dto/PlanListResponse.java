@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -32,12 +33,12 @@ public class PlanListResponse {
     private Long expense;
 
     @QueryProjection
-    public PlanListResponse(Long planId, String planTitle,  LocalDateTime planStartDate
-            , LocalDateTime planEndDate,  Long day, String[] regionName, Long expense){
+    public PlanListResponse(Long planId, String planTitle, String planStartDate
+            ,String planEndDate,  Long day, String[] regionName, Long expense){
         this.planId = planId;
         this.planTitle = planTitle;
-        this.planStartDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planStartDate);
-        this.planEndDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(planEndDate);
+        this.planStartDate = planStartDate;
+        this.planEndDate = planEndDate;
         this.day = day;
         this.regionName = regionName;
         this.expense = expense;
@@ -48,8 +49,9 @@ public class PlanListResponse {
        for(int i=0; i< regionName.length; i++){
            regionName[i] = planRegions.get(i).getRegion().getRegionName();
        }
-       long period = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), plan.getPlanEndDate().toLocalDate())+1;
-       long day = ChronoUnit.DAYS.between(plan.getPlanStartDate().toLocalDate(), LocalDateTime.now().toLocalDate())+1;
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+       long period = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDateTime.parse(plan.getPlanEndDate(),formatter).toLocalDate())+1;
+       long day = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDate.now())+1;
        if(period-day<0||day<0){
            day = -1;
        }
@@ -58,8 +60,9 @@ public class PlanListResponse {
                 .planId(plan.getPlanId())
                 .planTitle(plan.getPlanTitle())
                 .planStatus(plan.getPlanStatus())
-                .planStartDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanStartDate()))
-                .planEndDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(plan.getPlanEndDate()))
+                .planStartDate(plan.getPlanStartDate())
+                .planEndDate(plan.getPlanEndDate())
+                .expense(plan.getExpense())
                 .day(day)
                 .regionName(regionName)
                 .build();

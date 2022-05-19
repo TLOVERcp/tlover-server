@@ -1,7 +1,9 @@
 package com.example.tlover.domain.plan.service;
 
+import com.example.tlover.domain.authority_plan.constant.AuthorityPlanConstant;
 import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
 import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
+import com.example.tlover.domain.plan.constant.PlanConstants;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.dto.PlanDetailResponse;
 import com.example.tlover.domain.plan.dto.PlanListResponse;
@@ -17,7 +19,6 @@ import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -82,11 +83,11 @@ public class PlanServiceImpl implements PlanService{
     public Plan deletePlan(Long planId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        if(plan.getPlanStatus().equals("DELETE"))
+        if(plan.getPlanStatus().equals(String.valueOf(PlanConstants.EPlanStatus.DELETE)))
             throw new AlreadyDeletePlanException();
         if(!user.getUserId().equals(plan.getUser().getUserId()))
             throw new NoAuthorityDeleteException();
-        plan.setPlanStatus("DELETE");
+        plan.setPlanStatus(String.valueOf(PlanConstants.EPlanStatus.DELETE));
         return plan;
     }
 
@@ -101,21 +102,21 @@ public class PlanServiceImpl implements PlanService{
     @Transactional
     public void updatePlanStatusFinish(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        plan.setPlanStatus("FINISH");
+        plan.setPlanStatus(String.valueOf(PlanConstants.EPlanStatus.FINISH));
     }
 
     @Override
     @Transactional
     public void updatePlanStatusEditing(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        plan.setPlanStatus("EDITING");
+        plan.setPlanStatus(String.valueOf(PlanConstants.EPlanStatus.EDITING));
     }
 
     @Override
     @Transactional
     public void updatePlanStatusActive(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        plan.setPlanStatus("ACTIVE");
+        plan.setPlanStatus(String.valueOf(PlanConstants.EPlanStatus.ACTIVE));
     }
 
     @Override
@@ -129,7 +130,7 @@ public class PlanServiceImpl implements PlanService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
         AuthorityPlan authorityPlans = authorityPlanRepository.findAllByPlanAndUser(plan, user).orElseThrow(NotFoundAuthorityPlanException::new);
-        if(authorityPlans.getAuthorityPlanStatus().equals("HOST")||authorityPlans.getAuthorityPlanStatus().equals("ACCEPT"))
+        if(authorityPlans.getAuthorityPlanStatus().equals(String.valueOf(AuthorityPlanConstant.EAuthorityPlanState.HOST))||authorityPlans.getAuthorityPlanStatus().equals("ACCEPT"))
                 return true;
         return false;
     }
@@ -150,7 +151,7 @@ public class PlanServiceImpl implements PlanService{
 
     public static List<AuthorityPlan> checkDelete(List<AuthorityPlan> authorityPlans) {
         for(int i=0; i<authorityPlans.size(); i++) {
-            if (authorityPlans.get(i).getPlan().getPlanStatus().equals("DELETE")) {
+            if (authorityPlans.get(i).getPlan().getPlanStatus().equals(String.valueOf(PlanConstants.EPlanStatus.DELETE))) {
                 authorityPlans.remove(i);
             }
         }
