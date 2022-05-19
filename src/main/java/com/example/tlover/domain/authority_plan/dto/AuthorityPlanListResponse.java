@@ -21,8 +21,7 @@ public class AuthorityPlanListResponse {
     private String planUserNickName;
     private String planStatus;
     private String authorityPlanStatus;
-    @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-    private LocalDateTime authorityPlanShareDate;
+    private String authorityPlanShareDate;
 
     public static AuthorityPlanListResponse from(AuthorityPlan authorityPlans) {
         return AuthorityPlanListResponse.builder()
