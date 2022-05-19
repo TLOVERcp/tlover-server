@@ -20,8 +20,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    #      naming:
+    #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         show_sql: false
@@ -45,6 +45,9 @@ spring:
   jwt:
     access-key: ENC(/5bz6CeOPbTevdJRJ1dACwQ40eDQTG3f6UkOfqKaGgY2KusDijH/TpY+Ct7n9gxK1Eos3aLBud2w2Q4kuEt0pk+bZXaOtIg4)
     refresh-key: ENC(NcfK+JjBpriO9BarU6/De4FPn1KA5Vv3p2dIuWp9wEyiaP+CBryWNj6A0cdw08iUwogHUgZqvXGjdN2LryL9K3rDtkwgLe2W)
+
+  flyway:
+    baseline-on-migrate: true
 
 cloud:
   aws:
@@ -70,4 +73,5 @@ weather:
 jasypt:
   encryptor:
     bean: jasyptEncyptor
-
+server:
+  port: 8074
