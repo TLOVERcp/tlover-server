@@ -368,14 +368,14 @@ public class DiaryServiceImpl implements DiaryService{
             System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
             System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
 //            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
-        }
+}
 
         Collections.shuffle(diaryWeatherResponses);
-        return diaryWeatherResponses;
+                return diaryWeatherResponses;
 
-    }
+                }
 
-    @Override
+@Override
     public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
         return null;
     }
