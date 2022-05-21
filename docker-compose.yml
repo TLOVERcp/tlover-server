@@ -4,7 +4,8 @@ services:
   application:
     image: rbqja123/tlover-server
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://tloverdb.cjgvxgjzvddh.ap-northeast-2.rds.amazonaws.com:3306/tloverdb?
+      JAVA_OPTS: -Djasypt.encryptor.password=tloverkey123!!
+      SPRING_DATASOURCE_URL:  jdbc:mysql://tloverdb.cjgvxgjzvddh.ap-northeast-2.rds.amazonaws.com:3306/tloverdb?
       SPRING_DATASOURCE_USERNAME: tlover
       SPRING_DATASOURCE_PASSWORD: tlover123!!
       TZ: Asia/Seoul
