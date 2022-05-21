@@ -1,10 +1,10 @@
 spring:
   batch.job.enabled: false
   datasource:
-    url: ENC(bVBQvkFSyxPp4403FYd2SFy0oarEpq4Mw9e6bH2AtbAQr7yD4wb4HQMSDPEGmPlqKvfglVXr7RliGjreNoyiHtQL/imeJOipPiEnbOgZ40RYf5CI7aMwYw==)
+    url: ENC(xUdbwMER/kH3+jS5EZDBBWq+QDQV4AeqWTSXZuuBfuY6p69dnZexZPmnT/P/557SWhYGkkecMBNdKf24yCk/U+w+lkV7s9oTiJfN9i35hbbCkM3PjIrwFrzuZrj/sJtq)
     autoReconnect: true
-    username: ENC(gysb2BfXGn2w3q1icgJXmw==)
-    password: ENC(lR5AioQDbkosl2TJMjbu/Jup7yyeD7hP)
+    username: ENC(i19yMBjUksjEcVqvPg1v6w==)
+    password: ENC(qm0t+jp2tArXEqoT3Z1yrK5F33xRCmbS)
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     initialize: true
@@ -19,7 +19,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
