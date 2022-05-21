@@ -371,7 +371,6 @@ public class DiaryServiceImpl implements DiaryService{
         }
 
         Collections.shuffle(diaryWeatherResponses);
-
         return diaryWeatherResponses;
 
     }
