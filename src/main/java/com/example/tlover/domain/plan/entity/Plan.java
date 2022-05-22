@@ -42,6 +42,8 @@ public class Plan {
 
     private String planWriteDate;
 
+    private String planRegionDetail;
+
     private Long expense;
 
 
@@ -67,7 +69,7 @@ public class Plan {
     }
 
 
-    public static Plan toEntity(CreatePlanRequest createPlanRequest, User user) {
+    public static Plan toEntity(String regionDetail, CreatePlanRequest createPlanRequest, User user) {
         Plan plan = new Plan();
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
         plan.setPlanContext(createPlanRequest.getPlanContext());
@@ -75,8 +77,11 @@ public class Plan {
         plan.setPlanEndDate(createPlanRequest.getPlanEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanWriteDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanStatus("ACTIVE");
+        plan.setPlanRegionDetail(regionDetail);
         plan.setUser(user);
+
         plan.setExpense(createPlanRequest.getExpense());
+
         return plan;
 
 

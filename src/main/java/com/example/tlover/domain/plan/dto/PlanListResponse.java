@@ -29,26 +29,22 @@ public class PlanListResponse {
     private String planStartDate;
     private String planEndDate;
     private Long day;
-    private String[] regionName;
+    private String regionDetail;
     private Long expense;
 
     @QueryProjection
     public PlanListResponse(Long planId, String planTitle, String planStartDate
-            ,String planEndDate,  Long day, String[] regionName, Long expense){
+            ,String planEndDate,  Long day, String regionDetail, Long expense){
         this.planId = planId;
         this.planTitle = planTitle;
         this.planStartDate = planStartDate;
         this.planEndDate = planEndDate;
         this.day = day;
-        this.regionName = regionName;
+        this.regionDetail = regionDetail;
         this.expense = expense;
     }
 
-   public static PlanListResponse from(Plan plan, List<PlanRegion> planRegions) {
-       String[] regionName = new String[planRegions.size()];
-       for(int i=0; i< regionName.length; i++){
-           regionName[i] = planRegions.get(i).getRegion().getRegionName();
-       }
+   public static PlanListResponse from(Plan plan) {
        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
        long period = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDateTime.parse(plan.getPlanEndDate(),formatter).toLocalDate())+1;
        long day = ChronoUnit.DAYS.between(LocalDateTime.parse(plan.getPlanStartDate(),formatter).toLocalDate(), LocalDate.now())+1;
@@ -64,7 +60,7 @@ public class PlanListResponse {
                 .planEndDate(plan.getPlanEndDate())
                 .expense(plan.getExpense())
                 .day(day)
-                .regionName(regionName)
+                .regionDetail(plan.getPlanRegionDetail())
                 .build();
     }
 }
