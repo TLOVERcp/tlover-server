@@ -1,10 +1,10 @@
 spring:
   batch.job.enabled: false
   datasource:
-     url: ENC(mVWQxgZgCFGWIUi3e9+NbXTvFW/PMBbQkoacJ5fF1chcpHh1Bq+NNhd67Kab9tC/nXXnP+YZOskNKJuJNEEZkaA+kVmuytig+vaAZipDhaejXZjeHiHVeg==)
+    url: ENC(7YNuBX/j17XQHV27za5rRS1L3a17bhj2Pn968rK2vV4t44Brsna3cBjYcagbPgqTWJleFz/HNCLWDiGKO9DcZCehnBfam6L4qHjoEKNjbwkAsEk5T2s9CDLyCf7E3ave)
     autoReconnect: true
-    username: ENC(PrnaFLyVrZ8Z8yn8epXwsg==)
-    password: ENC(vWB/yP4uFj2HDOHBebdyKxjDvecVbvTA)
+    username: ENC(+0p3Hh4tYI359BX17FUs1A==)
+    password: ENC(HSkuEUvA5LpVCNQPV73gl573fORjYGUi)
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     initialize: true
@@ -19,7 +19,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -51,8 +51,8 @@ cloud:
     s3:
       bucket: tlover-bucket
     credentials:
-      access-key: ENC(upZcdwbborEKHkDN8BZXVFFek0Ivj7Bz6/27iYDnQ3o=)
-      secret-key: ENC(I7KCmkANZjPZA5ZkFyyWPXGeGnqmbh12N5m2gnvdavpFaXrJYKKb0qSacAepqq3AGpDLG6KPYAI=)
+      access-key: AKIATHDBPLGZL6TVERDA
+      secret-key: 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
     region:
       static: ap-northeast-2
     stack:
@@ -70,4 +70,5 @@ weather:
 jasypt:
   encryptor:
     bean: jasyptEncyptor
+
 
