@@ -37,7 +37,7 @@ public class WeatherServiceImpl implements WeatherService{
     @Transactional
     public void saveWeather(){
         System.out.println("날씨조회");
-        for(int i= 0; i<MAPKEY.length; i++){
+        for(int i= 0; i<AREAKEY.length; i++){
             WeatherResultContext resultContext = new WeatherResultContext();
             resultContext = getWeather(AREAKEY[i],resultContext);
 
@@ -137,35 +137,35 @@ public class WeatherServiceImpl implements WeatherService{
             weatherResultContext.setWeatherTciGrade("나쁨");
         }
 
-        switch (items.get(0).get("doName").toString()){
-            case "강원":
+        switch (cityCode){
+            case "4215000000":
                 weatherResultContext.setWeatherRegion("강원도");
                 break;
-            case "전남":
+            case "4613000000":
                 weatherResultContext.setWeatherRegion("전라남도");
                 break;
-            case "전북":
+            case "4513000000":
                 weatherResultContext.setWeatherRegion("전라북도");
                 break;
-            case "충북":
+            case "4313000000":
                 weatherResultContext.setWeatherRegion("충청북도");
                 break;
-            case "충남":
+            case "4413100000":
                 weatherResultContext.setWeatherRegion("충청남도");
                 break;
-            case "제주":
+            case "5011000000":
                 weatherResultContext.setWeatherRegion("제주도");
                 break;
-            case "경남":
+            case "4822000000":
                 weatherResultContext.setWeatherRegion("경상남도");
                 break;
-            case "경북":
+            case "4711100000":
                 weatherResultContext.setWeatherRegion("경상북도");
                 break;
-            case "경기":
+            case "4136000000":
                 weatherResultContext.setWeatherRegion("경기도");
                 break;
-            case "서울":
+            case "1156000000":
                 weatherResultContext.setWeatherRegion("서울");
                 break;
         }

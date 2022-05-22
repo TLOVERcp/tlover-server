@@ -349,46 +349,13 @@ public class DiaryServiceImpl implements DiaryService{
         return myDiaryListResponses;
     }
 
+
+
     @Override
-    public List<DiaryWeatherResponse> getDiaryWeather(String loginId) {
-        //결과를 위한 배열
-        List<DiaryWeatherResponse> diaryWeatherResponses = new ArrayList<>();
-
-        //유저 정보 가져와
-        User user = userRepository.findByUserLoginId(loginId).get();
-        //유저 테마 가져와
-        List<UserThema> userThemas = user.getUserThemas();
-
-        Optional<Thema> thema = themaRepository.findByThemaId(userThemas.get(0).getThema().getThemaId());
-
-        List<DiaryThema> diaryThemas = diaryThemaRepository.findByThema(thema.get());
-
-        for (int i = 0; i < diaryThemas.size(); i++) {
-            Diary diary = diaryThemas.get(i).getDiary();
-            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
-            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
-//            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
-}
-
-        Collections.shuffle(diaryWeatherResponses);
-                return diaryWeatherResponses;
-
-                }
-
-@Override
     public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
         return null;
     }
 
-    @Override
-    public List<DiaryInquiryResponse> getGoingDiary() {
-        return null;
-    }
-
-    @Override
-    public List<DiaryInquiryResponse> getDiary() {
-        return null;
-    }
 
     private List<String> getDiaryRegions(List<String> diaryRegionNames, Diary diary) {
         List<DiaryRegion> diaryRegions = diaryRegionRepository.findByDiary(diary);
