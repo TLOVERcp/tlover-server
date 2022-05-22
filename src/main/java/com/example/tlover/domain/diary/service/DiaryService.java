@@ -34,10 +34,6 @@ public interface DiaryService {
 
     List<MyDiaryListResponse> getAcceptDiaryList(String loginId);
 
-    List<DiaryWeatherResponse> getDiaryWeather(String loginId);
     UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId);
 
-    List<DiaryInquiryResponse> getGoingDiary();
-
-    List<DiaryInquiryResponse> getDiary();
 }
