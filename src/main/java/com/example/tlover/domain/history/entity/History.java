@@ -2,11 +2,11 @@ package com.example.tlover.domain.history.entity;
 
 
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.history.dto.CreateHistoryRequest;
 import com.example.tlover.domain.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long historyId;
 
-    private String date;
+    private LocalDateTime date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
@@ -40,16 +40,12 @@ public class History {
         diary.getHistories().add(this);
     }
 
-    public static History toEntity(CreateHistoryRequest createHistoryRequest, User user, Diary diary) {
+    public static History toEntity(User user, Diary diary, LocalDateTime localDateTime) {
         return History.builder()
                 .user(user)
                 .diary(diary)
-                .date(createHistoryRequest.getDate().toString())
+                .date(localDateTime)
                 .build();
     }
 
-    public History updateEntity(String date) {
-        this.date = date;
-        return this;
-    }
 }
