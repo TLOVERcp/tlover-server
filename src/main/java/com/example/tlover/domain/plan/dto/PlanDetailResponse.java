@@ -75,6 +75,7 @@ public class PlanDetailResponse {
                 .planStartDate(plan.getPlanStartDate())
                 .planEndDate(plan.getPlanEndDate())
                 .planWriteDate(plan.getPlanWriteDate())
+                .expense(plan.getExpense())
                 .day(day)
                 .regionName(regionName)
                 .users(users)
