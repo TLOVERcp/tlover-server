@@ -1,10 +1,10 @@
 spring:
   batch.job.enabled: false
   datasource:
-    url: jdbc:mysql://tloverdb.cjgvxgjzvddh.ap-northeast-2.rds.amazonaws.com:3306/tloverdb?
+     url: ENC(mVWQxgZgCFGWIUi3e9+NbXTvFW/PMBbQkoacJ5fF1chcpHh1Bq+NNhd67Kab9tC/nXXnP+YZOskNKJuJNEEZkaA+kVmuytig+vaAZipDhaejXZjeHiHVeg==)
     autoReconnect: true
-    username: tlover
-    password: tlover123!!
+    username: ENC(PrnaFLyVrZ8Z8yn8epXwsg==)
+    password: ENC(vWB/yP4uFj2HDOHBebdyKxjDvecVbvTA)
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     initialize: true
