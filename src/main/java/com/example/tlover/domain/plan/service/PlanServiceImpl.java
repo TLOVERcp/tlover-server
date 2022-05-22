@@ -13,7 +13,6 @@ import com.example.tlover.domain.plan.exception.NoAuthorityDeleteException;
 import com.example.tlover.domain.plan.exception.NotFoundAuthorityPlanException;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.plan_region.repository.PlanRegionRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
@@ -31,14 +30,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService{
     private final PlanRepository planRepository;
-    private final PlanRegionRepository planRegionRepository;
     private final AuthorityPlanRepository authorityPlanRepository;
     private final UserRepository userRepository;
 
     @Override
     public Plan createPlan(CreatePlanRequest createPlanRequest, String loginId){
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
-        Plan plan = Plan.toEntity(createPlanRequest, user);
+        String regionDetail = toString(createPlanRequest.getRegionName());
+        Plan plan = Plan.toEntity(regionDetail, createPlanRequest, user);
         planRepository.save(plan);
         return plan;
     }
@@ -50,8 +49,7 @@ public class PlanServiceImpl implements PlanService{
         List<PlanListResponse> planList = new ArrayList<>();
         for(int i=0; i<authorityPlans.size(); i++) {
             Plan p = authorityPlans.get(i).getPlan();
-            List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(p).orElseThrow(NotFoundPlanException::new);
-            planList.add(PlanListResponse.from(p, planRegion));
+            planList.add(PlanListResponse.from(p));
         }
         return planList;
     }
@@ -64,8 +62,7 @@ public class PlanServiceImpl implements PlanService{
         List<PlanListResponse> planList = new ArrayList<>();
         for(int i=0; i<authorityPlans.size(); i++) {
             Plan p = authorityPlans.get(i).getPlan();
-            List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(p).orElseThrow(NotFoundPlanException::new);
-            planList.add(PlanListResponse.from(p, planRegion));
+            planList.add(PlanListResponse.from(p));
         }
         return planList;
     }
@@ -73,9 +70,8 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public PlanDetailResponse getPlanDetail(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        List<PlanRegion> planRegion = planRegionRepository.findAllByPlan(plan).orElseThrow(NotFoundPlanException::new);
         List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).orElseThrow(NotFoundAuthorityPlanException::new);
-        return PlanDetailResponse.from(plan, planRegion, authorityPlans);
+        return PlanDetailResponse.from(plan, authorityPlans);
     }
 
     @Override
@@ -166,5 +162,11 @@ public class PlanServiceImpl implements PlanService{
         }
         return authorityPlans;
     }
+
+    private String toString(String[] regionName){
+        String regionDetail = String.join(", ", regionName);
+        return regionDetail;
+    }
+
 
 }
