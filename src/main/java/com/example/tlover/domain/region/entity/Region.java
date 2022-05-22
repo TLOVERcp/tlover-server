@@ -3,6 +3,7 @@ package com.example.tlover.domain.region.entity;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user_region.entity.UserRegion;
+import com.example.tlover.domain.weather.entity.Weather;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

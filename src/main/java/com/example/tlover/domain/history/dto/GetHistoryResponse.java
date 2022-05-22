@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -22,7 +25,7 @@ public class GetHistoryResponse {
     private Long relatedPlanId;
     private String relatedPlanTitle;
     private String relatedPlanContext;
-    private String date;
+    private String dateTime;
 
     public static GetHistoryResponse from(History history, User user) {
         return GetHistoryResponse.builder()
@@ -30,11 +33,10 @@ public class GetHistoryResponse {
                 .userNickName(user.getUserNickName())
                 .diaryId(history.getDiary().getDiaryId())
                 .diaryTitle(history.getDiary().getDiaryTitle())
-//                .diaryContext(history.getDiary().getDiaryContext())
                 .relatedPlanId(history.getDiary().getPlan().getPlanId())
                 .relatedPlanTitle(history.getDiary().getPlan().getPlanTitle())
                 .relatedPlanContext(history.getDiary().getPlan().getPlanContext())
-                .date(history.getDate())
+                .dateTime(history.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
     }
 }
