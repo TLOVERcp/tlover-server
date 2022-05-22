@@ -62,6 +62,7 @@ public class PlanListResponse {
                 .planStatus(plan.getPlanStatus())
                 .planStartDate(plan.getPlanStartDate())
                 .planEndDate(plan.getPlanEndDate())
+                .expense(plan.getExpense())
                 .day(day)
                 .regionName(regionName)
                 .build();

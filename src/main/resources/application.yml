@@ -1,10 +1,10 @@
 spring:
   batch.job.enabled: false
   datasource:
-    url: jdbc:mysql://soldout.cpiugfta2jm5.ap-northeast-2.rds.amazonaws.com:3306/tlover?
+    url: jdbc:mysql://tloverdb.cjgvxgjzvddh.ap-northeast-2.rds.amazonaws.com:3306/tloverdb?
     autoReconnect: true
-    username: admin
-    password: mango1030
+    username: tlover
+    password: tlover123!!
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     initialize: true
