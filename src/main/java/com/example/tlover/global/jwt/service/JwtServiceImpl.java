@@ -12,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,6 +23,7 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 public class JwtServiceImpl implements JwtService {
 
     private final UserRefreshTokenRepository userRefreshTokenRepository;
@@ -127,6 +129,7 @@ public class JwtServiceImpl implements JwtService {
             UserRefreshToken userRefreshTokenRepo = userRefreshTokenRepository.findByUserRefreshtokenId(userRefreshTokenId);
             String userRefreshToken = userRefreshTokenRepo.getUserRefreshtokenToken();
             userId = userRefreshTokenRepo.getUser().getUserId();
+            log.info("userId: "+userId);
             claims = Jwts.parser()
                     .setSigningKey(SecretKey.JWT_REFRESH_SECRET_KEY)
                     .parseClaimsJws(userRefreshToken);  // 파싱 및 검증, 실패 시 에러
