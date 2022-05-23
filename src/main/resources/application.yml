@@ -19,7 +19,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     #      naming:
     #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -45,6 +45,10 @@ spring:
   jwt:
     access-key: xlavmfhwprxmzlddhkdHGFDHDFWkGDSHSdsjaHFGDHDnglamfekhgsdfeDFHGEG
     refresh-key: flvmfptlxhgDFSGHSDrzmsanjffhgkfHDFGwlahfmrpTekhDFGERRGVFDSG
+
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
 
 cloud:
   aws:
