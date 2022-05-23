@@ -18,7 +18,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,8 @@ public class Diary {
     private String diaryEndDate;
 
     private String diaryWriteDate;
+
+    private String diaryRegionDetail;
 
     private int diaryPlanDays;
 
@@ -98,8 +99,8 @@ public class Diary {
         plan.getDiaries().add(this);
     }
 
-    public static Diary toEntity(CreateDiaryRequest createDiaryRequest ,
-                                 int planDay, User user , Plan plan){
+    public static Diary toEntity(String regionDetail, CreateDiaryRequest createDiaryRequest,
+                                 int planDay, User user, Plan plan){
         Diary diary = new Diary();
            diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
            diary.setDiaryWriteDate(LocalDateTime.now().toString());
@@ -107,6 +108,7 @@ public class Diary {
            diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate().toString());
            diary.setTotalCost(createDiaryRequest.getTotalCost());
            diary.setDiaryPlanDays(planDay);
+           diary.setDiaryRegionDetail(regionDetail);
            diary.setDiaryStatus("ACTIVE");
            diary.setUser(user);
            diary.setPlan(plan);
