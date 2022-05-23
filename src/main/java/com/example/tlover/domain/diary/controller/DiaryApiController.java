@@ -113,16 +113,21 @@ public class DiaryApiController {
      * 다이어리 수정 API
      *
      * @param modifyDiaryRequest
-     * @param request
      * @return ResponseEntity<String>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
-    @PostMapping(value = "/modify-diary/{diaryId}")
-    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request) {
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다. \n 해당 diaryId로 Diary를 찾을 수 없습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 403, message = "다이어리의 수정 권한이 없습니다.", response = ApiErrorResponse.class)
+
+    })
+    @PostMapping(value = "/modify-diary")
+    public ResponseEntity<ResponseDto<String>> ModifyDiary(ModifyDiaryRequest modifyDiaryRequest) {
         String loginId = jwtService.getLoginId();
-        Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
-        return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
+        diaryService.modifyDiary(modifyDiaryRequest, loginId);
+        return ResponseEntity.ok(ResponseDto.create("다이어리 수정이 완료되었습니다."));
     }
 
     /**
