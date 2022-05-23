@@ -29,8 +29,9 @@ public class DiaryInquiryResponse {
     private String diaryView;
     private List<String> myFileKeys;
     private Integer diaryConnectionCount;
+    private String regionDetail;
 
-    public static DiaryInquiryResponse from(Diary diary){
+  /*  public static DiaryInquiryResponse from(Diary diary){
         return DiaryInquiryResponse.builder()
                 .diaryId(diary.getDiaryId())
                 .diaryTitle(diary.getDiaryTitle())
@@ -42,7 +43,7 @@ public class DiaryInquiryResponse {
                 .diaryEndDate(diary.getDiaryEndDate())
                 .diaryView(diary.getDiaryView())
                 .build();
-    }
+    }*/
 
     public static DiaryInquiryResponse from(Diary diary, Integer diaryConnectionCount){
         List<MyFile> myFiles = diary.getMyFiles();
@@ -60,6 +61,7 @@ public class DiaryInquiryResponse {
                 .diaryView(diary.getDiaryView())
                 .myFileKeys(myFileKeys)
                 .diaryConnectionCount(diaryConnectionCount)
+                .regionDetail(diary.getDiaryRegionDetail())
                 .build();
     }
 
