@@ -86,12 +86,6 @@ public class DiaryApiController {
     }
 
     /**
-     *
-     */
-
-
-
-    /**
      * 다이어리 삭제 API
      * swagger url => [post]  api/v1/plans/delete-diary/{diaryId}
      *
@@ -119,16 +113,21 @@ public class DiaryApiController {
      * 다이어리 수정 API
      *
      * @param modifyDiaryRequest
-     * @param request
      * @return ResponseEntity<String>
      * @author 한규범
      */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
-    @PostMapping(value = "/modify-diary/{diaryId}")
-    public ResponseEntity<String> ModifyDiary(@Valid ModifyDiaryRequest modifyDiaryRequest, HttpServletRequest request) {
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다. \n 해당 diaryId로 Diary를 찾을 수 없습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 403, message = "다이어리의 수정 권한이 없습니다.", response = ApiErrorResponse.class)
+
+    })
+    @PostMapping(value = "/modify-diary")
+    public ResponseEntity<ResponseDto<String>> ModifyDiary(ModifyDiaryRequest modifyDiaryRequest) {
         String loginId = jwtService.getLoginId();
-        Diary diary = diaryService.modifyDiary(modifyDiaryRequest, loginId);
-        return ResponseEntity.ok("다이어리 수정이 완료되었습니다.");
+        diaryService.modifyDiary(modifyDiaryRequest, loginId);
+        return ResponseEntity.ok(ResponseDto.create("다이어리 수정이 완료되었습니다."));
     }
 
     /**
@@ -219,6 +218,23 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         List<MyDiaryListResponse> myDiaryListResponses = diaryService.getAcceptDiaryList(loginId);
         return ResponseEntity.ok(ResponseDto.create(myDiaryListResponses));
+    }
+
+    /**
+     * 홈 화면 여행 취향 다이어리 조회
+     * @return  ResponseEntity<ResponseDto<List<DiaryWeatherResponse>>>
+     * @Author 한규범
+     */
+    @ApiOperation(value = "홈 화면 다이어리 관광 기후 지수 기반 추천 조회", notes = "금일 날씨를 기반으로 ")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다. \n 국내에 관광기후 매우 좋음이 없습니다. ", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+    })
+    @GetMapping(value = "/get-diary-weather")
+    public ResponseEntity<ResponseDto<List<DiaryWeatherResponse>>> getWeatherDiaries() {
+        String loginId = jwtService.getLoginId();
+        List<DiaryWeatherResponse> diaryWeatherResponses = diaryService.getDiaryWeather(loginId);
+        return ResponseEntity.ok(ResponseDto.create(diaryWeatherResponses));
     }
 
 }
