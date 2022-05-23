@@ -50,7 +50,7 @@ public class PlanRegionServiceImpl implements PlanRegionService {
         planRegionRepository.deleteAllByPlan(plan);
     }
 
-    public String[] checkRegion(String[] regionName){
+    private String[] checkRegion(String[] regionName){
         ArrayList<String> regions = new ArrayList<>();
         for(String s : regionName){
             if(s.equals("제주")||s.equals("서귀포")) regions.add("제주도");
@@ -64,7 +64,6 @@ public class PlanRegionServiceImpl implements PlanRegionService {
             else if(s.equals("단양")) regions.add("충청북도");
             else if(s.equals("여수")||s.equals("목포")||s.equals("순천")||s.equals("담양")) regions.add("전라남도");
             else if(s.equals("전주")) regions.add("전라북도");
-            //else regions.add("");
         }
         HashSet<String> hashSet = new HashSet<>(regions);
         regions=new ArrayList<>(hashSet);

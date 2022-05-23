@@ -83,7 +83,7 @@ public class PlanApiController {
     }
 
     /**
-     * 계획내용 상세 조회 API
+     * 계획 내용 상세 조회 API
      * [GET] api/v1/plans/plan-detail/:planId
      * @param planId
      * @return ResponseEntity
