@@ -1,10 +1,10 @@
 spring:
   batch.job.enabled: false
   datasource:
-    url: ENC(7YNuBX/j17XQHV27za5rRS1L3a17bhj2Pn968rK2vV4t44Brsna3cBjYcagbPgqTWJleFz/HNCLWDiGKO9DcZCehnBfam6L4qHjoEKNjbwkAsEk5T2s9CDLyCf7E3ave)
+    url: jdbc:mysql://tloverdb.cjgvxgjzvddh.ap-northeast-2.rds.amazonaws.com:3306/tloverdb?
     autoReconnect: true
-    username: ENC(+0p3Hh4tYI359BX17FUs1A==)
-    password: ENC(HSkuEUvA5LpVCNQPV73gl573fORjYGUi)
+    username: tlover
+    password: tlover123!!
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     initialize: true
@@ -20,8 +20,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    #      naming:
+    #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         show_sql: false
@@ -43,8 +43,8 @@ spring:
             user-info_uri: https://oauth2.googleapis.com/tokeninfo
 
   jwt:
-    access-key: ENC(/5bz6CeOPbTevdJRJ1dACwQ40eDQTG3f6UkOfqKaGgY2KusDijH/TpY+Ct7n9gxK1Eos3aLBud2w2Q4kuEt0pk+bZXaOtIg4)
-    refresh-key: ENC(NcfK+JjBpriO9BarU6/De4FPn1KA5Vv3p2dIuWp9wEyiaP+CBryWNj6A0cdw08iUwogHUgZqvXGjdN2LryL9K3rDtkwgLe2W)
+    access-key: xlavmfhwprxmzlddhkdHGFDHDFWkGDSHSdsjaHFGDHDnglamfekhgsdfeDFHGEG
+    refresh-key: flvmfptlxhgDFSGHSDrzmsanjffhgkfHDFGwlahfmrpTekhDFGERRGVFDSG
 
 cloud:
   aws:
@@ -59,16 +59,9 @@ cloud:
       auto: false
 
 sms:
-  service-id: ENC(I7KCmkANZjPZA5ZkFyyWPXGeGnqmbh12N5m2gnvdavpFaXrJYKKb0qSacAepqq3AGpDLG6KPYAI=)
-  access-key: ENC(YgrzqsLTImUcST0VM0vBLR6tn+6qwnoQwmDZpSmzxRY=)
-  secret-key: ENC(/uyZ6F0d/D8pUX0NUvXBftLtvMBst06TDNru7Gg3MfYtPmUZ0N/dKrj0eBEXCtG2ZuTH8idgyMA=)
+  service-id: ncp:sms:kr:280044915694:infra-sms
+  access-key: JUARhMRAzpFrstZqd775
+  secret-key: lgiOpHwGvTW5HjcIaCKkhATBHFB3qeRuWzaBOrZZ
 
 weather:
-  service-key: ENC(AiCfffLKKgXfC5UWPvSyQyPgybtUu0tyK55DfuYfPl9SoadmIQo1Atj7L9J0p3zEKrdpEIBv7T+p6OMaDHmXKDG9dI9SYtPRuJk1/bRl2VszNLuAPatGZTtGcdvOBqKj4cKlyYM79Sud4V+iNeObpA==)
-
-
-jasypt:
-  encryptor:
-    bean: jasyptEncyptor
-
-
+  service-key: TafHkD6CilGs36dV%2B9czinbrrqD1AymCTtNo7U%2B9PpGxErWg76qqU7Iq0cRSqpi7lEbvLT872%2B19d6p0%2B7qE5g%3D%3D
