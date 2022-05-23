@@ -207,7 +207,10 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
+        if(diaryRepository.findByDiaryId(modifyDiaryRequest.getDiaryId())==null) throw new NotFoundDiaryException();
+
         Diary diary = diaryRepository.findByUserAndDiaryId(user,modifyDiaryRequest.getDiaryId());
+        if(diary==null) throw new NoAuthorityModifyException();
 
         if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("현재 수정중입니다.");
 
