@@ -16,7 +16,8 @@ public enum DiaryExceptionList {
     NOT_FOUND_DIARY("D0004" , HttpStatus.NOT_FOUND , "해당 diaryId로 Diary를 찾을 수 없습니다."),
     NOT_FOUND_MY_DIARY("D0006", HttpStatus.NOT_FOUND, "내가 작성한 다이어리를 찾을 수 없습니다."),
     NOT_FOUND_ACCEPT_DIARY("D0007", HttpStatus.NOT_FOUND, "내가 초대된 다이어리를 찾을 수 없습니다."),
-    NOT_FOUND_GOOD_WEATHER("D008", HttpStatus.NOT_FOUND, "국내에 관광기후 매우 좋음이 없습니다.");
+    NOT_FOUND_GOOD_WEATHER("D008", HttpStatus.NOT_FOUND, "국내에 관광기후 매우 좋음이 없습니다."),
+    NO_AUTHORITY_MODIFY("D0009" , HttpStatus.FORBIDDEN , "다이어리의 수정 권한이 없습니다.");
 
 
     public final String CODE;

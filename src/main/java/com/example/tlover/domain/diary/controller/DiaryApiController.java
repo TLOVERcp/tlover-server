@@ -118,11 +118,10 @@ public class DiaryApiController {
      */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 403, message = "다이어리의 삭제 권한이 없습니다.",
-                    response = NotAuthorityDeleteException.class
-            ),
-            @ApiResponse(code = 404, message = "해당 diaryId로 Diary를 찾을 수 없습니다.",
-                    response = NotFoundDiaryException.class)
+            @ApiResponse(code = 404, message = "JWT 토큰이 비어있습니다. \n 해당 diaryId로 Diary를 찾을 수 없습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 302, message = "REFRESH-TOKEN이 만료되었습니다. \n ACCESS-TOKEN이 만료되었습니다.", response = ApiErrorResponse.class),
+            @ApiResponse(code = 403, message = "다이어리의 수정 권한이 없습니다.", response = ApiErrorResponse.class)
+
     })
     @PostMapping(value = "/modify-diary")
     public ResponseEntity<ResponseDto<String>> ModifyDiary(ModifyDiaryRequest modifyDiaryRequest) {
