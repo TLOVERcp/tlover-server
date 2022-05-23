@@ -22,6 +22,7 @@ import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
+import com.example.tlover.domain.plan_region.service.PlanRegionServiceImpl;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.thema.entity.Thema;
@@ -84,16 +85,15 @@ public class DiaryServiceImpl implements DiaryService{
 
         Long diaryId =0L;
         if(cdr.isEmpty()) {
-
             checkOverPlanDay(createDiaryRequest);
-
-            Diary diary = diaryRepository.save(Diary.toEntity(createDiaryRequest,  getPlanDay(createDiaryRequest), user, plan));
+            String regionDetail = toString(createDiaryRequest.getRegionName());
+            Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,  getPlanDay(createDiaryRequest), user, plan));
             diaryId = diary.getDiaryId();
 
             authorityDiaryService.addDiaryUser(diary , loginId);
 
-
-            for (String regionName : createDiaryRequest.getRegionName()) {
+            String[] regions = checkRegion(createDiaryRequest.getRegionName());
+            for (String regionName : regions) {
                 Region region = regionRepository.findByRegionName(regionName).get();
                 DiaryRegion diaryRegion = DiaryRegion.toEntity(region, diary);
                 diaryRegionRepository.save(diaryRegion);
@@ -373,6 +373,34 @@ public class DiaryServiceImpl implements DiaryService{
             diaryThemaNames.add(diaryThemaName);
         }
         return diaryThemaNames;
+    }
+    private String toString(String[] regionName){
+        String regionDetail = String.join(", ", regionName);
+        return regionDetail;
+    }
+
+    private String[] checkRegion(String[] regionName){
+        ArrayList<String> regions = new ArrayList<>();
+        for(String s : regionName){
+            if(s.equals("제주")||s.equals("서귀포")) regions.add("제주도");
+            else if(s.equals("춘천")||s.equals("속초")||s.equals("강릉")) regions.add("강원도");
+            else if(s.equals("서울")) regions.add("서울");
+            else if(s.equals("인천")) regions.add("인천");
+            else if(s.equals("양평")||s.equals("가평")||s.equals("파주")) regions.add("경기도");
+            else if(s.equals("부산")||s.equals("거제")) regions.add("경상남도");
+            else if(s.equals("안동")||s.equals("경주")||s.equals("포항")) regions.add("경상북도");
+            else if(s.equals("태안")||s.equals("공주")||s.equals("보령")) regions.add("충청남도");
+            else if(s.equals("단양")) regions.add("충청북도");
+            else if(s.equals("여수")||s.equals("목포")||s.equals("순천")||s.equals("담양")) regions.add("전라남도");
+            else if(s.equals("전주")) regions.add("전라북도");
+        }
+        HashSet<String> hashSet = new HashSet<>(regions);
+        regions=new ArrayList<>(hashSet);
+        String[] region = new String[regions.size()];
+        for(int i=0; i< regions.size(); i++) {
+            region[i] = regions.get(i);
+        }
+        return region;
     }
 
 }
