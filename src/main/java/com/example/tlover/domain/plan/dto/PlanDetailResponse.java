@@ -32,12 +32,12 @@ public class PlanDetailResponse {
     private String planWriteDate;
     private Long day;
     private Long expense;
-    private String[] regionName;
+    private String regionDetail;
     private String[] users;
 
     @QueryProjection
     public PlanDetailResponse(Long planId, String planTitle, String planContext, String planStatus, String planStartDate
-        , String planEndDate, String planWriteDate, Long day, String[] regionName, String[] users, Long expense){
+        , String planEndDate, String planWriteDate, Long day, String regionDetail, String[] users, Long expense){
         this.planId = planId;
         this.planTitle = planTitle;
         this.planContext = planContext;
@@ -46,16 +46,12 @@ public class PlanDetailResponse {
         this.planEndDate = planEndDate;
         this.planWriteDate = planWriteDate;
         this.day = day;
-        this.regionName = regionName;
+        this.regionDetail = regionDetail;
         this.users = users;
         this.expense = expense;
     }
 
-    public static PlanDetailResponse from(Plan plan, List<PlanRegion> planRegions, List<AuthorityPlan> authorityPlans){
-        String[] regionName = new String[planRegions.size()];
-        for(int i=0; i< regionName.length; i++){
-            regionName[i] = planRegions.get(i).getRegion().getRegionName();
-        }
+    public static PlanDetailResponse from(Plan plan, List<AuthorityPlan> authorityPlans){
         String[] users = new String[authorityPlans.size()];
         for(int i=0; i< authorityPlans.size(); i++){
             users[i] = authorityPlans.get(i).getUser().getUserNickName();
@@ -77,7 +73,7 @@ public class PlanDetailResponse {
                 .planWriteDate(plan.getPlanWriteDate())
                 .expense(plan.getExpense())
                 .day(day)
-                .regionName(regionName)
+                .regionDetail(plan.getPlanRegionDetail())
                 .users(users)
                 .build();
     }
