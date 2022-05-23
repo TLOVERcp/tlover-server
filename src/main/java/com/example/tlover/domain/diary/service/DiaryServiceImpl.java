@@ -372,6 +372,10 @@ public class DiaryServiceImpl implements DiaryService{
                     diaryRepository.diaryRegions(diary.getDiaryId()),
                     diaryRepository.diaryImg(diary.getDiaryId())));
         }
+
+
+        Collections.shuffle(diaryWeatherResponses);
+
         return diaryWeatherResponses;
     }
 
