@@ -83,7 +83,7 @@ public class PlanApiController {
     }
 
     /**
-     * 계획내용 상세 조회 API
+     * 계획 내용 상세 조회 API
      * [GET] api/v1/plans/plan-detail/:planId
      * @param planId
      * @return ResponseEntity
@@ -211,7 +211,6 @@ public class PlanApiController {
     @PostMapping("/update-plan-active/{planId}")
     @ApiResponses(value = {
             @ApiResponse(code = 404 , message = "해당 계획을 찾을 수 없습니다.(P0002)" , response = NotFoundPlanException.class)
-
     })
     public ResponseEntity<UpdatePlanStatusResponse> updatePlanStatusActive(@PathVariable Long planId){
         planService.updatePlanStatusActive(planId);
