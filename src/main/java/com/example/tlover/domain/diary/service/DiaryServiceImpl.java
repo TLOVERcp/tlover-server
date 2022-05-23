@@ -30,6 +30,8 @@ import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.domain.weather.entity.Weather;
+import com.example.tlover.domain.weather.repository.WeatherRepository;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
@@ -68,6 +70,7 @@ public class DiaryServiceImpl implements DiaryService{
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
     private final DiaryLikedRepository diaryLikedRepository;
+    private final WeatherRepository weatherRepository;
 
     private final DiaryContextRepository diaryContextRepository;
     private final UserRegionRepository userRegionRepository;
@@ -354,6 +357,22 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
         return null;
+    }
+
+    @Override
+    public List<DiaryWeatherResponse> getDiaryWeather(String loginId) {
+        //결과를 위한 배열
+        List<DiaryWeatherResponse> diaryWeatherResponses = new ArrayList<>();
+
+        List<Diary> diaries = diaryRepository.weatherDiary();
+        if(diaries.isEmpty()) throw new NotFoundGoodWeather();
+
+        for(Diary diary: diaries){
+            diaryWeatherResponses.add(DiaryWeatherResponse.from(diary,
+                    diaryRepository.diaryRegions(diary.getDiaryId()),
+                    diaryRepository.diaryImg(diary.getDiaryId())));
+        }
+        return diaryWeatherResponses;
     }
 
 
