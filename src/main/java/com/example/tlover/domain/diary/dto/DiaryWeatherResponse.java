@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "다이어리 삭제를 위한 응답 객체")
+@ApiModel(description = "다이어리 날씨 추전 조회 응답 객체")
 public class DiaryWeatherResponse {
     private Long diaryId;
     private String diaryTitle;
@@ -35,6 +35,7 @@ public class DiaryWeatherResponse {
                 .regionName(regionName)
                 .image(image)
                 .userNickName(diary.getUser().getUserNickName())
+                .weatherTciGrade("매우좋음")
                 .build();
     }
 }

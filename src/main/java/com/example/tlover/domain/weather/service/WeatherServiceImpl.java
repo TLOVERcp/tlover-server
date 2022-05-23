@@ -33,6 +33,7 @@ public class WeatherServiceImpl implements WeatherService{
     private final WeatherRepository weatherRepository;
     private final RegionRepository regionRepository;
 
+    @Scheduled(fixedDelay = 86400 * 1000L)
     @Transactional
     public void saveWeather(){
         System.out.println("날씨조회");
