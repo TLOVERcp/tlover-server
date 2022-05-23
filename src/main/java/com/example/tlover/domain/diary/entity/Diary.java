@@ -115,17 +115,4 @@ public class Diary {
         return diary;
 }
 
-    public static Diary updateDiary(ModifyDiaryRequest modifyDiaryRequest, Plan plan){
-        Diary diary = new Diary();
-            diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
-            diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
-            diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
-            diary.setDiaryWriteDate(LocalDateTime.now().toString());
-            diary.setPlan(plan);
-        return diary;
-    }
-
-
-
-
 }

@@ -38,6 +38,14 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> , DiaryRepos
             " and diary.diary_id= :diaryId", nativeQuery = true)
     List<String> diaryImg(@Param("diaryId") Long diaryId);
 
+    @Query(value = "select *" +
+            " from diary,diary_region,weather" +
+            " where diary.diary_id = diary_region.diary_diary_id" +
+            "  and diary_region.diary_region_id = weather.region_region_id" +
+            "  and weather.weather_tci_grade='매우좋음'" +
+            " group by diary.diary_id", nativeQuery = true)
+    List<Diary> weatherDiary();
 
     Optional<Diary> findByPlan(Plan plan);
+
 }

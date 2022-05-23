@@ -30,6 +30,8 @@ import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.domain.weather.entity.Weather;
+import com.example.tlover.domain.weather.repository.WeatherRepository;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
@@ -68,6 +70,7 @@ public class DiaryServiceImpl implements DiaryService{
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
     private final DiaryLikedRepository diaryLikedRepository;
+    private final WeatherRepository weatherRepository;
 
     private final DiaryContextRepository diaryContextRepository;
     private final UserRegionRepository userRegionRepository;
@@ -204,17 +207,36 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        Plan plan = planRepository.findByPlanId(modifyDiaryRequest.getPlanId()).get();
+        if(diaryRepository.findByDiaryId(modifyDiaryRequest.getDiaryId())==null) throw new NotFoundDiaryException();
+
         Diary diary = diaryRepository.findByUserAndDiaryId(user,modifyDiaryRequest.getDiaryId());
+        if(diary==null) throw new NoAuthorityModifyException();
 
         if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("현재 수정중입니다.");
 
-        diary.setDiaryStatus("EDIT");
         diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
         diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
         diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
         diary.setDiaryWriteDate(LocalDateTime.now().toString());
-        diary.setPlan(plan);
+        diary.setDiaryRegionDetail(modifyDiaryRequest.getRegionNameDetail());
+
+        //사진 수정
+        for(int i=0; i<diary.getMyFiles().size(); i++){
+            myFileService.deleteFile(diary.getMyFiles().get(i).getMyFileId());
+        }
+
+        for (MultipartFile diaryImgFileName : modifyDiaryRequest.getDiaryImages()) {
+            MyFile myFile = myFileService.saveImage(diaryImgFileName);
+            myFile.setDiaryDay(modifyDiaryRequest.getDiaryDay());
+            myFile.setDiary(diary);
+            myFile.setUser(user);
+        }
+
+        //다이어 내용 수정 날짜별
+        Optional<DiaryContext> cdc
+                = diaryContextRepository.findByDiaryAndDiaryDay(diary, modifyDiaryRequest.getDiaryDay());
+        cdc.get().setContext(modifyDiaryRequest.getDiaryContext());
+
 
         return diary;
     }
@@ -354,6 +376,25 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
         return null;
+    }
+
+    @Override
+    public List<DiaryWeatherResponse> getDiaryWeather(String loginId) {
+        //결과를 위한 배열
+        List<DiaryWeatherResponse> diaryWeatherResponses = new ArrayList<>();
+
+        List<Diary> diaries = diaryRepository.weatherDiary();
+        if(diaries.isEmpty()) throw new NotFoundGoodWeather();
+
+        for(Diary diary: diaries){
+            diaryWeatherResponses.add(DiaryWeatherResponse.from(diary,
+                    diaryRepository.diaryRegions(diary.getDiaryId()),
+                    diaryRepository.diaryImg(diary.getDiaryId())));
+        }
+
+        Collections.shuffle(diaryWeatherResponses);
+
+        return diaryWeatherResponses;
     }
 
 
