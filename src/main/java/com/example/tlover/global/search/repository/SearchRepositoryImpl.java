@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
@@ -24,7 +26,7 @@ import static com.example.tlover.domain.user.entity.QUser.user;
 
 public class SearchRepositoryImpl implements SearchRepositoryCustom {
         private final JPAQueryFactory queryFactory;
-        private final String diaryStatus = "ACTIVE";
+        private final String diaryStatus = DiaryConstants.eDiary.COMPLETE.getValue();
 
     public SearchRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
@@ -89,11 +91,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                         diary.diaryView
                 ))
                 .from(diary)
-                .leftJoin(diaryRegion)
-                .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
-                .leftJoin(region)
-                .on(diaryRegion.region.regionId.eq(region.regionId))
-                .where(region.regionName.eq(keyword), diary.diaryStatus.eq(diaryStatus), diaryRegion.diaryRegionId.isNotNull())
+                .where(diary.diaryRegionDetail.contains(keyword), diary.diaryStatus.eq(diaryStatus))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -109,11 +107,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                         diary.diaryView
                 ))
                 .from(diary)
-                .leftJoin(diaryRegion)
-                .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
-                .leftJoin(region)
-                .on(diaryRegion.region.regionId.eq(region.regionId))
-                .where(region.regionName.eq(keyword), diary.diaryStatus.eq(diaryStatus), diaryRegion.diaryRegionId.isNotNull());
+                .where(diary.diaryRegionDetail.contains(keyword), diary.diaryStatus.eq(diaryStatus));
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
 
@@ -177,20 +171,18 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
         }
 
         @Override
-        public List<String> findRegionNamesByDiaryId(Long diaryId) {
+        public List<String> findRegionDetailsByDiaryId(Long diaryId) {
             List<String> content = queryFactory
                     .select(
-                            region.regionName
+                            diary.diaryRegionDetail
                     )
                     .from(diary)
-                    .leftJoin(diaryRegion)
-                    .on(diary.diaryId.eq(diaryRegion.diary.diaryId))
-                    .leftJoin(region)
-                    .on(diaryRegion.region.regionId.eq(region.regionId))
-                    .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq(diaryStatus), diaryRegion.diaryRegionId.isNotNull())
+                    .where(diary.diaryId.eq(diaryId), diary.diaryStatus.eq(diaryStatus))
                     .fetch();
 
-            return content;
+            if (content.get(0) != null) return Arrays.asList(content.get(0).split(", "));
+            else return new ArrayList<String>();
+
         }
 
     @Override
