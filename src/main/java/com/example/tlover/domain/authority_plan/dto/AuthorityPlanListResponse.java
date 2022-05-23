@@ -30,7 +30,7 @@ public class AuthorityPlanListResponse {
                 .authorityPlanStatus(authorityPlans.getAuthorityPlanStatus())
                 .planStatus(authorityPlans.getPlan().getPlanStatus())
                 .planTitle(authorityPlans.getPlan().getPlanTitle())
-                .planUserNickName(authorityPlans.getUser().getUserNickName())
+                .planUserNickName(authorityPlans.getPlan().getUser().getUserNickName())
                 .build();
 
     }
