@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,13 +38,13 @@ public class SearchServiceImpl implements SearchService {
 
         Page<DiarySearchResponse> page;
         Thema thema = themaRepository.findByThemaName(keyword);
-        Region region = regionRepository.findByRegionName(keyword).get();
+        Page<DiarySearchResponse> region = this.searchRepository.findDiaryByRegion(keyword, pageable);
 
         // 키워드가 테마이름인지 지역이름인지 확인
         if (thema != null) {
             page = this.searchRepository.findDiaryByThema(keyword, pageable);
-        } else if (region != null) {
-            page = this.searchRepository.findDiaryByRegion(keyword, pageable);
+        } else if (!region.isEmpty()) {
+            page = region;
         } else {
             page = this.searchRepository.findDiaryByKeyword(keyword, pageable);
         }
@@ -52,7 +53,7 @@ public class SearchServiceImpl implements SearchService {
 
         for (DiarySearchResponse diary : data) {
             List<String> themaNames = searchRepository.findThemaNamesByDiaryId(diary.getDiaryId());
-            List<String> regionNames = searchRepository.findRegionNamesByDiaryId(diary.getDiaryId());
+            List<String> regionNames = searchRepository.findRegionDetailsByDiaryId(diary.getDiaryId());
             if (themaNames != null) diary.setThemaNames(themaNames);
             if (regionNames != null) diary.setRegionNames(regionNames);
         }

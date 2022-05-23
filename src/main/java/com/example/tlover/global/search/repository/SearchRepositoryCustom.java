@@ -17,7 +17,7 @@ public interface SearchRepositoryCustom {
 
     List<String> findThemaNamesByDiaryId(Long diaryId);
 
-    List<String> findRegionNamesByDiaryId(Long diaryId);
+    List<String> findRegionDetailsByDiaryId(Long diaryId);
 
     List<UserSearchResponse> findUserByKeyword(String keyword);
 }
