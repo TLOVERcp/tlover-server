@@ -14,5 +14,5 @@ public interface MyFileService {
     MyFile getFile(Long fileId);
     boolean deleteFile(Long fileId);
     List<MyFile> findByUserAndDiary(User user, Diary diary);
-    Optional<List<MyFile>> findByDiaryAndDiaryDay(Diary diary, int diaryDay);
+
 }

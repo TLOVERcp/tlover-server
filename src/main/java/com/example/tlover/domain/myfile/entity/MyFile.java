@@ -21,7 +21,6 @@ public class MyFile extends BaseTimeEntity {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long myFileId;
         private String fileKey;
-        private int diaryDay;
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_userId")

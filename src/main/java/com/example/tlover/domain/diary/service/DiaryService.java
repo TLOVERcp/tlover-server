@@ -37,4 +37,6 @@ public interface DiaryService {
     UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId);
 
     List<DiaryWeatherResponse> getDiaryWeather(String loginId);
+
+    CreateDiaryFormResponse getCreateDiaryForm(Long planId, String loginId);
 }
