@@ -6,11 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Size;
 
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "사용자 관심 지역 수정을 위한 요청 객체")
