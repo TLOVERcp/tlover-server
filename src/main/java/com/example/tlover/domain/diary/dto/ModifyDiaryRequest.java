@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,13 +35,13 @@ public class ModifyDiaryRequest {
 
     @NotNull(message = "여행 시작 날짜를 입력해주세요.")
     @ApiModelProperty(notes = "여행 시작 날짜를 입력해 주세요.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-    private LocalDateTime diaryStartDate;
+    @Pattern(regexp = "^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):(0[0-9]|[0-5][0-9])$", message = "날짜 포멧 확인")
+    private String diaryStartDate;
 
     @NotNull(message = "여행 마지막 날짜를 입력해주세요.")
     @ApiModelProperty(notes = "여행 마지막 날짜를 입력해 주세요.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-    private LocalDateTime diaryEndDate;
+    @Pattern(regexp = "^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):(0[0-9]|[0-5][0-9])$", message = "날짜 포멧 확인")
+    private String diaryEndDate;
 
     @NotNull(message = "여행 지역을 입력해주세요.")
     @ApiModelProperty(notes = "여행 지역을  입력해 주세요.")
@@ -50,12 +51,8 @@ public class ModifyDiaryRequest {
     @ApiModelProperty(notes = "여행 테마를 입력해주세요.")
     private String[] themaName;
 
-
-
     @ApiModelProperty(notes = "여행의 총경비를 입력해주세요.")
     private int totalCost;
-
-
 
     @ApiModelProperty(notes = "여행 내용을 입력해 주세요.")
     @NotBlank(message = "여행 내용을 입력해주세요.")
