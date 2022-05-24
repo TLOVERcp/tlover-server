@@ -4,7 +4,6 @@ import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
 import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
 import com.example.tlover.domain.diary_connection.entity.DiaryConnection;
-import com.example.tlover.domain.diary_context.entity.DiaryContext;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
@@ -34,6 +33,8 @@ public class Diary {
 
     private String diaryTitle;
 
+    private String diaryContext;
+
     private String diaryStatus;
 
     private String diaryView;
@@ -46,9 +47,9 @@ public class Diary {
 
     private String diaryRegionDetail;
 
-    private int diaryPlanDays;
-
     private int totalCost;
+
+    private int diaryPlanDays;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
@@ -60,9 +61,6 @@ public class Diary {
 
     @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<MyFile> myFiles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "diary" , orphanRemoval = true , cascade = CascadeType.PERSIST)
-    private List<DiaryContext> diaryContexts = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary")
     private List<AuthorityDiary> authoritydiarys = new ArrayList<>();
@@ -88,7 +86,6 @@ public class Diary {
     @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<DiaryConnection> diaryConnections = new ArrayList<>();
 
-
     public void setUser(User user) {
         this.user = user;
         user.getDiaries().add(this);
@@ -99,15 +96,15 @@ public class Diary {
         plan.getDiaries().add(this);
     }
 
-    public static Diary toEntity(String regionDetail, CreateDiaryRequest createDiaryRequest,
-                                 int planDay, User user, Plan plan){
+    public static Diary toEntity(String regionDetail, CreateDiaryRequest createDiaryRequest, User user, Plan plan , int diaryPlanDays){
         Diary diary = new Diary();
            diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
+           diary.setDiaryContext(createDiaryRequest.getDiaryContext());
            diary.setDiaryWriteDate(LocalDateTime.now().toString());
            diary.setDiaryStartDate(createDiaryRequest.getDiaryStartDate());
            diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate());
+           diary.setDiaryPlanDays(diaryPlanDays);
            diary.setTotalCost(createDiaryRequest.getTotalCost());
-           diary.setDiaryPlanDays(planDay);
            diary.setDiaryRegionDetail(regionDetail);
            diary.setDiaryStatus("ACTIVE");
            diary.setUser(user);

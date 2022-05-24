@@ -51,16 +51,14 @@ public class CreateDiaryRequest {
     @ApiModelProperty(notes = "여행 테마를 입력해주세요.")
     private String[] themaName;
 
+    @Min(value = 0 , message = "1이상의 수를 입력해주세요.")
+    @ApiModelProperty(notes = "여행의 총경비를 입력해주세요.")
+    private int totalCost;
+
+
     @NotNull
     @ApiModelProperty(notes = "계획의 Id를 입력해주세요.")
     private Long planId;
 
-    @Min(value = 1 , message = "1이상의 수를 입력해주세요.")
-    @ApiModelProperty(notes = "몇일차인지 입력해주세요")
-    private int diaryDay;
-
-    @Min(value = 0 , message = "1이상의 수를 입력해주세요.")
-    @ApiModelProperty(notes = "여행의 총경비를 입력해주세요.")
-    private int totalCost;
 
 }

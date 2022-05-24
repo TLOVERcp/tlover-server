@@ -9,8 +9,6 @@ import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.exception.NoSuchElementException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
-import com.example.tlover.domain.diary_context.entity.DiaryContext;
-import com.example.tlover.domain.diary_context.repository.DiaryContextRepository;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.diary_region.repository.DiaryRegionRepository;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
@@ -18,6 +16,7 @@ import com.example.tlover.domain.diary_thema.repository.DiaryThemaRepository;
 import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
 import com.example.tlover.domain.diray_liked.repository.DiaryLikedRepository;
 import com.example.tlover.domain.myfile.entity.MyFile;
+import com.example.tlover.domain.myfile.repository.MyFileRepository;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
@@ -65,18 +64,27 @@ public class DiaryServiceImpl implements DiaryService{
     private final MyFileService myFileService;
     private final DiaryRegionRepository diaryRegionRepository;
     private final DiaryThemaRepository diaryThemaRepository;
+
+    private final MyFileRepository myFileRepository;
     private final RegionRepository regionRepository;
     private final ThemaRepository themaRepository;
     private final AuthorityDiaryService authorityDiaryService;
     private final AuthorityDiaryRepository authorityDiaryRepository;
     private final DiaryLikedRepository diaryLikedRepository;
     private final WeatherRepository weatherRepository;
-
-    private final DiaryContextRepository diaryContextRepository;
     private final UserRegionRepository userRegionRepository;
     private final UserThemaRepository userThemaRepository;
     private final WeatherService weatherService;
     private final DiaryConstants diaryConstants;
+
+    @Override
+    public CreateDiaryFormResponse getCreateDiaryForm(Long planId, String loginId) {
+        Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
+        String psd = plan.getPlanStartDate();
+        String ped = plan.getPlanEndDate();
+       return CreateDiaryFormResponse.from( psd, ped,  getPlanDay(psd, ped) , plan.getPlanRegionDetail() , plan.getExpense());
+}
+
 
     @Override
     @Transactional
@@ -88,14 +96,14 @@ public class DiaryServiceImpl implements DiaryService{
 
         Long diaryId =0L;
         if(cdr.isEmpty()) {
-            checkOverPlanDay(createDiaryRequest);
             String regionDetail = toString(createDiaryRequest.getRegionName());
-            Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,  getPlanDay(createDiaryRequest), user, plan));
+
+            Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,user, plan , getPlanDay(plan.getPlanStartDate(), plan.getPlanEndDate())));
             diaryId = diary.getDiaryId();
 
             authorityDiaryService.addDiaryUser(diary , loginId);
-
             String[] regions = checkRegion(createDiaryRequest.getRegionName());
+
             for (String regionName : regions) {
                 Region region = regionRepository.findByRegionName(regionName).get();
                 DiaryRegion diaryRegion = DiaryRegion.toEntity(region, diary);
@@ -108,71 +116,25 @@ public class DiaryServiceImpl implements DiaryService{
                 diaryThemaRepository.save(diaryThema);
             }
 
-            saveDiaryImageAndContext(createDiaryRequest, user, diary);
-
-        }
-
-        // 일차별로 구분해야함.
-        if(!cdr.isEmpty() && cdr.get().getDiaryStatus().equals(EDIT.getValue())) {
-            Diary diary = cdr.get();
-            diary.setDiaryStatus("ACTIVE");
-            AuthorityDiary authorityDiary = authorityDiaryRepository.findByDiaryAndUser(diary, user).orElseThrow(NotFoundDiaryException::new);
-            String status = authorityDiary.getAuthorityDiaryStatus();
-
-            if(status.equals("HOST") || status.equals("ACCEPT")) {
-
-                checkOverPlanDay(createDiaryRequest);
-
-                diaryId = diary.getDiaryId();
-                saveDiaryImageAndContext(createDiaryRequest, user, diary);
-            } else if(status.equals("REJECT")) {
-                throw new RuntimeException("작성 권한이 없습니다.");
-            } else if(status.equals("REQUEST")) {
-                throw new RuntimeException("작성 권한이 없습니다.");
+            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
+                MyFile myFile = myFileService.saveImage(diaryImgFileName);
+                myFile.setDiary(diary);
+                myFile.setUser(user);
             }
         }
-
         return CreateDiaryResponse.from(diaryId , true);
-
     }
 
-    private void checkOverPlanDay(CreateDiaryRequest createDiaryRequest) {
-        if(createDiaryRequest.getDiaryDay() > getPlanDay(createDiaryRequest))
-            throw new RuntimeException("총 여행일보다 크면 안됩니다.");
-    }
-
-    private int getPlanDay(CreateDiaryRequest createDiaryRequest) {
-        LocalDateTime startDate = LocalDateTime.parse(createDiaryRequest.getDiaryStartDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        LocalDateTime endDate = LocalDateTime.parse(createDiaryRequest.getDiaryEndDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    private int getPlanDay(String psd , String ped) {
+        LocalDateTime startDate = LocalDateTime.parse(psd, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime endDate = LocalDateTime.parse(ped, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         int result = (endDate.getDayOfMonth() - startDate.getDayOfMonth()) + 1;
         if(result <= 0) throw new RuntimeException("계획 날짜 오류");
         return result;
     }
 
-    private void saveDiaryImageAndContext(CreateDiaryRequest createDiaryRequest, User user, Diary diary) {
 
-        //diaryDay
-        Optional<List<MyFile>> cmf = myFileService.findByDiaryAndDiaryDay(diary, createDiaryRequest.getDiaryDay());
 
-        Optional<DiaryContext> cdc =
-                diaryContextRepository.findByDiaryAndDiaryDay(diary , createDiaryRequest.getDiaryDay());
-
-        if(cmf.isEmpty() && cdc.isEmpty()) {
-            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-                MyFile myFile = myFileService.saveImage(diaryImgFileName);
-                myFile.setDiaryDay(createDiaryRequest.getDiaryDay());
-                myFile.setDiary(diary);
-                myFile.setUser(user);
-            }
-            diaryContextRepository.save(DiaryContext.toEntity(
-                    createDiaryRequest.getDiaryContext(),
-                    createDiaryRequest.getDiaryDay(),
-                    diary));
-        } else {
-            throw new RuntimeException("해당 날짜에 이미 작성되어있습니다");
-        }
-
-    }
 
     @Override
     @Transactional
@@ -197,7 +159,6 @@ public class DiaryServiceImpl implements DiaryService{
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
         diaryThemaRepository.deleteByDiary_DiaryId(diaryId);
-        diaryContextRepository.deleteByDiary_DiaryId(diaryId);
         authorityDiaryRepository.deleteByDiary_DiaryId(diaryId);
 
         return DeleteDiaryResponse.from(diary.getDiaryId() , true);
@@ -227,15 +188,10 @@ public class DiaryServiceImpl implements DiaryService{
 
         for (MultipartFile diaryImgFileName : modifyDiaryRequest.getDiaryImages()) {
             MyFile myFile = myFileService.saveImage(diaryImgFileName);
-            myFile.setDiaryDay(modifyDiaryRequest.getDiaryDay());
             myFile.setDiary(diary);
             myFile.setUser(user);
         }
 
-        //다이어 내용 수정 날짜별
-        Optional<DiaryContext> cdc
-                = diaryContextRepository.findByDiaryAndDiaryDay(diary, modifyDiaryRequest.getDiaryDay());
-        cdc.get().setContext(modifyDiaryRequest.getDiaryContext());
 
 
         return diary;
@@ -396,6 +352,8 @@ public class DiaryServiceImpl implements DiaryService{
 
         return diaryWeatherResponses;
     }
+
+
 
 
     private List<String> getDiaryRegions(List<String> diaryRegionNames, Diary diary) {
