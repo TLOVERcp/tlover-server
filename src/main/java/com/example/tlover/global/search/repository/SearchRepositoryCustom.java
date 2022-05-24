@@ -20,4 +20,6 @@ public interface SearchRepositoryCustom {
     List<String> findRegionDetailsByDiaryId(Long diaryId);
 
     List<UserSearchResponse> findUserByKeyword(String keyword);
+
+    String findDiaryImgByDiaryId(Long diaryId);
 }
