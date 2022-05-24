@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
-import static com.example.tlover.domain.diary_context.entity.QDiaryContext.diaryContext;
 import static com.example.tlover.domain.diary_thema.entity.QDiaryThema.diaryThema;
 import static com.example.tlover.domain.thema.entity.QThema.thema;
 import static com.example.tlover.domain.user.entity.QUser.user;
@@ -126,10 +125,8 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                             diary.totalCost
                     ))
                     .from(diary)
-                    .leftJoin(diaryContext)
-                    .on(diary.diaryId.eq(diaryContext.diary.diaryId))
                     .where(diary.diaryTitle.contains(keyword)
-                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq(diaryStatus))
+                            .or(diary.diaryContext.contains(keyword)), diary.diaryStatus.eq(diaryStatus))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -145,10 +142,8 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                             diary.totalCost
                     ))
                     .from(diary)
-                    .leftJoin(diaryContext)
-                    .on(diary.diaryId.eq(diaryContext.diary.diaryId))
                     .where(diary.diaryTitle.contains(keyword)
-                            .or(diaryContext.context.contains(keyword)), diary.diaryStatus.eq(diaryStatus));
+                            .or(diary.diaryContext.contains(keyword)), diary.diaryStatus.eq(diaryStatus));
 
             return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
         }

@@ -59,10 +59,5 @@ public class MyFileServiceImpl implements MyFileService {
         return this.myFileRepository.findByUserAndDiary(user , diary).orElseThrow(NotFoundMyFileException::new);
     }
 
-    @Override
-    public Optional<List<MyFile>> findByDiaryAndDiaryDay(Diary diary, int diaryDay) {
-        return myFileRepository.findByDiaryAndDiaryDay(diary , diaryDay);
-
-    }
 
 }
