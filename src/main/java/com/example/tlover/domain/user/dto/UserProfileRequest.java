@@ -30,7 +30,6 @@ public class UserProfileRequest {
     private String loginId;
     **/
 
-    @NotBlank(message = "회원의 이메일을 입력해주세요.")
     @Pattern(regexp = "^[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$", message = "이메일 양식이 맞지 않습니다.")
     @ApiModelProperty(notes = "이메일을 입력해 주세요.")
     private String userEmail;
@@ -40,9 +39,13 @@ public class UserProfileRequest {
     @ApiModelProperty(notes = "닉네임을 입력해 주세요.")
     private String userNickName;
 
-    @NotNull(message = "유제 테마가 null 입니다.")
-    @ApiModelProperty(notes = "유제 테마가 null 입니다.")
+    @Size(min = 0, max = 3, message = "관심 테마는 0개 이상 3개 이하로 선택해야 합니다.")
+    @ApiModelProperty(notes = "사용자 관심 테마를 입력해주세요")
     private List<String> userThemaName;
+
+    @Size(min = 0, max = 3, message = "관심 지역은 0개 이상 3개 이하로 선택해야 합니다.")
+    @ApiModelProperty(notes = "사용자 관심 지역을 입력해주세요")
+    private List<String> userRegionName;
 
 
 }

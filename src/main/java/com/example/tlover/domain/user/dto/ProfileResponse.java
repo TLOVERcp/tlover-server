@@ -26,8 +26,10 @@ public class ProfileResponse {
     private String userNickName;
     private String profileImg;
     private List<String> userThemaName;
+    private List<String> userRegionName;
+    private float userRating;
 
-    public static ProfileResponse from(User user, List<String> userThemaName) {
+    public static ProfileResponse from(User user, List<String> userThemaName, List<String> userRegionName, float userRating) {
         return ProfileResponse.builder()
                 .userId(user.getUserId())
                 .loginId(user.getUserLoginId())
@@ -37,6 +39,8 @@ public class ProfileResponse {
                 .userPhoneNum(user.getUserPhoneNum())
                 .profileImg(user.getUserProfileImg())
                 .userThemaName(userThemaName)
+                .userRegionName(userRegionName)
+                .userRating(userRating)
                 .build();
     }
 
