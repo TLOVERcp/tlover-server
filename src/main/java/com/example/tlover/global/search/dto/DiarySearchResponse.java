@@ -13,27 +13,26 @@ import java.util.List;
 public class DiarySearchResponse {
     private Long diaryId;
     private String diaryTitle;
-    //private String  diaryPublicStatus;
     private String diaryStatus;
-    //private String diaryContext;
     private String diaryStartDate;
     private String diaryWriteDate;
     private String diaryEndDate;
-    private String diaryView;
+    private String diaryImg;
+    private int totalCost;
     private List<String> themaNames;
     private List<String> regionNames;
 
 
     @QueryProjection
     public DiarySearchResponse(Long diaryId, String diaryTitle, String diaryStatus,
-                               String diaryStartDate, String diaryWriteDate, String diaryEndDate, String diaryView) {
+                               String diaryStartDate, String diaryWriteDate, String diaryEndDate, int totalCost) {
         this.diaryId = diaryId;
         this.diaryTitle = diaryTitle;
         this.diaryStatus = diaryStatus;
         this.diaryStartDate = diaryStartDate;
         this.diaryWriteDate = diaryWriteDate;
         this.diaryEndDate = diaryEndDate;
-        this.diaryView = diaryView;
+        this.totalCost = totalCost;
     }
 
     public void setThemaNames(List<String> themaNames) {
@@ -43,4 +42,6 @@ public class DiarySearchResponse {
     public void setRegionNames(List<String> regionNames) {
         this.regionNames = regionNames;
     }
+
+    public void setDiaryImg(String diaryImg) { this.diaryImg = diaryImg; }
 }

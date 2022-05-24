@@ -1,6 +1,7 @@
 package com.example.tlover.global.search.service;
 
 
+import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.thema.entity.Thema;
@@ -26,7 +27,6 @@ public class SearchServiceImpl implements SearchService {
 
     private final SearchRepository searchRepository;
     private final ThemaRepository themaRepository;
-    private final RegionRepository regionRepository;
 
     /**
      * 다이어리 검색 조회
@@ -54,8 +54,10 @@ public class SearchServiceImpl implements SearchService {
         for (DiarySearchResponse diary : data) {
             List<String> themaNames = searchRepository.findThemaNamesByDiaryId(diary.getDiaryId());
             List<String> regionNames = searchRepository.findRegionDetailsByDiaryId(diary.getDiaryId());
+
             if (themaNames != null) diary.setThemaNames(themaNames);
             if (regionNames != null) diary.setRegionNames(regionNames);
+            diary.setDiaryImg(searchRepository.findDiaryImgByDiaryId(diary.getDiaryId()));
         }
 
         if (data.isEmpty()) throw new NotFoundSearchDiaryException();
