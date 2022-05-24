@@ -18,11 +18,10 @@ import java.util.List;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
 import static com.example.tlover.domain.diary_context.entity.QDiaryContext.diaryContext;
-import static com.example.tlover.domain.diary_region.entity.QDiaryRegion.diaryRegion;
 import static com.example.tlover.domain.diary_thema.entity.QDiaryThema.diaryThema;
-import static com.example.tlover.domain.region.entity.QRegion.region;
 import static com.example.tlover.domain.thema.entity.QThema.thema;
 import static com.example.tlover.domain.user.entity.QUser.user;
+import static com.example.tlover.domain.myfile.entity.QMyFile.myFile;
 
 public class SearchRepositoryImpl implements SearchRepositoryCustom {
         private final JPAQueryFactory queryFactory;
@@ -43,7 +42,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                             diary.diaryStartDate,
                             diary.diaryWriteDate,
                             diary.diaryEndDate,
-                            diary.diaryView
+                            diary.totalCost
                     ))
                     .from(diary)
                     .leftJoin(diaryThema)
@@ -63,7 +62,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                             diary.diaryStartDate,
                             diary.diaryWriteDate,
                             diary.diaryEndDate,
-                            diary.diaryView
+                            diary.totalCost
                     ))
                     .from(diary)
                     .leftJoin(diaryThema)
@@ -88,7 +87,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                         diary.diaryStartDate,
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
-                        diary.diaryView
+                        diary.totalCost
                 ))
                 .from(diary)
                 .where(diary.diaryRegionDetail.contains(keyword), diary.diaryStatus.eq(diaryStatus))
@@ -104,7 +103,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                         diary.diaryStartDate,
                         diary.diaryWriteDate,
                         diary.diaryEndDate,
-                        diary.diaryView
+                        diary.totalCost
                 ))
                 .from(diary)
                 .where(diary.diaryRegionDetail.contains(keyword), diary.diaryStatus.eq(diaryStatus));
@@ -124,7 +123,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                             diary.diaryStartDate,
                             diary.diaryWriteDate,
                             diary.diaryEndDate,
-                            diary.diaryView
+                            diary.totalCost
                     ))
                     .from(diary)
                     .leftJoin(diaryContext)
@@ -143,7 +142,7 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                             diary.diaryStartDate,
                             diary.diaryWriteDate,
                             diary.diaryEndDate,
-                            diary.diaryView
+                            diary.totalCost
                     ))
                     .from(diary)
                     .leftJoin(diaryContext)
@@ -198,6 +197,26 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                 .fetch();
 
         return content;
+
+
+    }
+
+    @Override
+    public String findDiaryImgByDiaryId(Long diaryId) {
+
+        List<String> content = queryFactory
+                .select(
+                        myFile.fileKey
+                )
+                .from(myFile)
+                .leftJoin(diary)
+                .on(myFile.diary.diaryId.eq(diary.diaryId))
+                .where(diary.diaryId.eq(diaryId))
+                .limit(1)
+                .fetch();
+
+        if (content.get(0) != null) return content.get(0);
+        else return "";
 
 
     }
