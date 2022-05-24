@@ -73,8 +73,8 @@ public class Plan {
         Plan plan = new Plan();
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
         plan.setPlanContext(createPlanRequest.getPlanContext());
-        plan.setPlanStartDate(createPlanRequest.getPlanStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        plan.setPlanEndDate(createPlanRequest.getPlanEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        plan.setPlanStartDate(createPlanRequest.getPlanStartDate());/*.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))*/
+        plan.setPlanEndDate(createPlanRequest.getPlanEndDate());
         plan.setPlanWriteDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanStatus("ACTIVE");
         plan.setPlanRegionDetail(regionDetail);
@@ -90,8 +90,8 @@ public class Plan {
     public static Plan updatePlan(CreatePlanRequest createPlanRequest, Plan plan) {
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
         plan.setPlanContext(createPlanRequest.getPlanContext());
-        plan.setPlanStartDate(createPlanRequest.getPlanStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        plan.setPlanEndDate(createPlanRequest.getPlanEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        plan.setPlanStartDate(createPlanRequest.getPlanStartDate());
+        plan.setPlanEndDate(createPlanRequest.getPlanEndDate());
         plan.setPlanWriteDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanStatus("ACTIVE");
         return plan;
