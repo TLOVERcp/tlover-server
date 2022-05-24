@@ -2,6 +2,7 @@ package com.example.tlover.domain.user.controller;
 
 
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
+import com.example.tlover.domain.rating.dto.RatingGetResponse;
 import com.example.tlover.domain.rating.service.RatingService;
 import com.example.tlover.domain.region.exception.NotFoundRegionNameException;
 import com.example.tlover.domain.thema.exception.NotFoundThemaNameException;
@@ -14,6 +15,8 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
+import com.example.tlover.domain.user_region.dto.UpdateUserRegionRequest;
+import com.example.tlover.domain.user_region.dto.UserRegionResponse;
 import com.example.tlover.domain.user_thema.service.UserThemaService;
 import com.example.tlover.domain.user_region.service.UserRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -35,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -159,21 +163,26 @@ public class UserApiController {
 
     /**
      * 사용자 정보 조회
-     * @param request
+     * @param
      * @return
      * @author 윤여찬
      */
     @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보를 조회합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 403, message = "잘못된 접근입니다.(U0004)", response = DeniedAccessExceptioin.class)
-    })
     @GetMapping("/profile")
-    public ResponseEntity<ProfileResponse> getUserProfile(HttpServletRequest request) {
-        String loginId = this.getLoginIdFromSession(request);
+    public ResponseEntity<ProfileResponse> getUserProfile() {
+        String loginId = this.jwtService.getLoginId();
         User user = userService.getUserProfile(loginId);
         List<String> userThemaName = userThemaService.getUserThemaName(user.getUserId());
+        List<String> userRegionName = new ArrayList<>();
+        List<UserRegionResponse> regions = userRegionService.getUserRegion(user.getUserLoginId());
 
-        return ResponseEntity.ok(ProfileResponse.from(user, userThemaName));
+        for (UserRegionResponse response : regions) {
+            userRegionName.add(response.getRegionName());
+        }
+
+        RatingGetResponse response = ratingService.getRating(user.getUserLoginId());
+
+        return ResponseEntity.ok(ProfileResponse.from(user, userThemaName, userRegionName, response.getRating()));
     }
 
     /**
@@ -184,7 +193,6 @@ public class UserApiController {
      */
     @ApiOperation(value = "사용자 정보 수정", notes = "사용자 정보를 수정합니다.", produces = "multipart/form-data")
     @ApiResponses(value = {
-            @ApiResponse(code = 403, message = "잘못된 접근입니다.(U0004)", response = DeniedAccessExceptioin.class),
             @ApiResponse(code = 409, message = "해당 닉네임은 이미 존재하는 닉네임입니다.(U0009) / 해당 이메일은 이미 존재하는 이메일입니다.(U0011)", response = UserNicknameDuplicateException.class),
             @ApiResponse(code = 409, message = "해당 이메일은 이미 존재하는 이메일입니다.(U0011)", response = UserEmailDuplicateException.class)
     })
@@ -193,11 +201,17 @@ public class UserApiController {
                                                     @RequestParam(required = false) MultipartFile file) {
 
         userThemaService.checkThemaName(userProfileRequest.getUserThemaName());
-        //userRegionService.checkRegionName(userProfileRequest.getUserRegions());
+        List<String> list = userProfileRequest.getUserRegionName();
+        String[] userRegionName = list.toArray(new String[list.size()]);
+        userRegionService.checkRegionName(userProfileRequest.getUserRegionName().toArray(userRegionName));
 
         String loginId = jwtService.getLoginId();
         User user = userService.updateUserProfile(loginId, userProfileRequest, file);
         userThemaService.updateUserThema(userProfileRequest.getUserThemaName(), user);
+
+        UpdateUserRegionRequest request = new UpdateUserRegionRequest();
+        request.setUserRegions(userRegionName);
+        userRegionService.updateUserRegion(request, user.getUserLoginId());
 
         return ResponseEntity.ok(MessageResponse.builder()
                 .message("사용자 정보가 수정되었습니다.")

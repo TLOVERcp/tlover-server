@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService{
         this.phoneNumDuplicateCheck(user.getUserPhoneNum());
 
         user.setUserState("active");
+        user.setUserEmail("");
         userRepository.save(user);
 
         return userRepository.findByUserLoginId(user.getUserLoginId()).get();
@@ -205,12 +206,13 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public User updateUserProfile(String loginId, UserProfileRequest profileRequest, MultipartFile file) {
         User user = this.getUserProfile(loginId);
+        if (profileRequest.getUserEmail() ==  null) profileRequest.setUserEmail("");
 
-        // if (!loginId.equals(profileRequest.getLoginId())) this.loginIdDuplicateCheck(profileRequest.getLoginId());
-        if (!user.getUserNickName().equals(profileRequest.getUserNickName())) this.userNicknameDuplicateCheck(profileRequest.getUserNickName());
-        if (!user.getUserEmail().equals(profileRequest.getUserEmail())) this.userEmailDuplicateCheck(profileRequest.getUserEmail());
+        if (!user.getUserNickName().equals(profileRequest.getUserNickName()))
+            this.userNicknameDuplicateCheck(profileRequest.getUserNickName());
+        if (!user.getUserEmail().equals(profileRequest.getUserEmail()) && !profileRequest.getUserEmail().equals(""))
+            this.userEmailDuplicateCheck(profileRequest.getUserEmail());
 
-        // user.setUserLoginId(profileRequest.getLoginId());
         user.setUserEmail(profileRequest.getUserEmail());
         user.setUserNickName(profileRequest.getUserNickName());
 
