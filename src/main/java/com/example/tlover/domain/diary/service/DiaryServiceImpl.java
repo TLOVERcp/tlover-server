@@ -142,8 +142,8 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     private int getPlanDay(CreateDiaryRequest createDiaryRequest) {
-        LocalDateTime startDate = LocalDateTime.parse( createDiaryRequest.getDiaryStartDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        LocalDateTime endDate = LocalDateTime.parse(createDiaryRequest.getDiaryEndDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime startDate = LocalDateTime.parse(createDiaryRequest.getDiaryStartDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime endDate = LocalDateTime.parse(createDiaryRequest.getDiaryEndDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         int result = (endDate.getDayOfMonth() - startDate.getDayOfMonth()) + 1;
         if(result <= 0) throw new RuntimeException("계획 날짜 오류");
         return result;
@@ -215,8 +215,8 @@ public class DiaryServiceImpl implements DiaryService{
         if(diary.getDiaryStatus().equals("EDIT")) throw new RuntimeException("현재 수정중입니다.");
 
         diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
-        diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate().toString());
-        diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate().toString());
+        diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate());
+        diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate());
         diary.setDiaryWriteDate(LocalDateTime.now().toString());
         diary.setDiaryRegionDetail(modifyDiaryRequest.getRegionNameDetail());
 

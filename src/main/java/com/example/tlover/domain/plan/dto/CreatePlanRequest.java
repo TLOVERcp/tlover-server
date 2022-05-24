@@ -1,12 +1,15 @@
 package com.example.tlover.domain.plan.dto;
+import com.google.errorprone.annotations.FormatString;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Getter
@@ -25,11 +28,13 @@ public class CreatePlanRequest {
 
     @NotNull(message = "여행 시작 날짜를 입력해주세요.")
     @ApiModelProperty(notes = "여행 시작 날짜를 입력해 주세요.")
-    private LocalDateTime planStartDate;
+    @Pattern(regexp = "^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):(0[0-9]|[0-5][0-9])$", message = "날짜 포멧 확인")
+    private String planStartDate;
 
     @NotNull(message = "여행 마지막 날짜를 입력해주세요.")
     @ApiModelProperty(notes = "여행 마지막 날짜를 입력해 주세요.")
-    private LocalDateTime planEndDate;
+    @Pattern(regexp = "^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):(0[0-9]|[0-5][0-9])$", message = "날짜 포멧 확인")
+    private String planEndDate;
 
     @NotNull(message = "여행 지역을 입력해주세요.")
     @ApiModelProperty(notes = "여행 지역을 입력해 주세요.")
