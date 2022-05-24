@@ -104,8 +104,8 @@ public class Diary {
         Diary diary = new Diary();
            diary.setDiaryTitle(createDiaryRequest.getDiaryTitle());
            diary.setDiaryWriteDate(LocalDateTime.now().toString());
-           diary.setDiaryStartDate(createDiaryRequest.getDiaryStartDate().toString());
-           diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate().toString());
+           diary.setDiaryStartDate(createDiaryRequest.getDiaryStartDate());
+           diary.setDiaryEndDate(createDiaryRequest.getDiaryEndDate());
            diary.setTotalCost(createDiaryRequest.getTotalCost());
            diary.setDiaryPlanDays(planDay);
            diary.setDiaryRegionDetail(regionDetail);
