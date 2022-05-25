@@ -73,10 +73,8 @@ public class UserApiController {
             @ApiResponse(code = 400, message = "해당 계정은 삭제된 계정입니다.(U0010)", response = UserDeletedException.class)
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
-                                                   HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         User user = userService.loginUser(loginRequest);
-        request.getSession().setAttribute("loginId", user.getUserLoginId());
 
         // 토큰 생성
         String accessJwt = jwtService.createAccessJwt(loginRequest.getLoginId());
@@ -84,10 +82,23 @@ public class UserApiController {
         //유저 리프레시 토큰 저장
         long refreshJwtIdx = userRefreshTokenService.insertRefreshToken(refreshJwt, user);
 
+        List<String> userThemaName = userThemaService.getUserThemaName(user.getUserId());
+        List<String> userRegionName = new ArrayList<>();
+        List<UserRegionResponse> regions = userRegionService.getUserRegion(user.getUserLoginId());
+
+        for (UserRegionResponse response : regions) {
+            userRegionName.add(response.getRegionName());
+        }
+
+        RatingGetResponse response = ratingService.getRating(user.getUserLoginId());
+
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessJwt(accessJwt)
                 .refreshJwtIdx(refreshJwtIdx)
                 .userNickname(user.getUserNickName())
+                .userThemaName(userThemaName)
+                .userRegionName(userRegionName)
+                .userRating(response.getRating())
                 .message("로그인에 성공하였습니다.")
                 .build());
     }

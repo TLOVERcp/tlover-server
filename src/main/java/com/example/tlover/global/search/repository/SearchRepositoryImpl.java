@@ -21,6 +21,8 @@ import static com.example.tlover.domain.diary_thema.entity.QDiaryThema.diaryThem
 import static com.example.tlover.domain.thema.entity.QThema.thema;
 import static com.example.tlover.domain.user.entity.QUser.user;
 import static com.example.tlover.domain.myfile.entity.QMyFile.myFile;
+import static com.example.tlover.domain.scrap.entity.QScrap.scrap;
+import static com.example.tlover.domain.diray_liked.entity.QDiaryLiked.diaryLiked;
 
 public class SearchRepositoryImpl implements SearchRepositoryCustom {
         private final JPAQueryFactory queryFactory;
@@ -213,6 +215,33 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
         if (content.get(0) != null) return content.get(0);
         else return "";
 
+    }
 
+    @Override
+    public boolean findIsScrapedByUserId(Long userId, Long diaryId) {
+        List<Long> content = queryFactory
+                .select(
+                        scrap.scrapId
+                )
+                .from(scrap)
+                .where(scrap.diary.diaryId.eq(diaryId), scrap.user.userId.eq(userId), scrap.isDeleted.eq(false))
+                .fetch();
+
+        if (!content.isEmpty()) return true;
+        else return false;
+    }
+
+    @Override
+    public boolean findIsLikedByUserId(Long userId, Long diaryId) {
+        List<Long> content = queryFactory
+                .select(
+                        diaryLiked.diaryLikedId
+                )
+                .from(diaryLiked)
+                .where(diaryLiked.diary.diaryId.eq(diaryId), diaryLiked.user.userId.eq(userId), diaryLiked.isLiked.eq(true))
+                .fetch();
+
+        if (!content.isEmpty()) return true;
+        else return false;
     }
 }
