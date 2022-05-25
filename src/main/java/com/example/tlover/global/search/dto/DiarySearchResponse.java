@@ -4,9 +4,11 @@ import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @ApiModel(description = "다이어리 검색을 위한 객체")
@@ -19,6 +21,8 @@ public class DiarySearchResponse {
     private String diaryEndDate;
     private String diaryImg;
     private int totalCost;
+    private boolean isScraped;
+    private boolean isLiked;
     private List<String> themaNames;
     private List<String> regionNames;
 
@@ -34,14 +38,4 @@ public class DiarySearchResponse {
         this.diaryEndDate = diaryEndDate;
         this.totalCost = totalCost;
     }
-
-    public void setThemaNames(List<String> themaNames) {
-        this.themaNames = themaNames;
-    }
-
-    public void setRegionNames(List<String> regionNames) {
-        this.regionNames = regionNames;
-    }
-
-    public void setDiaryImg(String diaryImg) { this.diaryImg = diaryImg; }
 }

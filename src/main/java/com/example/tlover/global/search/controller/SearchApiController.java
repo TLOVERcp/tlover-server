@@ -3,6 +3,7 @@ package com.example.tlover.global.search.controller;
 
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.dto.ResponseDto;
+import com.example.tlover.global.jwt.service.JwtService;
 import com.example.tlover.global.search.dto.DiarySearchResponse;
 import com.example.tlover.global.search.dto.UserSearchResponse;
 import com.example.tlover.global.search.exception.NotFoundSearchDiaryException;
@@ -26,6 +27,7 @@ import java.util.List;
 public class SearchApiController {
 
     private final SearchService searchService;
+    private final JwtService jwtService;
 
     /**
      * 다이어리 검색 조회
@@ -39,7 +41,8 @@ public class SearchApiController {
     @GetMapping("/get-diary")
     public ResponseEntity<ResponseDto<PaginationDto<List<DiarySearchResponse>>>> searchDiary(@RequestParam String keyword,
                                                                                              @PageableDefault Pageable pageable) {
-        PaginationDto<List<DiarySearchResponse>> diarySearchResponse = searchService.getSearchedDiary(keyword, pageable);
+        Long userId = jwtService.getUserId();
+        PaginationDto<List<DiarySearchResponse>> diarySearchResponse = searchService.getSearchedDiary(keyword, userId, pageable);
         return ResponseEntity.ok(ResponseDto.create(diarySearchResponse));
     }
 
