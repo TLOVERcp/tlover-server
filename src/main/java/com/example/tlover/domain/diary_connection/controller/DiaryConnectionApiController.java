@@ -37,7 +37,7 @@ public class DiaryConnectionApiController {
     @ApiResponses(value = {
             @ApiResponse(code = 404 , message = "해당 diaryId로 Diary를 찾을 수 없습니다.(D0004)" , response = NotFoundDiaryException.class),
             @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002)", response = NotFoundUserException.class),    })
-    @PostMapping("/{diaryId}")
+    @GetMapping("/{diaryId}")
     public ResponseEntity<ResponseDto<DiaryInquiryResponse>> getDiaryDetails(@PathVariable Long diaryId, HttpServletRequest httpServletRequest) {
         Long userId = (Long) httpServletRequest.getAttribute(EHttpServletRequestAttribute.eUserId.getAttribute());
         historyService.createHistory(diaryId, userId);
