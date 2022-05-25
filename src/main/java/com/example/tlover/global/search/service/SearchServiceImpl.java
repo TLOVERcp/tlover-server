@@ -4,8 +4,11 @@ package com.example.tlover.global.search.service;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
+import com.example.tlover.domain.scrap.repository.ScrapRepository;
 import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.thema.repository.ThemaRepository;
+import com.example.tlover.domain.user.entity.User;
+import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.search.dto.DiarySearchResponse;
 import com.example.tlover.global.search.dto.UserSearchResponse;
@@ -34,7 +37,7 @@ public class SearchServiceImpl implements SearchService {
      * @author 윤여찬
      */
     @Override
-    public PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable) {
+    public PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Long userId, Pageable pageable) {
 
         Page<DiarySearchResponse> page;
         Thema thema = themaRepository.findByThemaName(keyword);
@@ -58,6 +61,8 @@ public class SearchServiceImpl implements SearchService {
             if (themaNames != null) diary.setThemaNames(themaNames);
             if (regionNames != null) diary.setRegionNames(regionNames);
             diary.setDiaryImg(searchRepository.findDiaryImgByDiaryId(diary.getDiaryId()));
+            diary.setScraped(searchRepository.findIsScrapedByUserId(userId, diary.getDiaryId()));
+            diary.setLiked(searchRepository.findIsLikedByUserId(userId, diary.getDiaryId()));
         }
 
         if (data.isEmpty()) throw new NotFoundSearchDiaryException();
