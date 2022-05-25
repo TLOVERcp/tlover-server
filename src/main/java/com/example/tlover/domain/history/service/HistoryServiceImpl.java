@@ -3,6 +3,8 @@ package com.example.tlover.domain.history.service;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
+import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
+import com.example.tlover.domain.diray_liked.repository.DiaryLikedRepository;
 import com.example.tlover.domain.history.dto.GetHistoryResponse;
 import com.example.tlover.domain.history.exception.NotFoundHistoryException;
 import com.example.tlover.domain.history.exception.RejectDeletedDiaryException;
@@ -27,6 +29,7 @@ public class HistoryServiceImpl implements HistoryService{
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
     private final HistoryRepository historyRepository;
+    private final DiaryLikedRepository diaryLikedRepository;
 
     @Override
     public void createHistory(Long diaryId, Long userId) {
@@ -62,13 +65,16 @@ public class HistoryServiceImpl implements HistoryService{
             }
         }
         List<History> newHistories = historyRepository.findByUser(user);
+
         for (History newHistory : newHistories) {
+//            Optional<DiaryLiked> diaryLiked = diaryLikedRepository.findByUserAndDiary(user, newHistory.getDiary());
+//            historyResponses.add(GetHistoryResponse.from(newHistory, user, diaryLiked.get()));
             historyResponses.add(GetHistoryResponse.from(newHistory, user));
         }
         Collections.sort(historyResponses, new Comparator<GetHistoryResponse>() {
             @Override
             public int compare(GetHistoryResponse o1, GetHistoryResponse o2) {
-                return o2.getDateTime().compareTo(o1.getDateTime());
+                return o2.getHistoryDate().compareTo(o1.getHistoryDate());
             }
         });
         if (historyResponses.isEmpty()) {
