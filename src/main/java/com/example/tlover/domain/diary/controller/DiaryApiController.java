@@ -34,6 +34,11 @@ public class DiaryApiController {
     private final JwtService jwtService;
 
 
+    /**
+     * 다이어리 수정중으로 상태 변환 api
+     * @param diaryId
+     * author : 신동민
+     */
     @ApiOperation(value = "다이어리 상태를 수정중으로 변환", notes = "다이어리를 수정하거나 등록을 시작하는 시점에 상태를 수정중으로 변환합니다.")
     @PostMapping("/update-diary-editing/{diaryId}")
     public ResponseEntity<ResponseDto<UpdateDiaryStatusResponse>> updateDiaryStatusEditing(@PathVariable Long diaryId) {
@@ -45,7 +50,6 @@ public class DiaryApiController {
     /**
      * 다이어리 작성 api
      * swagger url => [post]  api/v1/plans/create-diary
-     *
      * @param createDiaryRequest
      * @param request
      * @return ResponseEntity<CreateDiaryResponse>
@@ -65,6 +69,13 @@ public class DiaryApiController {
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
 
+
+
+    /**
+     * 다이어리 작성폼 api
+     * @param planId
+     * author : 신동민
+     */
     @ApiOperation(value = "다이어리 작성폼", notes = "다이어리 작성폼을을 불러옵니다.")
     @GetMapping(value = "/create-diary/{planId}")
     public ResponseEntity<ResponseDto<CreateDiaryFormResponse>> getCreateDiaryForm(@PathVariable Long planId) {
@@ -73,6 +84,12 @@ public class DiaryApiController {
     }
 
 
+    /**
+     * 다이어리 작성완료로 상태변경
+     * @param diaryId
+     * @param planId
+     * @return
+     */
     @PostMapping(value = "/finish-diary/{planId}/{diaryId}")
     public ResponseEntity<ResponseDto<CreateDiaryResponse>> finishDiary(@PathVariable Long planId, @PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
@@ -95,12 +112,10 @@ public class DiaryApiController {
     /**
      * 다이어리 삭제 API
      * swagger url => [post]  api/v1/plans/delete-diary/{diaryId}
-     *
      * @param diaryId
      * @return ResponseEntity<CreateDiaryResponse>
      * author => 신동민
      */
-
 
     @ApiOperation(value = "다이어리 삭제", notes = "다이어리를 삭제합니다.")
     @ApiResponses(value = {
@@ -117,8 +132,20 @@ public class DiaryApiController {
     }
 
     /**
+     * 다이어리 수정폼 api
+     * @param diaryId
+     * @return
+     * author : 신동민
+     */
+    @ApiOperation(value = "다이어리 수정폼", notes = "다이어리 수정폼을 불러옵니다.")
+    @PostMapping(value = "/modify-diary/{diaryId}")
+    public ResponseEntity<ResponseDto<ModifyDiaryFormResponse>> getModifyDiaryForm(@PathVariable Long diaryId) {
+        String loginId = jwtService.getLoginId();
+        return ResponseEntity.ok(ResponseDto.create("다이어리 수정이 완료되었습니다." ,  diaryService.getModifyDiaryForm(diaryId, loginId)));
+    }
+
+    /**
      * 다이어리 수정 API
-     *
      * @param modifyDiaryRequest
      * @return ResponseEntity<String>
      * @author 한규범
@@ -165,7 +192,6 @@ public class DiaryApiController {
 
     /**
      * 좋아요의 갯수 가져오기
-     *
      * @param diaryId
      * @return author 신동민
      */
