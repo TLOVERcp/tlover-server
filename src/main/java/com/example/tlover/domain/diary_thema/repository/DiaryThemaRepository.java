@@ -13,7 +13,7 @@ public interface DiaryThemaRepository extends JpaRepository<DiaryThema, Long> {
 
     List<DiaryThema> findByThema(Thema thema);
 
-    List<DiaryThema> findByDiary(Diary diary);
+    Optional<List<DiaryThema>> findByDiary(Diary diary);
 
     List<DiaryThema> findByThemaThemaId(Long themaId);
 }
