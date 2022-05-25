@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SearchService {
 
-    PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Pageable pageable);
+    PaginationDto<List<DiarySearchResponse>> getSearchedDiary(String keyword, Long userId, Pageable pageable);
 
     UserSearchResponse getSearchedUser(String keyword);
 

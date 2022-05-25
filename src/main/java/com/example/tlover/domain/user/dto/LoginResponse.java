@@ -3,12 +3,12 @@ package com.example.tlover.domain.user.dto;
 
 import com.example.tlover.domain.user.entity.User;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +16,10 @@ import lombok.NoArgsConstructor;
 public class LoginResponse {
 
     private String message;
-    // 닉네임 반영
     private String userNickname;
+    private List<String> userThemaName;
+    private List<String> userRegionName;
+    private float userRating;
     private String accessJwt;
     private Long refreshJwtIdx;
 

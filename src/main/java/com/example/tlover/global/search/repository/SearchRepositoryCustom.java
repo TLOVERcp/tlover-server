@@ -22,4 +22,8 @@ public interface SearchRepositoryCustom {
     List<UserSearchResponse> findUserByKeyword(String keyword);
 
     String findDiaryImgByDiaryId(Long diaryId);
+
+    boolean findIsScrapedByUserId(Long userId, Long diaryId);
+
+    boolean findIsLikedByUserId(Long userId, Long diaryId);
 }
