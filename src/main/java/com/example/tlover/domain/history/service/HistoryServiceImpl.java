@@ -11,6 +11,8 @@ import com.example.tlover.domain.history.exception.RejectDeletedDiaryException;
 import com.example.tlover.domain.history.entity.History;
 import com.example.tlover.domain.history.exception.RejectGetDiaryException;
 import com.example.tlover.domain.history.repository.HistoryRepository;
+import com.example.tlover.domain.scrap.entity.Scrap;
+import com.example.tlover.domain.scrap.repository.ScrapRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
@@ -30,6 +32,7 @@ public class HistoryServiceImpl implements HistoryService{
     private final DiaryRepository diaryRepository;
     private final HistoryRepository historyRepository;
     private final DiaryLikedRepository diaryLikedRepository;
+    private final ScrapRepository scrapRepository;
 
     @Override
     public void createHistory(Long diaryId, Long userId) {
@@ -67,9 +70,9 @@ public class HistoryServiceImpl implements HistoryService{
         List<History> newHistories = historyRepository.findByUser(user);
 
         for (History newHistory : newHistories) {
-//            Optional<DiaryLiked> diaryLiked = diaryLikedRepository.findByUserAndDiary(user, newHistory.getDiary());
-//            historyResponses.add(GetHistoryResponse.from(newHistory, user, diaryLiked.get()));
-            historyResponses.add(GetHistoryResponse.from(newHistory, user));
+            boolean isScrap = isScrap(user, newHistory.getDiary());
+            boolean isLiked = isLiked(user, newHistory.getDiary());
+            historyResponses.add(GetHistoryResponse.from(newHistory, isScrap, isLiked));
         }
         Collections.sort(historyResponses, new Comparator<GetHistoryResponse>() {
             @Override
@@ -81,6 +84,19 @@ public class HistoryServiceImpl implements HistoryService{
             throw new NotFoundHistoryException();
         }
         return historyResponses;
+    }
+
+    private boolean isLiked(User user, Diary diary) {
+        Optional<DiaryLiked> diaryLiked = diaryLikedRepository.findByUserAndDiary(user, diary);
+        if(diaryLiked.isEmpty()) return false;
+        if(diaryLiked.get().isLiked() == true) return true;
+        else return false;
+    }
+
+    private boolean isScrap(User user, Diary diary) {
+        Optional<Scrap> scrap = scrapRepository.findByUserAndDiary(user, diary);
+        if (scrap.isEmpty()) return false;
+        else return true;
     }
 
     @Override
