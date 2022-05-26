@@ -6,10 +6,7 @@ import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,6 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Plan {
 
     @Id
@@ -55,6 +53,7 @@ public class Plan {
     private List<PlanRegion> planRegions = new ArrayList<>();
 
     @OneToMany(mappedBy = "plan")
+    @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 
     @OneToMany(mappedBy = "plan")
