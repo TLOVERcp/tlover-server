@@ -70,8 +70,17 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public PlanDetailResponse getPlanDetail(Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        List<AuthorityPlan> authorityPlans = authorityPlanRepository.findAllByPlan(plan).orElseThrow(NotFoundAuthorityPlanException::new);
-        return PlanDetailResponse.from(plan, authorityPlans);
+        Optional<List<AuthorityPlan>> hostPlans = authorityPlanRepository.findAllByPlanAndAuthorityPlanStatus(plan,"HOST");
+        Optional<List<AuthorityPlan>> authorityPlans = authorityPlanRepository.findAllByPlanAndAuthorityPlanStatus(plan,"ACCEPT");
+        List<AuthorityPlan> plans = new ArrayList<>();
+        if(hostPlans.isPresent()){
+            plans.addAll(hostPlans.get());
+        }
+        if(authorityPlans.isPresent()){
+            plans.addAll(authorityPlans.get());
+        }
+        plans = checkDelete(plans);
+        return PlanDetailResponse.from(plan, plans);
     }
 
     @Override
@@ -90,7 +99,8 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        plan.updatePlan(createPlanRequest, plan);
+        String regionDetail = toString(createPlanRequest.getRegionName());
+        plan.updatePlan(regionDetail, createPlanRequest, plan);
         return plan;
     }
 

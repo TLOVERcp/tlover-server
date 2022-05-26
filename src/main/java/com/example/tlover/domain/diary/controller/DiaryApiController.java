@@ -3,6 +3,7 @@ package com.example.tlover.domain.diary.controller;
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.service.DiaryService;
+import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.exception.dto.ApiErrorResponse;

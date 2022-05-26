@@ -35,13 +35,9 @@ public class PlanRegionServiceImpl implements PlanRegionService {
     @Override
     @Transactional
     public void updatePlanRegion(CreatePlanRequest createPlanRequest, Plan plan) {
-        planRegionRepository.deleteAllByPlan(plan);
-        String[] regionName = createPlanRequest.getRegionName();
-        for(String i : regionName) {
-            Region region = regionRepository.findByRegionName(i).get();
-            PlanRegion planRegion = PlanRegion.toEntity(region, plan);
-            planRegionRepository.save(planRegion);
-        }
+        deletePlanRegion(plan);
+        createPlanRegion(createPlanRequest,plan);
+
     }
 
     @Override

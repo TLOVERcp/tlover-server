@@ -158,9 +158,6 @@ public class DiaryServiceImpl implements DiaryService{
         return result;
     }
 
-
-
-
     @Override
     @Transactional
     public DeleteDiaryResponse deleteDiary(Long diaryId, String loginId) {
@@ -203,7 +200,16 @@ public class DiaryServiceImpl implements DiaryService{
         diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate());
         diary.setDiaryEndDate(modifyDiaryRequest.getDiaryEndDate());
         diary.setDiaryWriteDate(LocalDateTime.now().toString());
-        diary.setDiaryRegionDetail(modifyDiaryRequest.getRegionNameDetail());
+        diary.setDiaryRegionDetail(toString(modifyDiaryRequest.getRegionNameDetail()));
+
+        //DiaryRegion
+        diaryRegionRepository.deleteAllByDiary(diary);
+        String[] regions = checkRegion(modifyDiaryRequest.getRegionNameDetail());
+        for (String regionName : regions) {
+            Region region = regionRepository.findByRegionName(regionName).get();
+            DiaryRegion diaryRegion = DiaryRegion.toEntity(region, diary);
+            diaryRegionRepository.save(diaryRegion);
+        }
 
         //사진 수정
         for(int i=0; i<diary.getMyFiles().size(); i++){

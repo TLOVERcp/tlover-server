@@ -86,13 +86,15 @@ public class Plan {
 
     }
 
-    public static Plan updatePlan(CreatePlanRequest createPlanRequest, Plan plan) {
+    public static Plan updatePlan(String regionDetail, CreatePlanRequest createPlanRequest, Plan plan) {
         plan.setPlanTitle(createPlanRequest.getPlanTitle());
         plan.setPlanContext(createPlanRequest.getPlanContext());
         plan.setPlanStartDate(createPlanRequest.getPlanStartDate());
         plan.setPlanEndDate(createPlanRequest.getPlanEndDate());
         plan.setPlanWriteDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         plan.setPlanStatus("ACTIVE");
+        plan.setPlanRegionDetail(regionDetail);
+        plan.setExpense(createPlanRequest.getExpense());
         return plan;
     }
 }
