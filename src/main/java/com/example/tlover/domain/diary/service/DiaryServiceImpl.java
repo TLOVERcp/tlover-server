@@ -115,9 +115,8 @@ public class DiaryServiceImpl implements DiaryService{
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
 
         Long diaryId =0L;
-        if(cdr.isEmpty() || cdr.get().getDiaryStatus().equals("DELETE")) {
+        if(cdr.isEmpty()) {
             String regionDetail = toString(createDiaryRequest.getRegionName());
-
             Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,user, plan , getPlanDay(plan.getPlanStartDate(), plan.getPlanEndDate())));
             diaryId = diary.getDiaryId();
 
@@ -136,15 +135,20 @@ public class DiaryServiceImpl implements DiaryService{
                 diaryThemaRepository.save(diaryThema);
             }
 
-//            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-//                MyFile myFile = myFileService.saveImage(diaryImgFileName);
-//                myFile.setDiary(diary);
-//                myFile.setUser(user);
-//            }
-
-            //썸네일 추가
-            String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
-            diary.setDiaryView(fileKey);
+            if (createDiaryRequest.getDiaryImages() != null) {
+                for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
+                    MyFile myFile = myFileService.saveImage(diaryImgFileName);
+                    myFile.setDiary(diary);
+                    myFile.setUser(user);
+                }
+                String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
+                diary.setDiaryView(fileKey);
+            } else{
+                diary.setDiaryView("4cebbe25-faa1-4490-98e1-6d22f2a54f90");
+                MyFile myFileWhenNull = myFileRepository.save(MyFile.toEntity("4cebbe25-faa1-4490-98e1-6d22f2a54f90"));
+                myFileWhenNull.setDiary(diary);
+                myFileWhenNull.setUser(user);
+            }
 
         }
         return CreateDiaryResponse.from(diaryId , true);
@@ -174,14 +178,13 @@ public class DiaryServiceImpl implements DiaryService{
 
         diary.setDiaryStatus("DELETE");
 
-        for(MyFile myFile :   myFileService.findByUserAndDiary(user, diary)) {
-            myFile.setDeleted(true);
-        }
+            for(MyFile myFile : myFileService.findByUserAndDiary(user, diary)) {
+                myFile.setDeleted(true);
+            }
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
         diaryThemaRepository.deleteByDiary_DiaryId(diaryId);
         authorityDiaryRepository.deleteByDiary_DiaryId(diaryId);
-
         return DeleteDiaryResponse.from(diary.getDiaryId() , true);
     }
 

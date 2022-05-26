@@ -147,6 +147,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .orderBy(diary.diaryId.desc())
                 .offset(pageable.getOffset());
 
+
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
 
@@ -162,10 +163,12 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         return user != null ? scrap.user.eq(user) : null;
     }
 
-    private BooleanExpression isLikedCheck() {return diaryLiked.isLiked.eq(true);}
+    private BooleanExpression isLikedCheck() {
+        return diaryLiked.isLiked.eq(true);
+    }
 
-    private BooleanExpression isDeletedCheckByScrap() {return scrap.isDeleted.eq(false);}
-
-
+    private BooleanExpression isDeletedCheckByScrap() {
+        return scrap.isDeleted.eq(false);
+    }
 
 }
