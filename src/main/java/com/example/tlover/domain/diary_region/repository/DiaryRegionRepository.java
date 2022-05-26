@@ -11,4 +11,6 @@ public interface DiaryRegionRepository extends JpaRepository<DiaryRegion, Long> 
     void deleteByDiary_DiaryId(Long diaryId);
 
     List<DiaryRegion> findByDiary(Diary diary);
+
+    void deleteAllByDiary(Diary diary);
 }

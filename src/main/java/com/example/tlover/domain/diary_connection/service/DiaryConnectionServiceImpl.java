@@ -9,7 +9,6 @@ import com.example.tlover.domain.diary_connection.entity.DiaryConnection;
 import com.example.tlover.domain.diary_connection.repository.DiaryConnectionConnectionRepository;
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.diary_thema.repository.DiaryThemaRepository;
-import com.example.tlover.domain.plan.exception.NotFoundAuthorityPlanException;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
