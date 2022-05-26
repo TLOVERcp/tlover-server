@@ -136,11 +136,11 @@ public class DiaryServiceImpl implements DiaryService{
                 diaryThemaRepository.save(diaryThema);
             }
 
-            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-                MyFile myFile = myFileService.saveImage(diaryImgFileName);
-                myFile.setDiary(diary);
-                myFile.setUser(user);
-            }
+//            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
+//                MyFile myFile = myFileService.saveImage(diaryImgFileName);
+//                myFile.setDiary(diary);
+//                myFile.setUser(user);
+//            }
 
             //썸네일 추가
             String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();

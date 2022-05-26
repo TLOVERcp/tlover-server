@@ -14,6 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,8 @@ public class CreateDiaryRequest {
 
     @ApiModelProperty(notes = "여행시에 찍었던 사진들")
     private List<MultipartFile> diaryImages;
+//    private List<URI> diaryImages;
+//    private List<String> diaryImages;
 
     @ApiModelProperty(notes = "여행 시작 날짜를 입력해 주세요.")
     @Pattern(regexp = "^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[0-5][0-9]):(0[0-9]|[0-5][0-9])$", message = "날짜 포멧 확인")
