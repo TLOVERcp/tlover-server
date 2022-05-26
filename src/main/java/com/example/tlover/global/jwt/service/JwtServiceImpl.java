@@ -13,6 +13,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -30,6 +31,10 @@ public class JwtServiceImpl implements JwtService {
     private final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 2 * 1000L;   // 2시간
     private final long REFRESH_TOKEN_VALID_TIME  = 60 * 60 * 24 * 7 * 1000L;   // 1 달
     private Long userId;
+    @Value("${spring.jwt.access-key}")
+    public static String JWT_ACCESS_SECRET_KEY;
+    @Value("${spring.jwt.refresh-key}")
+    public static String JWT_REFRESH_SECRET_KEY;
 
     /**
      * 엑세스 토큰 생성
