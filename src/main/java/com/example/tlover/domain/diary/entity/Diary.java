@@ -25,6 +25,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Diary {
 
     @Id
@@ -59,7 +60,8 @@ public class Diary {
     @JoinColumn(name = "plan_planId")
     private Plan plan;
 
-    @OneToMany(mappedBy = "diary", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "diary")
+    @Builder.Default
     private List<MyFile> myFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "diary")

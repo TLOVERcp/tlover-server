@@ -41,4 +41,8 @@ public interface DiaryService {
     CreateDiaryFormResponse getCreateDiaryForm(Long planId, String loginId);
 
     ModifyDiaryFormResponse getModifyDiaryForm(Long diaryId, String loginId);
+
+    PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyLiked(Pageable pageable , Long userId);
+
+    PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyScrap(Pageable pageable, Long userId);
 }
