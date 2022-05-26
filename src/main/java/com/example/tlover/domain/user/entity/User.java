@@ -58,9 +58,11 @@ public class User {
     private ESocialProvider userSocialProvider;
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private List<Plan> plans = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
