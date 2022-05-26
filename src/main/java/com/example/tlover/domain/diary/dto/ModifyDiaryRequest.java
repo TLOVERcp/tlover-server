@@ -45,7 +45,7 @@ public class ModifyDiaryRequest {
 
     @NotNull(message = "여행 지역을 입력해주세요.")
     @ApiModelProperty(notes = "여행 지역을  입력해 주세요.")
-    private String regionNameDetail;
+    private String[] regionNameDetail;
 
     @NotNull
     @ApiModelProperty(notes = "여행 테마를 입력해주세요.")
