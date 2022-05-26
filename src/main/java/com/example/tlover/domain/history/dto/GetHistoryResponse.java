@@ -19,8 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 @ApiModel(description = "방문 기록 조회를 위한 응답 객체")
 public class GetHistoryResponse {
+
     private String historyDate;
     private List<String> myFileKeys;
+    private Long diaryId;
     private String diaryTitle;
     private String regionDetail;
     private int totalCost;
@@ -37,6 +39,7 @@ public class GetHistoryResponse {
 
         return GetHistoryResponse.builder()
                 .myFileKeys(myFileKeys)
+                .diaryId(history.getDiary().getDiaryId())
                 .diaryTitle(history.getDiary().getDiaryTitle())
                 .regionDetail(history.getDiary().getDiaryRegionDetail())
                 .totalCost(history.getDiary().getTotalCost())
