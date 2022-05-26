@@ -90,7 +90,8 @@ public class PlanServiceImpl implements PlanService{
     @Override
     public Plan updatePlan(CreatePlanRequest createPlanRequest, Long planId) {
         Plan plan = planRepository.findByPlanId(planId).orElseThrow(NotFoundPlanException::new);
-        plan.updatePlan(createPlanRequest, plan);
+        String regionDetail = toString(createPlanRequest.getRegionName());
+        plan.updatePlan(regionDetail, createPlanRequest, plan);
         return plan;
     }
 
