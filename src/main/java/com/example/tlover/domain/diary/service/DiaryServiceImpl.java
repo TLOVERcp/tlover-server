@@ -22,7 +22,6 @@ import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan_region.service.PlanRegionServiceImpl;
 import com.example.tlover.domain.region.entity.Region;
 import com.example.tlover.domain.region.repository.RegionRepository;
 import com.example.tlover.domain.thema.entity.Thema;
@@ -30,7 +29,6 @@ import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
-import com.example.tlover.domain.weather.entity.Weather;
 import com.example.tlover.domain.weather.repository.WeatherRepository;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
@@ -44,7 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -106,6 +103,7 @@ public class DiaryServiceImpl implements DiaryService{
 
         return ModifyDiaryFormResponse.from(diary , themaNameList , myFileSet);
     }
+
 
 
     @Override
@@ -234,7 +232,6 @@ public class DiaryServiceImpl implements DiaryService{
     public DiaryLikedChangeResponse diaryLikedChange(Long diaryId, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
-
         Optional<DiaryLiked> diaryLiked = diaryLikedRepository.findByUserAndDiary(user, diary);
 
         if(diaryLiked.isEmpty()) {
@@ -266,18 +263,31 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     public  PaginationDto<List<DiaryInquiryByLikedRankingResponse>> getDiaryByLikedRanking(Pageable pageable) {
-
         Page<DiaryInquiryByLikedRankingResponse> page = diaryRepository.findAllDiariesByLikedRanking(pageable);
         List<DiaryInquiryByLikedRankingResponse> data = page.get().collect(Collectors.toList());
         return PaginationDto.of(page, data);
 
     }
 
+    @Override
+    public PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyLiked(Pageable pageable , Long userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
+        Page<DiaryMyScrapOrLikedResponse> page = diaryRepository.findAllDiariesByMyLiked(pageable , user);
+        List<DiaryMyScrapOrLikedResponse> data = page.get().collect(Collectors.toList());
+        return PaginationDto.of(page, data);
+    }
+
+    @Override
+    public PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyScrap(Pageable pageable, Long userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
+        Page<DiaryMyScrapOrLikedResponse> page = diaryRepository.findAllDiariesByMyScrap(pageable , user);
+        List<DiaryMyScrapOrLikedResponse> data = page.get().collect(Collectors.toList());
+        return PaginationDto.of(page, data);
+    }
 
 
     @Override
     public DiaryLikedViewsResponse getDiaryViews(Long diaryId) {
-
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         Long dlv = diaryLikedRepository.countByDiaryAndIsLiked(diary, true).get();
         return DiaryLikedViewsResponse.from(diary.getDiaryId() , dlv);
@@ -353,7 +363,9 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
-        return null;
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+        diary.setDiaryStatus("EDIT");
+        return UpdateDiaryStatusResponse.from(diary);
     }
 
     @Override
