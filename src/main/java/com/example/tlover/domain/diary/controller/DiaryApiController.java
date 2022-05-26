@@ -71,10 +71,6 @@ public class DiaryApiController {
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
 
-
-
-
-
     /**
      * 다이어리 작성폼 api
      * @param planId
@@ -84,9 +80,8 @@ public class DiaryApiController {
     @GetMapping(value = "/create-diary/{planId}")
     public ResponseEntity<ResponseDto<CreateDiaryFormResponse>> getCreateDiaryForm(@PathVariable Long planId) {
         String loginId = jwtService.getLoginId();
-        return ResponseEntity.ok(ResponseDto.create("다이어리 작성 양식을 불러왔습니다." , diaryService.getCreateDiaryForm(planId,loginId)));
+        return ResponseEntity.ok(ResponseDto.create("다이어리 작성 양식을 불러왔습니다.", diaryService.getCreateDiaryForm(planId, loginId)));
     }
-
 
     /**
      * 다이어리 작성완료로 상태변경
