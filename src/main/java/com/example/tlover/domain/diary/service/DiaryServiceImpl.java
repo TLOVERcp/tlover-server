@@ -160,7 +160,7 @@ public class DiaryServiceImpl implements DiaryService{
         if(result <= 0) throw new NoCorrectDayException();
         return result;
     }
-    
+
     @Override
     @Transactional
     public DeleteDiaryResponse deleteDiary(Long diaryId, String loginId) {
