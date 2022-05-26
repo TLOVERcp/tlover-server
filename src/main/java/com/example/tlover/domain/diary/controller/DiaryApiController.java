@@ -1,7 +1,6 @@
 package com.example.tlover.domain.diary.controller;
 
 import com.example.tlover.domain.diary.dto.*;
-import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.service.DiaryService;
 import com.example.tlover.domain.user.controller.UserApiController;
@@ -40,6 +39,10 @@ public class DiaryApiController {
      * author : 신동민
      */
     @ApiOperation(value = "다이어리 상태를 수정중으로 변환", notes = "다이어리를 수정하거나 등록을 시작하는 시점에 상태를 수정중으로 변환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "해당 diaryId로 Diary를 찾을 수 없습니다.",
+                    response = NotFoundDiaryException.class)
+    })
     @PostMapping("/update-diary-editing/{diaryId}")
     public ResponseEntity<ResponseDto<UpdateDiaryStatusResponse>> updateDiaryStatusEditing(@PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
@@ -57,9 +60,6 @@ public class DiaryApiController {
      */
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성을 합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 500, message = "하나의 유저는 하나의 계획에 한번만 작성 가능합니다.",
-                    response = AlreadyExistDiaryException.class
-            ),
             @ApiResponse(code = 404, message = "해당 diaryId로 Diary를 찾을 수 없습니다.",
                     response = NotFoundDiaryException.class)
     })
@@ -68,6 +68,8 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
+
+
 
 
 
@@ -104,10 +106,26 @@ public class DiaryApiController {
     @ApiOperation(value = "좋아요순으로 다이어리 보여주기" , notes = "특정 다이어리의 좋아요 갯수를 조회합니다.")
     @PostMapping(value = "/liked-ranking")
     public ResponseEntity<ResponseDto<PaginationDto<List<DiaryInquiryByLikedRankingResponse>>>> DiaryLikedRanking(@PageableDefault Pageable pageable) {
-
         return ResponseEntity.ok(ResponseDto.create("모든 다이어리를 좋아요 순으로 조회합니다."
                 , this.diaryService.getDiaryByLikedRanking(pageable)));
     }
+
+    @ApiOperation(value = "내가 좋아요누른 다이어리 보여주기" , notes = "내가 좋아요를 누른 다이어리들을 조회합니다.")
+    @PostMapping(value = "/myLiked")
+    public ResponseEntity<ResponseDto<PaginationDto<List<DiaryMyScrapOrLikedResponse>>>> DiaryMyLiekd(@PageableDefault Pageable pageable) {
+        Long userId = jwtService.getUserId();
+        return ResponseEntity.ok(ResponseDto.create("내가 좋아요를 누른 다이어리를 조회합니다."
+                , this.diaryService.getDiaryMyLiked(pageable,userId)));
+    }
+
+    @ApiOperation(value = "내가 스크랩한 다이어리 보여주기" , notes = "내가 스크랩한 다이어리들을 조회합니다.")
+    @PostMapping(value = "/myScrap")
+    public ResponseEntity<ResponseDto<PaginationDto<List<DiaryMyScrapOrLikedResponse>>>> DiaryMyScrap(@PageableDefault Pageable pageable) {
+        Long userId = jwtService.getUserId();
+        return ResponseEntity.ok(ResponseDto.create("내가 스크랩한 다이어리를 조회합니다."
+                , this.diaryService.getDiaryMyScrap(pageable,userId)));
+    }
+
 
     /**
      * 다이어리 삭제 API
