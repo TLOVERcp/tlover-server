@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -286,6 +287,26 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         List<DiaryWeatherResponse> diaryWeatherResponses = diaryService.getDiaryWeather(loginId);
         return ResponseEntity.ok(ResponseDto.create(diaryWeatherResponses));
+    }
+
+    @ApiOperation(value = "다이어리 등록 URI로 받기")
+    @PostMapping(value = "/post-diary-test-uri")
+    public ResponseEntity<ResponseDto<String>> test1(DiaryImageTestRequest diaryImageTestRequest){
+        String output="실패";
+        if(diaryImageTestRequest.getDiaryImages().get(0)!=null)
+            output="성공";
+
+        return ResponseEntity.ok(ResponseDto.create(output));
+    }
+
+    @ApiOperation(value = "다이어리 등록 String으로 받기")
+    @PostMapping(value = "/post-diary-test-string")
+    public ResponseEntity<ResponseDto<String>> test2(DiaryImageStringTestRequest diaryImageStringTestRequest){
+        String output="실패";
+        if(diaryImageStringTestRequest.getDiaryImages().get(0)!=null)
+            output="성공";
+
+        return ResponseEntity.ok(ResponseDto.create(output));
     }
 
 }
