@@ -13,6 +13,6 @@ public interface MyFileService {
     MyFile saveImage(MultipartFile multipartFiles);
     MyFile getFile(Long fileId);
     boolean deleteFile(Long fileId);
-    List<MyFile> findByUserAndDiary(User user, Diary diary);
+  List<MyFile> findByUserAndDiary(User user, Diary diary);
 
 }
