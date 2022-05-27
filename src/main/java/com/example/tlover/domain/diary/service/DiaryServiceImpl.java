@@ -338,18 +338,32 @@ public class DiaryServiceImpl implements DiaryService{
         List<String> diaryRegionNames;
         List<String> diaryThemaNames;
 
+//        if(diaries.isEmpty()) return null;
+
         for (Diary diary : diaries) {
             diaryRegionNames = new ArrayList<>();
             diaryThemaNames = new ArrayList<>();
             diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
             diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
-            myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionNames, diaryThemaNames));
+            String diaryRegionName = setListToString(diaryRegionNames);
+            myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionName, diaryThemaNames));
 
         }
-        if (myDiaryListResponses.isEmpty()) {
-            throw new NotFoundMyDiaryException();
-        }
+//        if (myDiaryListResponses.isEmpty()) {
+//            throw new NotFoundMyDiaryException();
+//        }
         return myDiaryListResponses;
+    }
+
+    private String setListToString(List<String> list) {
+        String name = "";
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                name += list.get(i) + ", ";
+            }
+            name = name.substring(0, name.length() - 2);
+        }
+        return name;
     }
 
     @Override
@@ -357,17 +371,22 @@ public class DiaryServiceImpl implements DiaryService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<AuthorityDiary> acceptDiaries = authorityDiaryRepository.findByAuthorityDiaryStatusAndUser("ACCEPT", user);
         List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
-        List<String> diaryRegionNames = new ArrayList<>();
-        List<String> diaryThemaNames = new ArrayList<>();
+        List<String> diaryRegionNames;
+        List<String> diaryThemaNames;
+
+//        if(acceptDiaries.isEmpty()) return null;
 
         for (AuthorityDiary acceptDiary : acceptDiaries) {
+            diaryRegionNames = new ArrayList<>();
+            diaryThemaNames = new ArrayList<>();
             diaryRegionNames = getDiaryRegions(diaryRegionNames, acceptDiary.getDiary());
             diaryThemaNames = getDiaryThemas(diaryThemaNames, acceptDiary.getDiary());
-            myDiaryListResponses.add(MyDiaryListResponse.from(acceptDiary.getDiary(), diaryRegionNames, diaryThemaNames));
+            String diaryRegionName = setListToString(diaryRegionNames);
+            myDiaryListResponses.add(MyDiaryListResponse.from(acceptDiary.getDiary(), diaryRegionName, diaryThemaNames));
         }
-        if (myDiaryListResponses.isEmpty()) {
-            throw new NotFoundAcceptDiaryException();
-        }
+//        if (myDiaryListResponses.isEmpty()) {
+//            throw new NotFoundAcceptDiaryException();
+//        }
         return myDiaryListResponses;
     }
 
