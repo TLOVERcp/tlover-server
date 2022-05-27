@@ -14,16 +14,20 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/diaries")
 @RequiredArgsConstructor
@@ -50,6 +54,33 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리의 변환된 상태를 반환" , diaryService.updateDiaryEditing(loginId, diaryId)));
     }
+
+    @ApiOperation(value = "다이어리 등록 안드로이드용 테스트", notes = "다이어리 등록 안드로이드용 테스트")
+    @PostMapping(value = "/create-diary-test" , consumes = {
+                    MediaType.MULTIPART_FORM_DATA_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            })
+
+    public void profileUpdate(
+            @RequestPart(value = "id", required = false) String id,
+            @RequestPart(value = "userId", required = false) String userId,
+            @RequestPart(value = "name", required = false) String name,
+            @RequestPart(value = "message",required = false) String message,
+            @RequestPart(value = "profileImage",required = false) MultipartFile profileImage,
+            @RequestPart(value = "backImage", required = false) MultipartFile backImage
+    ) {
+
+        log.info("id = {}" , id);
+        log.info("userId = {}" , userId);
+        log.info("name = {}" , name);
+        log.info("message = {}" , message);
+        log.info("profileImage.name = {}" , profileImage.getOriginalFilename());
+        log.info("backImage.name = {}" , backImage.getOriginalFilename());
+
+    }
+
+
+
 
 
     /**
@@ -95,7 +126,6 @@ public class DiaryApiController {
         diaryService.completeDiary(loginId , planId , diaryId);
         return null;
     }
-
 
     /** DiaryLikedRanking
      * 좋아요순으로 다이어리 보여주기
