@@ -335,13 +335,16 @@ public class DiaryServiceImpl implements DiaryService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<Diary> diaries = diaryRepository.findByUser(user).orElseThrow(NotFoundDiaryException::new);
         List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
-        List<String> diaryRegionNames = new ArrayList<>();
-        List<String> diaryThemaNames = new ArrayList<>();
+        List<String> diaryRegionNames;
+        List<String> diaryThemaNames;
 
         for (Diary diary : diaries) {
+            diaryRegionNames = new ArrayList<>();
+            diaryThemaNames = new ArrayList<>();
             diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
             diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
             myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionNames, diaryThemaNames));
+
         }
         if (myDiaryListResponses.isEmpty()) {
             throw new NotFoundMyDiaryException();
@@ -413,6 +416,7 @@ public class DiaryServiceImpl implements DiaryService{
         for (DiaryThema diaryThema : diaryThemas) {
             String diaryThemaName = diaryThema.getThema().getThemaName();
             diaryThemaNames.add(diaryThemaName);
+            System.out.println(diaryThemaName);
         }
         return diaryThemaNames;
     }
