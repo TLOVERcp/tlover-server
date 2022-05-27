@@ -79,10 +79,6 @@ public class DiaryApiController {
 
     }
 
-
-
-
-
     /**
      * 다이어리 작성 api
      * swagger url => [post]  api/v1/plans/create-diary
@@ -97,10 +93,12 @@ public class DiaryApiController {
                     response = NotFoundDiaryException.class)
     })
     @PostMapping(value = "/create-diary")
-    public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
+    public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid @ModelAttribute CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
+
+
 
     /**
      * 다이어리 작성폼 api
