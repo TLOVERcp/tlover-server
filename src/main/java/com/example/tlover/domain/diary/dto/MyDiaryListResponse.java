@@ -19,18 +19,21 @@ import java.util.List;
 public class MyDiaryListResponse {
 
     private Long diaryId;
+    private Long planId;
     private String diaryTitle;
     private String diaryStatus;
     private String diaryContext;
     private String diaryStartDate;
     private String diaryWriteDate;
     private String diaryEndDate;
-    private List<String> regionNames;
+    private String regionNames;
     private List<String> themaNames;
 
-    public static MyDiaryListResponse from(Diary diary, List<String> diaryRegionNames, List<String> diaryThemaNames){
+    public static MyDiaryListResponse from(Diary diary, String diaryRegionNames, List<String> diaryThemaNames){
+
         return MyDiaryListResponse.builder()
                 .diaryId(diary.getDiaryId())
+                .planId(diary.getPlan().getPlanId())
                 .diaryTitle(diary.getDiaryTitle())
                 .diaryStatus(diary.getDiaryStatus())
 //                .diaryContext(diary.getDiaryContext())
