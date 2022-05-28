@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -61,7 +62,7 @@ public class DiaryApiController {
                     MediaType.APPLICATION_JSON_VALUE
             })
 
-    public void profileUpdate(
+    public ResponseEntity<ResponseDto<TestDiaryEntity>> profileUpdate(
             @RequestPart(value = "id", required = false) String id,
             @RequestPart(value = "userId", required = false) String userId,
             @RequestPart(value = "name", required = false) String name,
@@ -76,7 +77,7 @@ public class DiaryApiController {
         log.info("message = {}" , message);
         log.info("profileImage.name = {}" , profileImage.getOriginalFilename());
         log.info("backImage.name = {}" , backImage.getOriginalFilename());
-
+        return ResponseEntity.ok(ResponseDto.create("다이어리 테스트 2" , TestDiaryEntity.from(id , profileImage.getOriginalFilename())));
     }
 
     /**
@@ -97,6 +98,17 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
+
+    @ApiOperation(value = "다이어리 좋아요 여부 조회" , notes = "해당 다이어리의 좋아요 여부를 조회합니다.")
+    @PostMapping("/liked/whether")
+    public ResponseEntity<ResponseDto<DiaryLikedOrNotResponse>> DiaryLikedOrNotResponse(@Valid @RequestBody DiaryLikedOrNotRequest diaryLikedOrNotRequest) {
+        String loginId = jwtService.getLoginId();
+        return ResponseEntity.ok(ResponseDto.create("다이어리 좋아요 여부 조회가 완료되었습니다.", diaryService.getDiaryLikedOrNot(diaryLikedOrNotRequest, loginId)));
+    }
+
+
+
+
 
 
 

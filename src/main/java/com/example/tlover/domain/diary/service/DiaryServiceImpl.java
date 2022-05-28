@@ -294,13 +294,24 @@ public class DiaryServiceImpl implements DiaryService{
         return PaginationDto.of(page, data);
     }
 
+    @Override
+    public DiaryLikedOrNotResponse getDiaryLikedOrNot(DiaryLikedOrNotRequest diaryLikedOrNotRequest, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryLikedOrNotRequest.getDiaryId()).orElseThrow(NotFoundDiaryException::new);
+        if(diaryLikedRepository.findByUserAndDiaryAndIsLiked(user,diary,true).isEmpty()) {
+            return DiaryLikedOrNotResponse.from(false);
+        } else {
+            return DiaryLikedOrNotResponse.from(true);
+        }
+
+    }
+
 
     @Override
     public DiaryLikedViewsResponse getDiaryViews(Long diaryId) {
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         Long dlv = diaryLikedRepository.countByDiaryAndIsLiked(diary, true).get();
         return DiaryLikedViewsResponse.from(diary.getDiaryId() , dlv);
-
     }
 
 
