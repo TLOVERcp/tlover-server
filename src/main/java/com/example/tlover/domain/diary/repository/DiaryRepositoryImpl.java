@@ -1,7 +1,12 @@
 package com.example.tlover.domain.diary.repository;
 
 import com.example.tlover.domain.diary.dto.DiaryInquiryByLikedRankingResponse;
+import com.example.tlover.domain.diary.dto.DiaryMyScrapOrLikedResponse;
 import com.example.tlover.domain.diary.dto.QDiaryInquiryByLikedRankingResponse;
+import com.example.tlover.domain.diary.dto.QDiaryMyScrapOrLikedResponse;
+import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.user.entity.User;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +19,7 @@ import java.util.List;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
 import static com.example.tlover.domain.diray_liked.entity.QDiaryLiked.*;
+import static com.example.tlover.domain.scrap.entity.QScrap.scrap;
 
 
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
@@ -63,8 +69,111 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
 
+    @Override
+    public Page<DiaryMyScrapOrLikedResponse> findAllDiariesByMyLiked(Pageable pageable, User user) {
+        List<DiaryMyScrapOrLikedResponse> content = queryFactory.select(new QDiaryMyScrapOrLikedResponse(
+                        diary.diaryId,
+                        diary.diaryTitle,
+                        diary.diaryView,
+                        diary.diaryStartDate,
+                        diary.diaryEndDate,
+                        diary.diaryPlanDays,
+                        diary.diaryRegionDetail,
+                        diary.totalCost
+                ))
+                .from(diary)
+                .leftJoin(diaryLiked)
+                .on(diary.diaryId.eq(diaryLiked.diary.diaryId))
+                .where(userEqByLiked(user), isLikedCheck())
+                .orderBy(diary.diaryId.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        NumberExpression<Long> likecount = diaryLiked.isLiked.
+        JPAQuery<DiaryMyScrapOrLikedResponse> countQuery = queryFactory.select(new QDiaryMyScrapOrLikedResponse(
+                        diary.diaryId,
+                        diary.diaryTitle,
+                        diary.diaryView,
+                        diary.diaryStartDate,
+                        diary.diaryEndDate,
+                        diary.diaryPlanDays,
+                        diary.diaryRegionDetail,
+                        diary.totalCost
+                ))
+                .from(diary)
+                .leftJoin(diaryLiked)
+                .on(diary.diaryId.eq(diaryLiked.diary.diaryId))
+                .where(userEqByLiked(user), isLikedCheck())
+                .orderBy(diary.diaryId.desc())
+                .offset(pageable.getOffset());
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
+    }
+
+    @Override
+    public Page<DiaryMyScrapOrLikedResponse> findAllDiariesByMyScrap(Pageable pageable, User user) {
+        List<DiaryMyScrapOrLikedResponse> content = queryFactory.select(new QDiaryMyScrapOrLikedResponse(
+                        diary.diaryId,
+                        diary.diaryTitle,
+                        diary.diaryView,
+                        diary.diaryStartDate,
+                        diary.diaryEndDate,
+                        diary.diaryPlanDays,
+                        diary.diaryRegionDetail,
+                        diary.totalCost
+                ))
+                .from(diary)
+                .leftJoin(scrap)
+                .on(diary.diaryId.eq(scrap.diary.diaryId))
+                .where(userEqByScrap(user), isDeletedCheckByScrap())
+                .orderBy(diary.diaryId.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<DiaryMyScrapOrLikedResponse> countQuery = queryFactory.select(new QDiaryMyScrapOrLikedResponse(
+                        diary.diaryId,
+                        diary.diaryTitle,
+                        diary.diaryView,
+                        diary.diaryStartDate,
+                        diary.diaryEndDate,
+                        diary.diaryPlanDays,
+                        diary.diaryRegionDetail,
+                        diary.totalCost
+                ))
+                .from(diary)
+                .leftJoin(scrap)
+                .on(diary.diaryId.eq(diaryLiked.diary.diaryId))
+                .where(userEqByScrap(user), isDeletedCheckByScrap())
+                .orderBy(diary.diaryId.desc())
+                .offset(pageable.getOffset());
+
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
+    }
+
+
+
+    NumberExpression<Long> likecount = diaryLiked.isLiked.
             when(true).then(new Long(1)).
             otherwise(new Long(0));
+
+    private BooleanExpression userEqByLiked(User user) {
+            return user != null ? diaryLiked.user.eq(user) : null;
+    }
+
+    private BooleanExpression userEqByScrap(User user) {
+        return user != null ? scrap.user.eq(user) : null;
+    }
+
+    private BooleanExpression isLikedCheck() {
+        return diaryLiked.isLiked.eq(true);
+    }
+
+    private BooleanExpression isDeletedCheckByScrap() {
+        return scrap.isDeleted.eq(false);
+    }
+
+    private BooleanExpression diaryEq(Diary diary) {return diary != null ? diaryLiked.diary.eq(diary) : null;}
+
 }

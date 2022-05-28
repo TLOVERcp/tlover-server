@@ -1,6 +1,7 @@
 package com.example.tlover.domain.diary.dto;
 
 import com.example.tlover.domain.diary.entity.Diary;
+import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -30,6 +32,8 @@ public class DiaryInquiryResponse {
     private List<String> myFileKeys;
     private Integer diaryConnectionCount;
     private String regionDetail;
+    private int totalCost;
+    private List<String> diaryThema;
 
   /*  public static DiaryInquiryResponse from(Diary diary){
         return DiaryInquiryResponse.builder()
@@ -45,7 +49,9 @@ public class DiaryInquiryResponse {
                 .build();
     }*/
 
-    public static DiaryInquiryResponse from(Diary diary, Integer diaryConnectionCount){
+    public static DiaryInquiryResponse from(List<DiaryThema> diaryThemas, Diary diary, Integer diaryConnectionCount){
+        List<String> diaryThema = new ArrayList<>();
+        for (DiaryThema dt : diaryThemas) diaryThema.add(dt.getThema().getThemaName());
         List<MyFile> myFiles = diary.getMyFiles();
         List<String> myFileKeys = new ArrayList<>();
         for (MyFile myFile : myFiles) myFileKeys.add(myFile.getFileKey());
@@ -61,6 +67,8 @@ public class DiaryInquiryResponse {
                 .myFileKeys(myFileKeys)
                 .diaryConnectionCount(diaryConnectionCount)
                 .regionDetail(diary.getDiaryRegionDetail())
+                .totalCost(diary.getTotalCost())
+                .diaryThema(diaryThema)
                 .build();
     }
 

@@ -2,10 +2,7 @@ package com.example.tlover.domain.thema.entity;
 
 import com.example.tlover.domain.diary_thema.entity.DiaryThema;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +15,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Thema {
 
     @Id
