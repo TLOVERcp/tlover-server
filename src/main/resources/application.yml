@@ -1,10 +1,10 @@
 spring:
   batch.job.enabled: false
   datasource:
-    url: jdbc:mysql://tloverdb.cjgvxgjzvddh.ap-northeast-2.rds.amazonaws.com:3306/tloverdb?
+    url: ENC(a154ezDlmtvWj5cbrHoFCw9ksWhkShaPVOnYtqjWuXSCKGYZAHJUcbtbFydjuD6eyBxC/7e+RHYseU8dC6KxFNhfSesf+XL2XdlpwHkmMV1uVgOotwsrTt7p5R3mWqF8)
     autoReconnect: true
-    username: tlover
-    password: tlover123!!
+    username: ENC(4KeuIyPLB80jTL/mCoJBCQ==)
+    password: ENC(3dGrOz4dXgyVWATbLVg9yn/teRzhK0UP)
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     initialize: true
@@ -43,8 +43,8 @@ spring:
             user-info_uri: https://oauth2.googleapis.com/tokeninfo
 
   jwt:
-    access-key: xlavmfhwprxmzlddhkdHGFDHDFWkGDSHSdsjaHFGDHDnglamfekhgsdfeDFHGEG
-    refresh-key: flvmfptlxhgDFSGHSDrzmsanjffhgkfHDFGwlahfmrpTekhDFGERRGVFDSG
+    access-key: ENC(aGUUYVX5HHg9e3lm4xBL7UWMTOvFGxAsF3Xrsl5YDW4uG7ST/CLTopzqyhb8Gv/1YxutThzwhoFqcmcrVbxqoYKzzFS+eBx2)
+    refresh-key: ENC(yS9w2uecmIDRtRKRsWYIatay466bDYo27MOEA0Y3TRMEZwUkl4xvnr5CK+fHcJih/SP887Wpj67/ALYaR9lUzggX01vo0c7y)
 
   flyway:
     baseline-on-migrate: true
@@ -63,9 +63,13 @@ cloud:
       auto: false
 
 sms:
-  service-id: ncp:sms:kr:280044915694:infra-sms
-  access-key: JUARhMRAzpFrstZqd775
-  secret-key: lgiOpHwGvTW5HjcIaCKkhATBHFB3qeRuWzaBOrZZ
+  service-id: ENC(ZzQ6CF4ckgq8nZo2BwnTevjGVTyPJrW38/zeiqBGjRudX/L4n3gVMvv/bjI5hwvO)
+  access-key: ENC(snHOGOaiCWpPMrZz+Rc2/sqqdgJv1Q/EkWXRB0nbgX4=)
+  secret-key: ENC(63Ao/h3ekTYWL6Yjhz924y7iRP/JIXJI+iZwPSnkPRsx38fUlbICbS4PDWCYr6IJCQNNxrOH8uc=)
 
 weather:
-  service-key: TafHkD6CilGs36dV%2B9czinbrrqD1AymCTtNo7U%2B9PpGxErWg76qqU7Iq0cRSqpi7lEbvLT872%2B19d6p0%2B7qE5g%3D%3D
+  service-key: ENC(h5hL1adB8wB31Edrlf70eK9lDBAYymGQQ0B9mBBk524xS1f5+/DPe8TK665LNRn7bwkc0uLrj/osQQNzfCaU793QFEI/Zf0QQFCOIeADkeaKqYlUYNsawpRbM+tuJrCB031OVAkg+XVn+HI08/ml4Q==)
+
+jasypt:
+  encryptor:
+    bean: jasyptEncyptor
