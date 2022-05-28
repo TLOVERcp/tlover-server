@@ -311,7 +311,7 @@ public class DiaryServiceImpl implements DiaryService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
 
-//        diaryRepository.findByUserAnd
+
 
 
     }
