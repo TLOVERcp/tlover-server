@@ -12,8 +12,8 @@ public interface DiaryService {
     CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId);
 
     DeleteDiaryResponse deleteDiary(Long diaryId, String loginId);
-    
-    
+
+
 
     Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId);
 
@@ -45,4 +45,6 @@ public interface DiaryService {
     PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyLiked(Pageable pageable , Long userId);
 
     PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyScrap(Pageable pageable, Long userId);
+
+    DiaryLikedOrNotResponse getDiaryLikedOrNot(DiaryLikedOrNotRequest diaryLikedOrNotRequest, String loginId);
 }
