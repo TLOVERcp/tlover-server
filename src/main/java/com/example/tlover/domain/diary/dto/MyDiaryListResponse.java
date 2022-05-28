@@ -3,12 +3,14 @@ package com.example.tlover.domain.diary.dto;
 
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary_region.entity.DiaryRegion;
+import com.example.tlover.domain.myfile.entity.MyFile;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,8 +30,13 @@ public class MyDiaryListResponse {
     private String diaryEndDate;
     private String regionNames;
     private List<String> themaNames;
+    private List<String> myFileKeys;
 
     public static MyDiaryListResponse from(Diary diary, String diaryRegionNames, List<String> diaryThemaNames){
+        List<MyFile> myFiles = diary.getMyFiles();
+        List<String> myFileKeys = new ArrayList<>();
+        for (MyFile myFile : myFiles) myFileKeys.add(myFile.getFileKey());
+
 
         return MyDiaryListResponse.builder()
                 .diaryId(diary.getDiaryId())
@@ -42,6 +49,7 @@ public class MyDiaryListResponse {
                 .diaryEndDate(diary.getDiaryEndDate())
                 .regionNames(diaryRegionNames)
                 .themaNames(diaryThemaNames)
+                .myFileKeys(myFileKeys)
                 .build();
     }
 }
