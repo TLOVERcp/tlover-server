@@ -14,6 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,7 +55,6 @@ public class CreateDiaryRequest {
     @Min(value = 0 , message = "1이상의 수를 입력해주세요.")
     @ApiModelProperty(notes = "여행의 총경비를 입력해주세요.")
     private int totalCost;
-
 
     @NotNull
     @ApiModelProperty(notes = "계획의 Id를 입력해주세요.")

@@ -84,7 +84,7 @@ public class ScrapController {
             @ApiResponse(code = 404 , message = "[D0004] 해당 diaryId로 Diary를 찾을 수 없습니다.", response = NotFoundDiaryException.class),
             @ApiResponse(code = 400 , message = "[U0002] 해당 아이디를 찾을 수 없습니다.", response = NotFoundUserException.class),
     })
-    @GetMapping("/whether")
+    @PostMapping("/whether")
     public ResponseEntity<ResponseDto<ScrapOrNotResponse>> getScrapOrNot(@Valid @RequestBody ScrapOrNotRequest scrapOrNotRequest, HttpServletRequest request) {
         return ResponseEntity.ok(ResponseDto.create(EScrapResponseMessage.eScrapOrNotMessage.getMessage()
                     , this.scrapService.getScrapOrNot(scrapOrNotRequest, (Long)request.getAttribute(ScrapConstants.EHttpServletRequestAttribute.eUserId.getAttribute()))));

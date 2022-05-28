@@ -1,6 +1,7 @@
 package com.example.tlover.domain.diary_connection.controller;
 
 import com.example.tlover.domain.diary.dto.DiaryInquiryResponse;
+import com.example.tlover.domain.diary.exception.NoSuchElementException;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EHttpServletRequestAttribute;
 import com.example.tlover.domain.diary_connection.constant.DiaryConnectionConstants.EDiaryConnectionResponseMessage;
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +38,9 @@ public class DiaryConnectionApiController {
     @ApiOperation(value = "다이어리 상세 조회.", notes = "다이어리를 상세히 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 404 , message = "해당 diaryId로 Diary를 찾을 수 없습니다.(D0004)" , response = NotFoundDiaryException.class),
-            @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002)", response = NotFoundUserException.class),    })
-    @PostMapping("/{diaryId}")
+            @ApiResponse(code = 404 , message = "인자를 찾을 수 없습니다.(D0001)" , response = NoSuchElementException.class),
+            @ApiResponse(code = 400, message = "해당 아이디를 찾을 수 없습니다.(U0002)", response = NotFoundUserException.class)})
+    @GetMapping("/{diaryId}")
     public ResponseEntity<ResponseDto<DiaryInquiryResponse>> getDiaryDetails(@PathVariable Long diaryId, HttpServletRequest httpServletRequest) {
         Long userId = (Long) httpServletRequest.getAttribute(EHttpServletRequestAttribute.eUserId.getAttribute());
         historyService.createHistory(diaryId, userId);

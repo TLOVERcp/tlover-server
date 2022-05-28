@@ -88,7 +88,6 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom{
                 .leftJoin(diary.myFiles, myFile)
                 .orderBy(scrapCount.sum().desc())
                 .groupBy(diary.diaryId);
-
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
     NumberExpression<Long> scrapCount = scrap.isDeleted.
