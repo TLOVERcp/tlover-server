@@ -354,11 +354,12 @@ public class DiaryServiceImpl implements DiaryService{
         for (Diary diary : diaries) {
             diaryRegionNames = new ArrayList<>();
             diaryThemaNames = new ArrayList<>();
-            diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
-            diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
-            String diaryRegionName = setListToString(diaryRegionNames);
-            myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionName, diaryThemaNames));
-
+            if (!diary.getDiaryStatus().equals("DELETE")) {
+                diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
+                diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
+                String diaryRegionName = setListToString(diaryRegionNames);
+                myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionName, diaryThemaNames));
+            }
         }
 //        if (myDiaryListResponses.isEmpty()) {
 //            throw new NotFoundMyDiaryException();
@@ -446,7 +447,6 @@ public class DiaryServiceImpl implements DiaryService{
         for (DiaryThema diaryThema : diaryThemas) {
             String diaryThemaName = diaryThema.getThema().getThemaName();
             diaryThemaNames.add(diaryThemaName);
-            System.out.println(diaryThemaName);
         }
         return diaryThemaNames;
     }
