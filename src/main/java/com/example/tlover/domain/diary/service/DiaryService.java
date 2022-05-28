@@ -48,5 +48,5 @@ public interface DiaryService {
 
     DiaryLikedOrNotResponse getDiaryLikedOrNot(DiaryLikedOrNotRequest diaryLikedOrNotRequest, String loginId);
 
-    void getPlanAsDiary(String loginId, Long diaryId);
+    DiaryPlanResponse getPlanAsDiary(String loginId, Long diaryId);
 }
