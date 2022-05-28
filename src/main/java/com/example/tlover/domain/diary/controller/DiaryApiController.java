@@ -99,6 +99,16 @@ public class DiaryApiController {
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }
 
+    @ApiOperation(value = "다이어리와 연관된 계획조회", notes = "다이어리와 연관된 계획을 조회합니다")
+    @PostMapping(value = "/diary-plan")
+    public String diaryPlanAssociation() {
+        String loginId = jwtService.getLoginId();
+
+
+
+        return null;
+    }
+
     @ApiOperation(value = "다이어리 좋아요 여부 조회" , notes = "해당 다이어리의 좋아요 여부를 조회합니다.")
     @PostMapping("/liked/whether")
     public ResponseEntity<ResponseDto<DiaryLikedOrNotResponse>> DiaryLikedOrNotResponse(@Valid @RequestBody DiaryLikedOrNotRequest diaryLikedOrNotRequest) {
