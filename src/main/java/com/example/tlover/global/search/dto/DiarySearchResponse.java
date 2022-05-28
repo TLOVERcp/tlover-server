@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class DiarySearchResponse {
     private String diaryStartDate;
     private String diaryWriteDate;
     private String diaryEndDate;
+
+    @Value("${default-image}")
     private String diaryImg;
     private int totalCost;
     private boolean isScraped;
