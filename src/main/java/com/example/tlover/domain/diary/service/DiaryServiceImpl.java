@@ -335,9 +335,8 @@ public class DiaryServiceImpl implements DiaryService{
 
         for (int i = 0; i < diaryThemas.size(); i++) {
             Diary diary = diaryThemas.get(i).getDiary();
-            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
-            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
-            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
+            if(!diary.getDiaryStatus().equals("DELETE"))
+                diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
         }
 
         Collections.shuffle(diaryPreferenceResponses);
