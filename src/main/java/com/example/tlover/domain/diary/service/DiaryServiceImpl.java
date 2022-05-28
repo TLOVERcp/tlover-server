@@ -306,14 +306,12 @@ public class DiaryServiceImpl implements DiaryService{
 
     }
 
-
     @Override
     public DiaryLikedViewsResponse getDiaryViews(Long diaryId) {
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         Long dlv = diaryLikedRepository.countByDiaryAndIsLiked(diary, true).get();
         return DiaryLikedViewsResponse.from(diary.getDiaryId() , dlv);
     }
-
 
 
     @Override
