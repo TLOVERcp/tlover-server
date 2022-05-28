@@ -109,12 +109,11 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     @Transactional
     public CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
-
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
-
         Long diaryId =0L;
+        boolean result = false;
         if(cdr.isEmpty()) {
             String regionDetail = toString(createDiaryRequest.getRegionName());
             Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,user, plan , getPlanDay(plan.getPlanStartDate(), plan.getPlanEndDate())));
@@ -149,9 +148,9 @@ public class DiaryServiceImpl implements DiaryService{
                 myFileWhenNull.setDiary(diary);
                 myFileWhenNull.setUser(user);
             }
-
+            result = true;
         }
-        return CreateDiaryResponse.from(diaryId , true);
+        return CreateDiaryResponse.from(diaryId , result);
     }
 
     private int getPlanDay(String psd , String ped) {
@@ -307,13 +306,10 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public void getPlanAsDiary(String loginId, Long diaryId) {
+    public DiaryPlanResponse getPlanAsDiary(String loginId, Long diaryId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
-
-
-
-
+        return DiaryPlanResponse.from(diary.getPlan().getPlanId());
     }
 
     @Override
