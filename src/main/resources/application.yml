@@ -55,8 +55,8 @@ cloud:
     s3:
       bucket: tlover-bucket
     credentials:
-      access-key: AKIATHDBPLGZL6TVERDA
-      secret-key: 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
+      access-key: ENC(m5eNUvSvUN8WhyD25uQDolSZK2lfapJ5YQFnpXloGic=)
+      secret-key: ENC(uvO40V8/34jWbuuxkYnInEW4EJeftBxeSj0o3/BlFAqKAEWoDBOjqXz8Kone20c9LFKjk1Lrwkg=)
     region:
       static: ap-northeast-2
     stack:
@@ -73,4 +73,3 @@ weather:
 jasypt:
   encryptor:
     bean: jasyptEncyptor
-    

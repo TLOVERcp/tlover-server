@@ -307,6 +307,16 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
+    public void getPlanAsDiary(String loginId, Long diaryId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+
+//        diaryRepository.findByUserAnd
+
+
+    }
+
+    @Override
     public DiaryLikedViewsResponse getDiaryViews(Long diaryId) {
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         Long dlv = diaryLikedRepository.countByDiaryAndIsLiked(diary, true).get();

@@ -47,4 +47,6 @@ public interface DiaryService {
     PaginationDto<List<DiaryMyScrapOrLikedResponse>> getDiaryMyScrap(Pageable pageable, Long userId);
 
     DiaryLikedOrNotResponse getDiaryLikedOrNot(DiaryLikedOrNotRequest diaryLikedOrNotRequest, String loginId);
+
+    void getPlanAsDiary(String loginId, Long diaryId);
 }

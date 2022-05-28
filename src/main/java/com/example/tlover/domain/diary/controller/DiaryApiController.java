@@ -100,10 +100,10 @@ public class DiaryApiController {
     }
 
     @ApiOperation(value = "다이어리와 연관된 계획조회", notes = "다이어리와 연관된 계획을 조회합니다")
-    @PostMapping(value = "/diary-plan")
-    public String diaryPlanAssociation() {
+    @PostMapping(value = "/diary-plan/{diaryId}")
+    public String diaryPlanAssociation(@PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
-
+        diaryService.getPlanAsDiary(loginId , diaryId);
 
 
         return null;
