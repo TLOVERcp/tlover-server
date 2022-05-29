@@ -135,6 +135,7 @@ public class DiaryServiceImpl implements DiaryService{
             }
 
             if (createDiaryRequest.getDiaryImages() != null) {
+                System.out.println("DiaryServiceImpl.createDiary is not null");
                 for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
                     MyFile myFile = myFileService.saveImage(diaryImgFileName);
                     myFile.setDiary(diary);
@@ -143,6 +144,7 @@ public class DiaryServiceImpl implements DiaryService{
                 String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
                 diary.setDiaryView(fileKey);
             } else{
+                System.out.println("DiaryServiceImpl.createDiary");
                 diary.setDiaryView("4cebbe25-faa1-4490-98e1-6d22f2a54f90");
                 MyFile myFileWhenNull = myFileRepository.save(MyFile.toEntity("4cebbe25-faa1-4490-98e1-6d22f2a54f90"));
                 myFileWhenNull.setDiary(diary);
