@@ -17,7 +17,7 @@ import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
 import com.example.tlover.domain.diray_liked.repository.DiaryLikedRepository;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.exception.NotFoundMyFileException;
-import com.example.tlover.domain.myfile.repository.MyFileRepository;
+import com.example.tlover.domain.myfile.service.repository.MyFileRepository;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
