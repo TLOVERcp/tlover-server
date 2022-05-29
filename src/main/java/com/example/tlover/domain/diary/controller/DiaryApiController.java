@@ -39,7 +39,6 @@ public class DiaryApiController {
     private final DiaryService diaryService;
     private final JwtService jwtService;
 
-
     /**
      * 다이어리 수정중으로 상태 변환 api
      * @param diaryId
@@ -61,7 +60,6 @@ public class DiaryApiController {
                     MediaType.MULTIPART_FORM_DATA_VALUE,
                     MediaType.APPLICATION_JSON_VALUE
             })
-
     public ResponseEntity<ResponseDto<TestDiaryEntity>> profileUpdate(
             @RequestPart(value = "id", required = false) String id,
             @RequestPart(value = "userId", required = false) String userId,
@@ -95,8 +93,10 @@ public class DiaryApiController {
     })
     @PostMapping(value = "/create-diary")
     public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid @ModelAttribute CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
+        log.info("createDiaryRequest = {}" , createDiaryRequest.toString());
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
+
     }
 
     @ApiOperation(value = "다이어리와 연관된 계획조회", notes = "다이어리와 연관된 계획을 조회합니다")
