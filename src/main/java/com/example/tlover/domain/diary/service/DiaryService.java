@@ -13,8 +13,6 @@ public interface DiaryService {
 
     DeleteDiaryResponse deleteDiary(Long diaryId, String loginId);
 
-
-
     Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId);
 
     Diary getDiaryByDiaryId(Long diaryId);
