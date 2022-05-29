@@ -66,7 +66,7 @@ public class DiaryApiController {
                     response = NotFoundDiaryException.class)
     })
     @PostMapping(value = "/create-diary")
-    public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
+    public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid @RequestBody CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
     }

@@ -28,11 +28,7 @@ public class Reply {
     private LocalDateTime replyTime;
 
     private String replyState;
-
-    private boolean isDeleted;
-    // flyway 테스트용
-    //private int testColumn;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
     private User user;
