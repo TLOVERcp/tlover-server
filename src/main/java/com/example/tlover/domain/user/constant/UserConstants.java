@@ -7,6 +7,16 @@ public class UserConstants {
 
     @Getter
     @AllArgsConstructor
+    public enum eUser {
+
+        eACTIVE("active"),
+        eDELETE("DELETED");
+
+        private final String value;
+    }
+
+    @Getter
+    @AllArgsConstructor
     public enum EOAuth2UserServiceImpl {
 
         eBearer("Bearer "),
