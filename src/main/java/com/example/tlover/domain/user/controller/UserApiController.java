@@ -89,7 +89,7 @@ public class UserApiController {
         for (UserRegionResponse response : regions) {
             userRegionName.add(response.getRegionName());
         }
-
+        ratingService.updateRating(user.getUserLoginId());
         RatingGetResponse response = ratingService.getRating(user.getUserLoginId());
 
         return ResponseEntity.ok(LoginResponse.builder()
