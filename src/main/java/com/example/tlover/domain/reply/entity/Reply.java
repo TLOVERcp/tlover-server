@@ -28,8 +28,6 @@ public class Reply {
     private LocalDateTime replyTime;
 
     private String replyState;
-    // flyway 테스트용
-    //private int testColumn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
