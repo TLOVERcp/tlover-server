@@ -7,6 +7,7 @@ public class HistoryConstants {
     @Getter
     @RequiredArgsConstructor
     public enum EHistory {
+        eActive("ACTIVE"),
         eComplete("COMPLETE"),
         eDelete("DELETE");
 
