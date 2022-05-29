@@ -44,11 +44,11 @@ public class CreateDiaryRequest {
 
     @NotNull(message = "여행 지역을 입력해주세요.")
     @ApiModelProperty(notes = "여행 지역을  입력해 주세요.")
-    private String[] regionName;
+    private List<String> regionName;
 
     @NotNull
     @ApiModelProperty(notes = "여행 테마를 입력해주세요.")
-    private String[] themaName;
+    private List<String> themaName;
 
     @Min(value = 0 , message = "1이상의 수를 입력해주세요.")
     @ApiModelProperty(notes = "여행의 총경비를 입력해주세요.")
