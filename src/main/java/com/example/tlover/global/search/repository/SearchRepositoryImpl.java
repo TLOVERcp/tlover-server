@@ -212,8 +212,8 @@ public class SearchRepositoryImpl implements SearchRepositoryCustom {
                 .limit(1)
                 .fetch();
 
-        if (content.get(0) != null) return content.get(0);
-        else return "";
+        if (!content.isEmpty()) return content.get(0);
+        else return null;
 
     }
 
