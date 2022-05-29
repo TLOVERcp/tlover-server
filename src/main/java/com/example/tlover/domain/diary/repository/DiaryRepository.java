@@ -42,7 +42,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> , DiaryRepos
             " from diary,diary_region,weather" +
             " where diary.diary_id = diary_region.diary_diary_id" +
             "  and diary_region.region_region_id = weather.region_region_id" +
-            "  and weather.weather_tci_grade='매우좋음' and diary.diary_status != 'DELETE'" +
+            "  and weather.weather_tci_grade in ('매우좋음','좋음') and diary.diary_status != 'DELETE'" +
             " group by diary.diary_id", nativeQuery = true)
     List<Diary> weatherDiary();
 
