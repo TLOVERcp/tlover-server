@@ -39,7 +39,7 @@ public class HistoryServiceImpl implements HistoryService{
         User user = userRepository.findByUserId(userId).get();
         Diary diary = diaryRepository.findByDiaryId(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
-        if (diary.getDiaryStatus().equals(EHistory.eComplete.getValue()) || diary.getDiaryStatus().equals(EHistory.eActive.getValue())) {
+        if (diary.getDiaryStatus().equals(EHistory.eComplete.getValue()) ||diary.getDiaryStatus().equals(EHistory.eActive.getValue())) {
             Optional<History> history = historyRepository.findByDiaryAndUser(diary, user);
             if (history.isEmpty()) {
                 historyRepository.save(History.toEntity(user, diary, LocalDateTime.now()));

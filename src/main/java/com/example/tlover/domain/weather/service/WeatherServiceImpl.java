@@ -102,9 +102,10 @@ public class WeatherServiceImpl implements WeatherService{
         conn.disconnect();
         String result= sb.toString();
 
+
         //Json -> List 매핑
         JsonParser parser = new JsonParser();
-        JsonObject obj = (JsonObject)parser.parse(result.toString());
+        JsonObject obj = (JsonObject) parser.parse(result.toString());
         Gson gson = new Gson();
         Map map = new HashMap();
         map = (Map)gson.fromJson(obj, map.getClass());
