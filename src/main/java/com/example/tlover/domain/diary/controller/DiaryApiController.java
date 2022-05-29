@@ -266,7 +266,7 @@ public class DiaryApiController {
 
     /**
      * 홈 화면 여행 취향 다이어리 조회
-     * @return
+     * @return ResponseEntity<ResponseDto<List<DiaryPreferenceResponse>>>
      * @Author 한규범
      */
     @ApiOperation(value = "홈 화면 여행 취향 다이어리 조회", notes = "나와 여행 취향이 닮은 사람들에 대한 다이어리를 조회합니다.")
