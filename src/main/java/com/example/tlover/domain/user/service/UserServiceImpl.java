@@ -3,6 +3,7 @@ package com.example.tlover.domain.user.service;
 
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.service.MyFileService;
+import com.example.tlover.domain.user.constant.UserConstants;
 import com.example.tlover.domain.user.dto.*;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
@@ -55,8 +56,7 @@ public class UserServiceImpl implements UserService{
         this.userNicknameDuplicateCheck(user.getUserNickName());
         this.phoneNumDuplicateCheck(user.getUserPhoneNum());
 
-        user.setUserState("active");
-        user.setUserEmail("");
+        user.setUserState(UserConstants.eUser.eACTIVE.getValue());
         userRepository.save(user);
 
         return userRepository.findByUserLoginId(user.getUserLoginId()).get();
@@ -208,14 +208,10 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public User updateUserProfile(String loginId, UserProfileRequest profileRequest, MultipartFile file) {
         User user = this.getUserProfile(loginId);
-        if (profileRequest.getUserEmail() ==  null) profileRequest.setUserEmail("");
 
         if (!user.getUserNickName().equals(profileRequest.getUserNickName()))
             this.userNicknameDuplicateCheck(profileRequest.getUserNickName());
-        if (!user.getUserEmail().equals(profileRequest.getUserEmail()) && !profileRequest.getUserEmail().equals(""))
-            this.userEmailDuplicateCheck(profileRequest.getUserEmail());
 
-        user.setUserEmail(profileRequest.getUserEmail());
         user.setUserNickName(profileRequest.getUserNickName());
 
         if (file != null) {
@@ -239,7 +235,7 @@ public class UserServiceImpl implements UserService{
         User user = this.getUserProfile(loginId);
 
         if (!user.getUserPassword().equals(sha256Util.encrypt(withdrawUserRequest.getPassword()))) throw new NotEqualPasswordException();
-        user.setUserState("DELETED");
+        user.setUserState(UserConstants.eUser.eDELETE.getValue());
     }
 
     public User getUserByUserId(Long userId) {

@@ -34,7 +34,6 @@ public class ProfileResponse {
                 .userId(user.getUserId())
                 .loginId(user.getUserLoginId())
                 .password(user.getUserPassword())
-                .userEmail(user.getUserEmail())
                 .userNickName(user.getUserNickName())
                 .userPhoneNum(user.getUserPhoneNum())
                 .profileImg(user.getUserProfileImg())

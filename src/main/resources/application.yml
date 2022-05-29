@@ -72,3 +72,4 @@ weather:
 jasypt:
   encryptor:
     bean: jasyptEncyptor
+
