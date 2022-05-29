@@ -28,7 +28,7 @@ public class Reply {
     private LocalDateTime replyTime;
 
     private String replyState;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId")
     private User user;

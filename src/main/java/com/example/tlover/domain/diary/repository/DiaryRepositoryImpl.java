@@ -4,6 +4,7 @@ import com.example.tlover.domain.diary.dto.DiaryInquiryByLikedRankingResponse;
 import com.example.tlover.domain.diary.dto.DiaryMyScrapOrLikedResponse;
 import com.example.tlover.domain.diary.dto.QDiaryInquiryByLikedRankingResponse;
 import com.example.tlover.domain.diary.dto.QDiaryMyScrapOrLikedResponse;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -147,8 +148,11 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .orderBy(diary.diaryId.desc())
                 .offset(pageable.getOffset());
 
+
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
     }
+
+
 
     NumberExpression<Long> likecount = diaryLiked.isLiked.
             when(true).then(new Long(1)).
@@ -162,10 +166,14 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         return user != null ? scrap.user.eq(user) : null;
     }
 
-    private BooleanExpression isLikedCheck() {return diaryLiked.isLiked.eq(true);}
+    private BooleanExpression isLikedCheck() {
+        return diaryLiked.isLiked.eq(true);
+    }
 
-    private BooleanExpression isDeletedCheckByScrap() {return scrap.isDeleted.eq(false);}
+    private BooleanExpression isDeletedCheckByScrap() {
+        return scrap.isDeleted.eq(false);
+    }
 
-
+    private BooleanExpression diaryEq(Diary diary) {return diary != null ? diaryLiked.diary.eq(diary) : null;}
 
 }
