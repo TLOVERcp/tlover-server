@@ -29,12 +29,14 @@ import com.example.tlover.domain.thema.repository.ThemaRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;
+import com.example.tlover.domain.user.service.UserService;
 import com.example.tlover.domain.weather.repository.WeatherRepository;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.domain.user_region.repository.UserRegionRepository;
 import com.example.tlover.domain.user_thema.entitiy.UserThema;
 import com.example.tlover.domain.user_thema.repository.UserThemaRepository;
 import com.example.tlover.domain.weather.service.WeatherService;
+import com.example.tlover.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +60,8 @@ import static com.example.tlover.domain.diary.constant.DiaryConstants.eDiary.*;
 @RequiredArgsConstructor
 public class DiaryServiceImpl implements DiaryService{
 
+    private final UserService userService;
+
     private final DiaryRepository diaryRepository;
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
@@ -76,6 +80,7 @@ public class DiaryServiceImpl implements DiaryService{
     private final UserThemaRepository userThemaRepository;
     private final WeatherService weatherService;
     private final DiaryConstants diaryConstants;
+
 
     @Override
     public CreateDiaryFormResponse getCreateDiaryForm(Long planId, String loginId) {
@@ -115,12 +120,11 @@ public class DiaryServiceImpl implements DiaryService{
         Long diaryId =0L;
         boolean result = false;
         if(cdr.isEmpty()) {
-            String regionDetail = toString(createDiaryRequest.getRegionName());
+            String regionDetail = toString(createDiaryRequest.getRegionName().stream().toArray(String[]::new));
             Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,user, plan , getPlanDay(plan.getPlanStartDate(), plan.getPlanEndDate())));
             diaryId = diary.getDiaryId();
-
             authorityDiaryService.addDiaryUser(diary , loginId);
-            String[] regions = checkRegion(createDiaryRequest.getRegionName());
+            String[] regions = checkRegion(createDiaryRequest.getRegionName().stream().toArray(String[]::new));
 
             for (String regionName : regions) {
                 Region region = regionRepository.findByRegionName(regionName).get();
@@ -128,14 +132,15 @@ public class DiaryServiceImpl implements DiaryService{
                 diaryRegionRepository.save(diaryRegion);
             }
 
+
             for (String themaName : createDiaryRequest.getThemaName()) {
                 Thema thema = themaRepository.findByThemaName(themaName);
                 DiaryThema diaryThema = DiaryThema.toEntity(thema, diary);
                 diaryThemaRepository.save(diaryThema);
             }
 
+
             if (createDiaryRequest.getDiaryImages() != null) {
-                System.out.println("DiaryServiceImpl.createDiary is not null");
                 for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
                     MyFile myFile = myFileService.saveImage(diaryImgFileName);
                     myFile.setDiary(diary);
@@ -143,8 +148,8 @@ public class DiaryServiceImpl implements DiaryService{
                 }
                 String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
                 diary.setDiaryView(fileKey);
+
             } else{
-                System.out.println("DiaryServiceImpl.createDiary");
                 diary.setDiaryView("4cebbe25-faa1-4490-98e1-6d22f2a54f90");
                 MyFile myFileWhenNull = myFileRepository.save(MyFile.toEntity("4cebbe25-faa1-4490-98e1-6d22f2a54f90"));
                 myFileWhenNull.setDiary(diary);
@@ -152,6 +157,7 @@ public class DiaryServiceImpl implements DiaryService{
             }
             result = true;
         }
+        System.out.println("DiaryServiceImpl.createDiary 4 Line");
         return CreateDiaryResponse.from(diaryId , result);
     }
 
