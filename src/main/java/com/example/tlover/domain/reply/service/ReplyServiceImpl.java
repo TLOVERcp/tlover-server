@@ -3,6 +3,7 @@ package com.example.tlover.domain.reply.service;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
+import com.example.tlover.domain.reply.constant.ReplyConstants;
 import com.example.tlover.domain.reply.dto.ReplyDeleteRequest;
 import com.example.tlover.domain.reply.dto.ReplyInsertRequest;
 import com.example.tlover.domain.reply.dto.ReplyGetResponse;
@@ -64,7 +65,7 @@ public class ReplyServiceImpl implements ReplyService{
 
         User user = userRepository.findByUserLoginId(loginId).get();
         Reply reply = replyInsertRequest.toEntity(diary, user);
-        reply.setReplyState("ACTIVE");
+        reply.setReplyState(ReplyConstants.eReply.eACTIVE.getValue());
         this.checkReply(reply, loginId);
 
         replyRepository.save(reply);
@@ -99,7 +100,7 @@ public class ReplyServiceImpl implements ReplyService{
         Reply reply = replyRepository.findByReplyId(replyDeleteRequest.getReplyId()).orElseThrow(NotFindReplyException::new);
         this.checkReply(reply, loginId);
 
-        reply.setReplyState("DELETED");
+        reply.setReplyState(ReplyConstants.eReply.eDELETE.getValue());
     }
 
     /**

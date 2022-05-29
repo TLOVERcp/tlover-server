@@ -60,7 +60,9 @@ public class SearchServiceImpl implements SearchService {
 
             if (themaNames != null) diary.setThemaNames(themaNames);
             if (regionNames != null) diary.setRegionNames(regionNames);
-            diary.setDiaryImg(searchRepository.findDiaryImgByDiaryId(diary.getDiaryId()));
+            String fileKey = searchRepository.findDiaryImgByDiaryId(diary.getDiaryId());
+            if (fileKey != null)
+                diary.setDiaryImg(fileKey);
             diary.setScraped(searchRepository.findIsScrapedByUserId(userId, diary.getDiaryId()));
             diary.setLiked(searchRepository.findIsLikedByUserId(userId, diary.getDiaryId()));
         }

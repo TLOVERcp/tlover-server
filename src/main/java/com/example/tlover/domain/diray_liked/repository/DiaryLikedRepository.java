@@ -1,3 +1,5 @@
+
+
 package com.example.tlover.domain.diray_liked.repository;
 
 import com.example.tlover.domain.diary.entity.Diary;
@@ -14,4 +16,5 @@ public interface DiaryLikedRepository extends JpaRepository<DiaryLiked , Long> {
 
     Optional<Long> countByDiaryAndIsLiked(Diary diary, boolean b);
 
+    Optional<DiaryLiked> findByUserAndDiaryAndIsLiked(User user, Diary diary, boolean b);
 }

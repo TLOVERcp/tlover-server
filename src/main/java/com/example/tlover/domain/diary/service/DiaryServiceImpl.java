@@ -109,15 +109,13 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     @Transactional
     public CreateDiaryResponse createDiary(CreateDiaryRequest createDiaryRequest, String loginId) {
-
         User user = userRepository.findByUserLoginId(loginId).get();
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
-
         Long diaryId =0L;
-        if(cdr.isEmpty() || cdr.get().getDiaryStatus().equals("DELETE")) {
+        boolean result = false;
+        if(cdr.isEmpty()) {
             String regionDetail = toString(createDiaryRequest.getRegionName());
-
             Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,user, plan , getPlanDay(plan.getPlanStartDate(), plan.getPlanEndDate())));
             diaryId = diary.getDiaryId();
 
@@ -136,18 +134,25 @@ public class DiaryServiceImpl implements DiaryService{
                 diaryThemaRepository.save(diaryThema);
             }
 
-//            for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
-//                MyFile myFile = myFileService.saveImage(diaryImgFileName);
-//                myFile.setDiary(diary);
-//                myFile.setUser(user);
-//            }
-
-            //썸네일 추가
-            String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
-            diary.setDiaryView(fileKey);
-
+            if (createDiaryRequest.getDiaryImages() != null) {
+                System.out.println("DiaryServiceImpl.createDiary is not null");
+                for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
+                    MyFile myFile = myFileService.saveImage(diaryImgFileName);
+                    myFile.setDiary(diary);
+                    myFile.setUser(user);
+                }
+                String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
+                diary.setDiaryView(fileKey);
+            } else{
+                System.out.println("DiaryServiceImpl.createDiary");
+                diary.setDiaryView("4cebbe25-faa1-4490-98e1-6d22f2a54f90");
+                MyFile myFileWhenNull = myFileRepository.save(MyFile.toEntity("4cebbe25-faa1-4490-98e1-6d22f2a54f90"));
+                myFileWhenNull.setDiary(diary);
+                myFileWhenNull.setUser(user);
+            }
+            result = true;
         }
-        return CreateDiaryResponse.from(diaryId , true);
+        return CreateDiaryResponse.from(diaryId , result);
     }
 
     private int getPlanDay(String psd , String ped) {
@@ -174,14 +179,13 @@ public class DiaryServiceImpl implements DiaryService{
 
         diary.setDiaryStatus("DELETE");
 
-        for(MyFile myFile :   myFileService.findByUserAndDiary(user, diary)) {
-            myFile.setDeleted(true);
-        }
+            for(MyFile myFile : myFileService.findByUserAndDiary(user, diary)) {
+                myFile.setDeleted(true);
+            }
 
         diaryRegionRepository.deleteByDiary_DiaryId(diaryId);
         diaryThemaRepository.deleteByDiary_DiaryId(diaryId);
         authorityDiaryRepository.deleteByDiary_DiaryId(diaryId);
-
         return DeleteDiaryResponse.from(diary.getDiaryId() , true);
     }
 
@@ -291,15 +295,31 @@ public class DiaryServiceImpl implements DiaryService{
         return PaginationDto.of(page, data);
     }
 
+    @Override
+    public DiaryLikedOrNotResponse getDiaryLikedOrNot(DiaryLikedOrNotRequest diaryLikedOrNotRequest, String loginId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryLikedOrNotRequest.getDiaryId()).orElseThrow(NotFoundDiaryException::new);
+        if(diaryLikedRepository.findByUserAndDiaryAndIsLiked(user,diary,true).isEmpty()) {
+            return DiaryLikedOrNotResponse.from(false);
+        } else {
+            return DiaryLikedOrNotResponse.from(true);
+        }
+
+    }
+
+    @Override
+    public DiaryPlanResponse getPlanAsDiary(String loginId, Long diaryId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+        return DiaryPlanResponse.from(diary.getPlan().getPlanId());
+    }
 
     @Override
     public DiaryLikedViewsResponse getDiaryViews(Long diaryId) {
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         Long dlv = diaryLikedRepository.countByDiaryAndIsLiked(diary, true).get();
         return DiaryLikedViewsResponse.from(diary.getDiaryId() , dlv);
-
     }
-
 
 
     @Override
@@ -317,9 +337,8 @@ public class DiaryServiceImpl implements DiaryService{
 
         for (int i = 0; i < diaryThemas.size(); i++) {
             Diary diary = diaryThemas.get(i).getDiary();
-            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
-            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
-            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
+            if(!diary.getDiaryStatus().equals("DELETE"))
+                diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
         }
 
         Collections.shuffle(diaryPreferenceResponses);
@@ -332,18 +351,36 @@ public class DiaryServiceImpl implements DiaryService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<Diary> diaries = diaryRepository.findByUser(user).orElseThrow(NotFoundDiaryException::new);
         List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
-        List<String> diaryRegionNames = new ArrayList<>();
-        List<String> diaryThemaNames = new ArrayList<>();
+        List<String> diaryRegionNames;
+        List<String> diaryThemaNames;
+
+//        if(diaries.isEmpty()) return null;
 
         for (Diary diary : diaries) {
-            diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
-            diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
-            myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionNames, diaryThemaNames));
+            diaryRegionNames = new ArrayList<>();
+            diaryThemaNames = new ArrayList<>();
+            if (!diary.getDiaryStatus().equals("DELETE")) {
+                diaryRegionNames = getDiaryRegions(diaryRegionNames, diary);
+                diaryThemaNames = getDiaryThemas(diaryThemaNames, diary);
+                String diaryRegionName = setListToString(diaryRegionNames);
+                myDiaryListResponses.add(MyDiaryListResponse.from(diary, diaryRegionName, diaryThemaNames));
+            }
         }
-        if (myDiaryListResponses.isEmpty()) {
-            throw new NotFoundMyDiaryException();
-        }
+//        if (myDiaryListResponses.isEmpty()) {
+//            throw new NotFoundMyDiaryException();
+//        }
         return myDiaryListResponses;
+    }
+
+    private String setListToString(List<String> list) {
+        String name = "";
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                name += list.get(i) + ", ";
+            }
+            name = name.substring(0, name.length() - 2);
+        }
+        return name;
     }
 
     @Override
@@ -351,17 +388,22 @@ public class DiaryServiceImpl implements DiaryService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<AuthorityDiary> acceptDiaries = authorityDiaryRepository.findByAuthorityDiaryStatusAndUser("ACCEPT", user);
         List<MyDiaryListResponse> myDiaryListResponses = new ArrayList<>();
-        List<String> diaryRegionNames = new ArrayList<>();
-        List<String> diaryThemaNames = new ArrayList<>();
+        List<String> diaryRegionNames;
+        List<String> diaryThemaNames;
+
+//        if(acceptDiaries.isEmpty()) return null;
 
         for (AuthorityDiary acceptDiary : acceptDiaries) {
+            diaryRegionNames = new ArrayList<>();
+            diaryThemaNames = new ArrayList<>();
             diaryRegionNames = getDiaryRegions(diaryRegionNames, acceptDiary.getDiary());
             diaryThemaNames = getDiaryThemas(diaryThemaNames, acceptDiary.getDiary());
-            myDiaryListResponses.add(MyDiaryListResponse.from(acceptDiary.getDiary(), diaryRegionNames, diaryThemaNames));
+            String diaryRegionName = setListToString(diaryRegionNames);
+            myDiaryListResponses.add(MyDiaryListResponse.from(acceptDiary.getDiary(), diaryRegionName, diaryThemaNames));
         }
-        if (myDiaryListResponses.isEmpty()) {
-            throw new NotFoundAcceptDiaryException();
-        }
+//        if (myDiaryListResponses.isEmpty()) {
+//            throw new NotFoundAcceptDiaryException();
+//        }
         return myDiaryListResponses;
     }
 
