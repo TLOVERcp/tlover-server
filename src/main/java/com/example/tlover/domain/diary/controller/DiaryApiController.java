@@ -93,7 +93,6 @@ public class DiaryApiController {
     })
     @PostMapping(value = "/create-diary")
     public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid @ModelAttribute CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
-        log.info("createDiaryRequest = {}" , createDiaryRequest.toString());
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
 
