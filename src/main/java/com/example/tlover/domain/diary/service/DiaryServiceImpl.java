@@ -135,6 +135,7 @@ public class DiaryServiceImpl implements DiaryService{
             }
 
             if (createDiaryRequest.getDiaryImages() != null) {
+                System.out.println("DiaryServiceImpl.createDiary is not null");
                 for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
                     MyFile myFile = myFileService.saveImage(diaryImgFileName);
                     myFile.setDiary(diary);
@@ -143,6 +144,7 @@ public class DiaryServiceImpl implements DiaryService{
                 String fileKey = myFileRepository.findByUserAndDiary(user, diary).get().stream().findFirst().get().getFileKey();
                 diary.setDiaryView(fileKey);
             } else{
+                System.out.println("DiaryServiceImpl.createDiary");
                 diary.setDiaryView("4cebbe25-faa1-4490-98e1-6d22f2a54f90");
                 MyFile myFileWhenNull = myFileRepository.save(MyFile.toEntity("4cebbe25-faa1-4490-98e1-6d22f2a54f90"));
                 myFileWhenNull.setDiary(diary);
@@ -335,9 +337,8 @@ public class DiaryServiceImpl implements DiaryService{
 
         for (int i = 0; i < diaryThemas.size(); i++) {
             Diary diary = diaryThemas.get(i).getDiary();
-            System.out.println( diaryRepository.diaryRegions(diary.getDiaryId()));
-            System.out.println( diaryRepository.diaryImg(diary.getDiaryId()));
-            diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
+            if(!diary.getDiaryStatus().equals("DELETE"))
+                diaryPreferenceResponses.add(DiaryPreferenceResponse.from(diary, diaryRepository.diaryRegions(diary.getDiaryId()), diaryRepository.diaryImg(diary.getDiaryId())));
         }
 
         Collections.shuffle(diaryPreferenceResponses);
