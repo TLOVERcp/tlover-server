@@ -12,11 +12,11 @@
 
 ### <p align="center"> Back-end </p>
 
-<p align="center"><img src="https://user-images.githubusercontent.com/61726631/168762569-eaaa819f-fd7b-45e1-bee7-8ee8c3065abd.jpg"/><p>
+<p align="center"><img src="https://user-images.githubusercontent.com/61726631/171079154-95e3b822-0c22-413d-b481-25af3b94e901.jpg"/><p>
   
 ## <p align="center"> 🏗 Project Architecture </p>
 
-<p align="center"><img src="https://user-images.githubusercontent.com/61726631/168746746-a31b59d5-9817-4391-a62e-d3313bb62800.jpg"/><p>
+<p align="center"><img src="https://user-images.githubusercontent.com/61726631/171079373-53056971-ff41-4531-a730-d1e01c8e23e1.jpg"/><p>
 
 ## <p align="center"> 🚀 Back-end CI/CD </p>
 
