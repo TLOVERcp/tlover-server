@@ -58,5 +58,4 @@ public class CreateDiaryRequest {
     @ApiModelProperty(notes = "계획의 Id를 입력해주세요.")
     private Long planId;
 
-
 }

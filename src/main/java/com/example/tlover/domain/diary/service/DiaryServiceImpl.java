@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -164,7 +165,7 @@ public class DiaryServiceImpl implements DiaryService{
     private int getPlanDay(String psd , String ped) {
         LocalDateTime startDate = LocalDateTime.parse(psd, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime endDate = LocalDateTime.parse(ped, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        int result = (endDate.getDayOfMonth() - startDate.getDayOfMonth()) + 1;
+        int result = (int) (Duration.between(startDate, endDate).toDays() + 1L);
         if(result <= 0) throw new NoCorrectDayException();
         return result;
     }

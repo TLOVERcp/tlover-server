@@ -86,6 +86,7 @@ public class DiaryApiController {
      * @return ResponseEntity<CreateDiaryResponse>
      * author => 신동민
      */
+
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성을 합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "해당 diaryId로 Diary를 찾을 수 없습니다.",
@@ -93,9 +94,9 @@ public class DiaryApiController {
     })
     @PostMapping(value = "/create-diary")
     public ResponseEntity<ResponseDto<CreateDiaryResponse>> CreateDiary(@Valid @ModelAttribute CreateDiaryRequest createDiaryRequest, HttpServletRequest request) {
+        log.info("createDiaryRequest ={} ", createDiaryRequest);
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성이 완료되었습니다.", diaryService.createDiary(createDiaryRequest, loginId)));
-
     }
 
     @ApiOperation(value = "다이어리와 연관된 계획조회", notes = "다이어리와 연관된 계획을 조회합니다")
