@@ -15,7 +15,8 @@ public class WeatherSecretKey {
     }
 
     public static final String[] MAPKEY = {"body","items","item"};
-    public static final String[] AREAKEY = {"1156000000", //서울시
+    public static final String[] AREAKEY = {
+                                "1156000000", //서울시
                                 "4136000000", //경기도-남양주시
                                 "4711100000", //경상북도-포항시
                                 "4822000000", //경상남도-통영시
