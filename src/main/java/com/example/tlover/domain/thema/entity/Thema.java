@@ -1,7 +1,7 @@
 package com.example.tlover.domain.thema.entity;
 
-import com.example.tlover.domain.diary_thema.entity.DiaryThema;
-import com.example.tlover.domain.user_thema.entitiy.UserThema;
+import com.example.tlover.domain.diary.entity.DiaryThema;
+import com.example.tlover.domain.user.entity.UserThema;
 import lombok.*;
 
 import javax.persistence.*;

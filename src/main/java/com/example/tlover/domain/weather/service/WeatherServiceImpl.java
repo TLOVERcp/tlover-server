@@ -1,7 +1,7 @@
 package com.example.tlover.domain.weather.service;
 
 import com.example.tlover.domain.region.repository.RegionRepository;
-import com.example.tlover.domain.weather.Secret.WeatherSecretKey;
+import com.example.tlover.domain.weather.secret.WeatherSecretKey;
 import com.example.tlover.domain.weather.dto.WeatherResultContext;
 import com.example.tlover.domain.weather.entity.Weather;
 import com.example.tlover.domain.weather.repository.WeatherRepository;
@@ -24,7 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.example.tlover.domain.weather.Secret.WeatherSecretKey.*;
+import static com.example.tlover.domain.weather.secret.WeatherSecretKey.*;
 
 @Service
 @RequiredArgsConstructor

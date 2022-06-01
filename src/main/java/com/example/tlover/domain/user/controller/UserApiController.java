@@ -1,7 +1,6 @@
 package com.example.tlover.domain.user.controller;
 
 
-import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.rating.dto.RatingGetResponse;
 import com.example.tlover.domain.rating.service.RatingService;
 import com.example.tlover.domain.region.exception.NotFoundRegionNameException;
@@ -14,11 +13,11 @@ import com.example.tlover.domain.user.service.OAuth2UserServiceKakao;
 import com.example.tlover.domain.user.service.OAuth2UserServiceNaver;
 import com.example.tlover.domain.user.service.OAuth2UserServiceGoogle;
 import com.example.tlover.domain.user.service.UserService;
-import com.example.tlover.domain.user_refreshtoken.service.UserRefreshTokenService;
-import com.example.tlover.domain.user_region.dto.UpdateUserRegionRequest;
-import com.example.tlover.domain.user_region.dto.UserRegionResponse;
-import com.example.tlover.domain.user_thema.service.UserThemaService;
-import com.example.tlover.domain.user_region.service.UserRegionService;
+import com.example.tlover.domain.user.service.UserRefreshTokenService;
+import com.example.tlover.domain.user.dto.UpdateUserRegionRequest;
+import com.example.tlover.domain.user.dto.UserRegionResponse;
+import com.example.tlover.domain.user.service.UserThemaService;
+import com.example.tlover.domain.user.service.UserRegionService;
 import com.example.tlover.global.jwt.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
@@ -26,7 +25,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

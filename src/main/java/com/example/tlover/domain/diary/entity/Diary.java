@@ -1,12 +1,7 @@
 package com.example.tlover.domain.diary.entity;
 
-import com.example.tlover.domain.authority_diary.entity.AuthorityDiary;
+import com.example.tlover.domain.authority.entity.AuthorityDiary;
 import com.example.tlover.domain.diary.dto.CreateDiaryRequest;
-import com.example.tlover.domain.diary.dto.ModifyDiaryRequest;
-import com.example.tlover.domain.diary_connection.entity.DiaryConnection;
-import com.example.tlover.domain.diary_region.entity.DiaryRegion;
-import com.example.tlover.domain.diary_thema.entity.DiaryThema;
-import com.example.tlover.domain.diray_liked.entity.DiaryLiked;
 import com.example.tlover.domain.history.entity.History;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.plan.entity.Plan;

@@ -1,13 +1,9 @@
 package com.example.tlover.domain.diary.repository;
 
-import com.example.tlover.domain.diary.dto.DiarySearchResponse;
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary_thema.entity.DiaryThema;
+import com.example.tlover.domain.diary.entity.DiaryThema;
 import com.example.tlover.domain.plan.entity.Plan;
-import com.example.tlover.domain.thema.entity.Thema;
 import com.example.tlover.domain.user.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

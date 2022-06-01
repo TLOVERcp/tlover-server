@@ -1,8 +1,8 @@
 package com.example.tlover.global.jwt.service;
 
-import com.example.tlover.domain.user_refreshtoken.entity.UserRefreshToken;
-import com.example.tlover.global.jwt.Secret.SecretKey;
-import com.example.tlover.domain.user_refreshtoken.repository.UserRefreshTokenRepository;
+import com.example.tlover.domain.user.entity.UserRefreshToken;
+import com.example.tlover.global.jwt.secret.SecretKey;
+import com.example.tlover.domain.user.repository.UserRefreshTokenRepository;
 import com.example.tlover.global.jwt.exception.ExpireAccessException;
 import com.example.tlover.global.jwt.exception.ExpireRefreshException;
 import com.example.tlover.global.jwt.exception.NotFoundJwtException;

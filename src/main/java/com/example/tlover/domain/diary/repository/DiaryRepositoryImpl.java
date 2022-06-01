@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.example.tlover.domain.diary.entity.QDiary.diary;
-import static com.example.tlover.domain.diray_liked.entity.QDiaryLiked.*;
+import static com.example.tlover.domain.diary.entity.QDiaryLiked.diaryLiked;
 import static com.example.tlover.domain.scrap.entity.QScrap.scrap;
 
 

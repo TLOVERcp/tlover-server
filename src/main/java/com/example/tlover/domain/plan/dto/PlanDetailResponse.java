@@ -1,8 +1,7 @@
 package com.example.tlover.domain.plan.dto;
 
-import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
+import com.example.tlover.domain.authority.entity.AuthorityPlan;
 import com.example.tlover.domain.plan.entity.Plan;
-import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

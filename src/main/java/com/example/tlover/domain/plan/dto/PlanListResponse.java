@@ -1,9 +1,6 @@
 package com.example.tlover.domain.plan.dto;
 
 import com.example.tlover.domain.plan.entity.Plan;
-import com.example.tlover.domain.plan_region.entity.PlanRegion;
-import com.example.tlover.domain.user.dto.ProfileResponse;
-import com.example.tlover.domain.user.entity.User;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -15,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Getter
 @Builder

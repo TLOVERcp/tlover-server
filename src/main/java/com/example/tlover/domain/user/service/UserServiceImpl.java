@@ -9,7 +9,6 @@ import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.*;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.global.encryption.SHA256Util;
-import com.example.tlover.global.search.repository.SearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
