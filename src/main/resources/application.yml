@@ -1,0 +1,75 @@
+spring:
+  batch.job.enabled: false
+  datasource:
+    url: ENC(a154ezDlmtvWj5cbrHoFCw9ksWhkShaPVOnYtqjWuXSCKGYZAHJUcbtbFydjuD6eyBxC/7e+RHYseU8dC6KxFNhfSesf+XL2XdlpwHkmMV1uVgOotwsrTt7p5R3mWqF8)
+    autoReconnect: true
+    username: ENC(4KeuIyPLB80jTL/mCoJBCQ==)
+    password: ENC(3dGrOz4dXgyVWATbLVg9yn/teRzhK0UP)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
+    initialize: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    #      naming:
+    #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+        #default_batch_fetch_size: 100
+    #open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    defer-datasource-initialization: true
+
+  security:
+    oauth2:
+      client:
+        provider:
+          naver:
+            user-info_uri: https://openapi.naver.com/v1/nid/me
+          kakao:
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+          google:
+            user-info_uri: https://oauth2.googleapis.com/tokeninfo
+
+  jwt:
+    access-key: ENC(aGUUYVX5HHg9e3lm4xBL7UWMTOvFGxAsF3Xrsl5YDW4uG7ST/CLTopzqyhb8Gv/1YxutThzwhoFqcmcrVbxqoYKzzFS+eBx2)
+    refresh-key: ENC(yS9w2uecmIDRtRKRsWYIatay466bDYo27MOEA0Y3TRMEZwUkl4xvnr5CK+fHcJih/SP887Wpj67/ALYaR9lUzggX01vo0c7y)
+
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+
+cloud:
+  aws:
+    s3:
+      bucket: tlover-bucket
+    credentials:
+      instanceProfile: true
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+sms:
+  service-id: ENC(ZzQ6CF4ckgq8nZo2BwnTevjGVTyPJrW38/zeiqBGjRudX/L4n3gVMvv/bjI5hwvO)
+  access-key: ENC(snHOGOaiCWpPMrZz+Rc2/sqqdgJv1Q/EkWXRB0nbgX4=)
+  secret-key: ENC(63Ao/h3ekTYWL6Yjhz924y7iRP/JIXJI+iZwPSnkPRsx38fUlbICbS4PDWCYr6IJCQNNxrOH8uc=)
+
+weather:
+  service-key: ENC(h5hL1adB8wB31Edrlf70eK9lDBAYymGQQ0B9mBBk524xS1f5+/DPe8TK665LNRn7bwkc0uLrj/osQQNzfCaU793QFEI/Zf0QQFCOIeADkeaKqYlUYNsawpRbM+tuJrCB031OVAkg+XVn+HI08/ml4Q==)
+
+jasypt:
+  encryptor:
+    bean: jasyptEncyptor
+
