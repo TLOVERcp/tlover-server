@@ -1,6 +1,5 @@
 package com.example.tlover.domain.weather.entity;
 
-import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.region.entity.Region;
 import lombok.*;
 

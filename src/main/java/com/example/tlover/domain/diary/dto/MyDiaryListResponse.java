@@ -2,7 +2,6 @@ package com.example.tlover.domain.diary.dto;
 
 
 import com.example.tlover.domain.diary.entity.Diary;
-import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;

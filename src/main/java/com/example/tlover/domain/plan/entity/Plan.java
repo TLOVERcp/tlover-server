@@ -1,10 +1,9 @@
 package com.example.tlover.domain.plan.entity;
 
 
-import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
+import com.example.tlover.domain.authority.entity.AuthorityPlan;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
-import com.example.tlover.domain.plan_region.entity.PlanRegion;
 import com.example.tlover.domain.user.entity.User;
 import lombok.*;
 

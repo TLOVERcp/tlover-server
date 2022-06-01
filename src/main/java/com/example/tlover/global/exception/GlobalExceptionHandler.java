@@ -1,7 +1,6 @@
 package com.example.tlover.global.exception;
 
-import com.example.tlover.global.exception.dto.ApiErrorResponse;
-import io.swagger.annotations.ApiResponse;
+import com.example.tlover.global.dto.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 

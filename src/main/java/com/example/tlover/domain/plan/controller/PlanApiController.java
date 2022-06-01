@@ -1,12 +1,12 @@
 package com.example.tlover.domain.plan.controller;
 
-import com.example.tlover.domain.authority_plan.service.AuthorityPlanService;
+import com.example.tlover.domain.authority.service.AuthorityPlanService;
 import com.example.tlover.domain.diary.exception.NotAuthorityDeleteException;
 import com.example.tlover.domain.plan.dto.*;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.*;
 import com.example.tlover.domain.plan.service.PlanService;
-import com.example.tlover.domain.plan_region.service.PlanRegionService;
+import com.example.tlover.domain.plan.service.PlanRegionService;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

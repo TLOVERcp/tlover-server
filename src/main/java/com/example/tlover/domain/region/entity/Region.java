@@ -1,8 +1,8 @@
 package com.example.tlover.domain.region.entity;
 
-import com.example.tlover.domain.diary_region.entity.DiaryRegion;
-import com.example.tlover.domain.plan_region.entity.PlanRegion;
-import com.example.tlover.domain.user_region.entity.UserRegion;
+import com.example.tlover.domain.diary.entity.DiaryRegion;
+import com.example.tlover.domain.plan.entity.PlanRegion;
+import com.example.tlover.domain.user.entity.UserRegion;
 import lombok.*;
 
 import javax.persistence.*;

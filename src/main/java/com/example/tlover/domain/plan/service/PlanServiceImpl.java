@@ -1,8 +1,8 @@
 package com.example.tlover.domain.plan.service;
 
-import com.example.tlover.domain.authority_plan.constant.AuthorityPlanConstant;
-import com.example.tlover.domain.authority_plan.entity.AuthorityPlan;
-import com.example.tlover.domain.authority_plan.repository.AuthorityPlanRepository;
+import com.example.tlover.domain.authority.constant.AuthorityPlanConstant;
+import com.example.tlover.domain.authority.entity.AuthorityPlan;
+import com.example.tlover.domain.authority.repository.AuthorityPlanRepository;
 import com.example.tlover.domain.plan.constant.PlanConstants;
 import com.example.tlover.domain.plan.dto.CreatePlanRequest;
 import com.example.tlover.domain.plan.dto.PlanDetailResponse;
@@ -13,7 +13,6 @@ import com.example.tlover.domain.plan.exception.NoAuthorityDeleteException;
 import com.example.tlover.domain.plan.exception.NotFoundAuthorityPlanException;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
 import com.example.tlover.domain.plan.repository.PlanRepository;
-import com.example.tlover.domain.plan_region.repository.PlanRegionRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.domain.user.exception.NotFoundUserException;
 import com.example.tlover.domain.user.repository.UserRepository;

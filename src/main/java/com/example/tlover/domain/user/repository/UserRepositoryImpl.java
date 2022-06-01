@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.tlover.domain.user_region.entity.QUserRegion.userRegion;
-import static com.example.tlover.domain.diary_thema.entity.QDiaryThema.diaryThema;
-import static com.example.tlover.domain.user_thema.entitiy.QUserThema.userThema;
+import static com.example.tlover.domain.diary.entity.QDiaryThema.diaryThema;
 import static com.example.tlover.domain.thema.entity.QThema.thema;
 import static com.example.tlover.domain.region.entity.QRegion.region;
 import static com.example.tlover.domain.user.entity.QUser.user;
+import static com.example.tlover.domain.user.entity.QUserRegion.userRegion;
+import static com.example.tlover.domain.user.entity.QUserThema.userThema;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
         private final JPAQueryFactory queryFactory;

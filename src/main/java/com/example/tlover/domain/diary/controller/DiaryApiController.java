@@ -3,10 +3,9 @@ package com.example.tlover.domain.diary.controller;
 import com.example.tlover.domain.diary.dto.*;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.service.DiaryService;
-import com.example.tlover.domain.diary_region.entity.DiaryRegion;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.dto.PaginationDto;
-import com.example.tlover.global.exception.dto.ApiErrorResponse;
+import com.example.tlover.global.dto.ApiErrorResponse;
 import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
 import io.swagger.annotations.Api;
@@ -14,7 +13,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @Slf4j
