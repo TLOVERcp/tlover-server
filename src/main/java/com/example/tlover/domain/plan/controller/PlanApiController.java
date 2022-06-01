@@ -99,9 +99,9 @@ public class PlanApiController {
     public ResponseEntity<ResponseDto<PlanDetailResponse>> getPlanDetail(@PathVariable Long planId) {
         String loginId = jwtService.getLoginId();
 
-        Boolean userAuthority = planService.checkUser(planId, loginId);
+        /*Boolean userAuthority = planService.checkUser(planId, loginId);
         if(!userAuthority)
-            throw new NoAuthorityPlanException();
+            throw new NoAuthorityPlanException();*/
 
         PlanDetailResponse planDetailResponse = planService.getPlanDetail(planId);
         return ResponseEntity.ok(ResponseDto.create("조회 성공",planDetailResponse));
