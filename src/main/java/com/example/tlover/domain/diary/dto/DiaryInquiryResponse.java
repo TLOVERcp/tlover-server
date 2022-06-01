@@ -32,7 +32,7 @@ public class DiaryInquiryResponse {
     private Integer diaryConnectionCount;
     private String regionDetail;
     private int totalCost;
-    private List<String> diaryThema;
+    private String diaryThema;
 
   /*  public static DiaryInquiryResponse from(Diary diary){
         return DiaryInquiryResponse.builder()
@@ -59,15 +59,15 @@ public class DiaryInquiryResponse {
                 .diaryTitle(diary.getDiaryTitle())
                 .diaryStatus(diary.getDiaryStatus())
                 .diaryContext(diary.getDiaryContext())
-                .diaryStartDate(diary.getDiaryStartDate())
-                .diaryWriteDate(diary.getDiaryWriteDate())
-                .diaryEndDate(diary.getDiaryEndDate())
+                .diaryStartDate(diary.getDiaryStartDate().substring(0,10))
+                .diaryWriteDate(diary.getDiaryWriteDate().substring(0,10))
+                .diaryEndDate(diary.getDiaryEndDate().substring(0,10))
                 .diaryView(diary.getDiaryView())
                 .myFileKeys(myFileKeys)
                 .diaryConnectionCount(diaryConnectionCount)
                 .regionDetail(diary.getDiaryRegionDetail())
                 .totalCost(diary.getTotalCost())
-                .diaryThema(diaryThema)
+                .diaryThema(String.join(", ", diaryThema))
                 .build();
     }
 
