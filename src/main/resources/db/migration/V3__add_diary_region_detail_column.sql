@@ -1,0 +1,1 @@
+ALTER TABLE diary ADD COLUMN diary_region_details varchar(255) null;

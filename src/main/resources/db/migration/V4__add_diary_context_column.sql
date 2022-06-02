@@ -1,0 +1,1 @@
+ALTER TABLE diary ADD COLUMN diary_contexts varchar(255) null;
