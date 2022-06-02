@@ -1,0 +1,1 @@
+ALTER TABLE reply DROP COLUMN is_deleted;
