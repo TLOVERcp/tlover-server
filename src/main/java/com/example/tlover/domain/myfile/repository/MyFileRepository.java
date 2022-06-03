@@ -1,4 +1,4 @@
-package com.example.tlover.domain.myfile.service.repository;
+package com.example.tlover.domain.myfile.repository;
 
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.myfile.entity.MyFile;

@@ -3,7 +3,7 @@ package com.example.tlover.domain.myfile.service;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.exception.NotFoundMyFileException;
-import com.example.tlover.domain.myfile.service.repository.MyFileRepository;
+import com.example.tlover.domain.myfile.repository.MyFileRepository;
 import com.example.tlover.domain.user.entity.User;
 import com.example.tlover.infra.file.service.FileService;
 import lombok.RequiredArgsConstructor;

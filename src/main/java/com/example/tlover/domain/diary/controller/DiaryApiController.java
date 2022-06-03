@@ -1,18 +1,19 @@
 package com.example.tlover.domain.diary.controller;
 
 import com.example.tlover.domain.diary.dto.*;
+import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.*;
 import com.example.tlover.domain.diary.service.DiaryService;
+import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.global.dto.PaginationDto;
 import com.example.tlover.global.dto.ApiErrorResponse;
 import com.example.tlover.global.dto.ResponseDto;
 import com.example.tlover.global.jwt.service.JwtService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Slf4j
@@ -51,6 +53,15 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리의 변환된 상태를 반환" , diaryService.updateDiaryEditing(loginId, diaryId)));
     }
+
+    @ApiOperation(value = "다이어리 수정이 가능한 상태인지 확인" , notes = "다이어리를 수정을 요청하는 시점에서 현재 다이어리의 상태가 수정중인지 확인을 합니다.")
+    @PostMapping("/update-diary-state/{diaryId}")
+    public ResponseEntity<ResponseDto<UpdateDiaryStatusResponse>> checkDiaryStatus(@PathVariable Long diaryId) {
+        String loginId = jwtService.getLoginId();
+        return ResponseEntity.ok(ResponseDto.create("다이어리의 현재상태를 반환"  ,    diaryService.checkDiaryStatus(loginId , diaryId)));
+    }
+
+
 
     @ApiOperation(value = "다이어리 등록 안드로이드용 테스트", notes = "다이어리 등록 안드로이드용 테스트")
     @PostMapping(value = "/create-diary-test" , consumes = {
@@ -108,11 +119,6 @@ public class DiaryApiController {
         String loginId = jwtService.getLoginId();
         return ResponseEntity.ok(ResponseDto.create("다이어리 좋아요 여부 조회가 완료되었습니다.", diaryService.getDiaryLikedOrNot(diaryLikedOrNotRequest, loginId)));
     }
-
-
-
-
-
 
 
     /**
@@ -199,14 +205,14 @@ public class DiaryApiController {
     @PostMapping(value = "/modify-diary/{diaryId}")
     public ResponseEntity<ResponseDto<ModifyDiaryFormResponse>> getModifyDiaryForm(@PathVariable Long diaryId) {
         String loginId = jwtService.getLoginId();
-        return ResponseEntity.ok(ResponseDto.create("다이어리 수정이 완료되었습니다." ,  diaryService.getModifyDiaryForm(diaryId, loginId)));
+        return ResponseEntity.ok(ResponseDto.create("다이어리 수정폼 조회가 완료되었습니다." ,  diaryService.getModifyDiaryForm(diaryId, loginId)));
     }
 
     /**
      * 다이어리 수정 API
      * @param modifyDiaryRequest
      * @return ResponseEntity<String>
-     * @author 한규범
+     * @author 한규범 , 신동민
      */
     @ApiOperation(value = "다이어리 수정", notes = "다이어리를 수정합니다.")
     @ApiResponses(value = {
@@ -216,10 +222,9 @@ public class DiaryApiController {
 
     })
     @PostMapping(value = "/modify-diary")
-    public ResponseEntity<ResponseDto<String>> ModifyDiary(ModifyDiaryRequest modifyDiaryRequest) {
+    public ResponseEntity<ResponseDto<ModifyDiaryResponse>> ModifyDiary(@Valid @ModelAttribute ModifyDiaryRequest modifyDiaryRequest) {
         String loginId = jwtService.getLoginId();
-        diaryService.modifyDiary(modifyDiaryRequest, loginId);
-        return ResponseEntity.ok(ResponseDto.create("다이어리 수정이 완료되었습니다."));
+        return ResponseEntity.ok(ResponseDto.create("다이어리 수정이 완료되었습니다." , diaryService.modifyDiary(modifyDiaryRequest, loginId)));
     }
 
     /**
@@ -347,5 +352,9 @@ public class DiaryApiController {
 
         return ResponseEntity.ok(ResponseDto.create(output));
     }
+
+
+
+
 
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -51,7 +52,7 @@ public class DiaryInquiryResponse {
     public static DiaryInquiryResponse from(List<DiaryThema> diaryThemas, Diary diary, Integer diaryConnectionCount){
         List<String> diaryThema = new ArrayList<>();
         for (DiaryThema dt : diaryThemas) diaryThema.add(dt.getThema().getThemaName());
-        List<MyFile> myFiles = diary.getMyFiles();
+        List<MyFile> myFiles = diary.getMyFiles().stream().filter(myFile -> !myFile.isDeleted()).collect(Collectors.toList());
         List<String> myFileKeys = new ArrayList<>();
         for (MyFile myFile : myFiles) myFileKeys.add(myFile.getFileKey());
         return DiaryInquiryResponse.builder()

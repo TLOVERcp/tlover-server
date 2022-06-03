@@ -1,8 +1,6 @@
 package com.example.tlover.domain.authority.service;
-import com.example.tlover.domain.authority.dto.AuthorityDiaryListResponse;
-import com.example.tlover.domain.authority.dto.AuthorityDiaryResponse;
-import com.example.tlover.domain.authority.dto.CheckAuthorityDiaryResponse;
-import com.example.tlover.domain.authority.dto.SharePlanRequest;
+import com.example.tlover.domain.authority.dto.*;
+import com.example.tlover.domain.authority.entity.AuthorityDiary;
 import com.example.tlover.domain.diary.entity.Diary;
 
 import javax.validation.Valid;
@@ -20,7 +18,7 @@ public interface AuthorityDiaryService {
 
     List<AuthorityDiaryListResponse> getListRequestAuthUser(String loginId);
 
-    void getListHostAuthor(String loginId);
+    List<AuthorityDiaryListForHostResponse> getListHostAuthor(String loginId);
 
     CheckAuthorityDiaryResponse checkAuthorityDiary(String loginId, Long diaryId);
 }

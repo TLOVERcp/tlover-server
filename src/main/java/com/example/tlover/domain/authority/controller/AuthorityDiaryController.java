@@ -1,10 +1,8 @@
 package com.example.tlover.domain.authority.controller;
 
-import com.example.tlover.domain.authority.dto.AuthorityDiaryListResponse;
-import com.example.tlover.domain.authority.dto.AuthorityDiaryResponse;
-import com.example.tlover.domain.authority.dto.CheckAuthorityDiaryResponse;
+import com.amazonaws.Response;
+import com.example.tlover.domain.authority.dto.*;
 import com.example.tlover.domain.authority.service.AuthorityDiaryService;
-import com.example.tlover.domain.authority.dto.SharePlanRequest;
 import com.example.tlover.domain.user.controller.UserApiController;
 import com.example.tlover.domain.user.repository.UserRepository;
 import com.example.tlover.global.dto.ResponseDto;
@@ -42,8 +40,6 @@ public class AuthorityDiaryController {
     @PostMapping("/accept-diary-plan/{authorityDiaryId}")
     public ResponseEntity<ResponseDto<AuthorityDiaryResponse>> updateAcceptAuthorityDiary(@PathVariable Long authorityDiaryId,
                                                                              HttpServletRequest request) {
-
-
         return ResponseEntity.ok(ResponseDto.create("다이어리 작성 권한을 수락했습니다." ,  authorityDiaryService.updateAcceptAuthorityDiary(authorityDiaryId)));
     }
 
@@ -63,11 +59,9 @@ public class AuthorityDiaryController {
 
     @ApiOperation(value = "다이어리 공유 상태 확인", notes = "다이어리를 공유를 요청한 권한자의 시점에서 요청 상태를 확인한다.")
     @PostMapping("/list-host-authority-diary")
-    public String listHostAuthorityDiary() {
+    public ResponseEntity<ResponseDto<List<AuthorityDiaryListForHostResponse>>> listHostAuthorityDiary() {
         String loginId = jwtService.getLoginId();
-        authorityDiaryService.getListHostAuthor(loginId);
-
-        return null;
+        return ResponseEntity.ok(ResponseDto.create("내가 공유 권한을 요청한 다이어리의 대한 권한 확인" , authorityDiaryService.getListHostAuthor(loginId)));
     }
 
     @ApiOperation(value = "해당 다이어리의 권한을 확인", notes = "다이어리를 작성/수정을 시도하는 시점에 권한을 확인함")
