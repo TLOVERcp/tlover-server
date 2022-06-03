@@ -13,7 +13,7 @@ public interface DiaryService {
 
     DeleteDiaryResponse deleteDiary(Long diaryId, String loginId);
 
-    Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId);
+    ModifyDiaryResponse modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId);
 
     Diary getDiaryByDiaryId(Long diaryId);
 
@@ -47,4 +47,6 @@ public interface DiaryService {
     DiaryLikedOrNotResponse getDiaryLikedOrNot(DiaryLikedOrNotRequest diaryLikedOrNotRequest, String loginId);
 
     DiaryPlanResponse getPlanAsDiary(String loginId, Long diaryId);
+
+    UpdateDiaryStatusResponse checkDiaryStatus(String loginId, Long diaryId);
 }

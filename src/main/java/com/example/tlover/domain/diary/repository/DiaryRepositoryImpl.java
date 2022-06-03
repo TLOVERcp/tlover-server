@@ -48,6 +48,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .groupBy(diary.diaryId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .where(isDeletedCheckByDiary())
                 .fetch();
 
         JPAQuery<DiaryInquiryByLikedRankingResponse> countQuery = queryFactory
@@ -64,6 +65,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .from(diary)
                 .leftJoin(diary.diaryLikeds, diaryLiked)
                 .orderBy(likecount.sum().desc())
+                .where(isDeletedCheckByDiary())
                 .groupBy(diary.diaryId);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());
@@ -84,7 +86,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .from(diary)
                 .leftJoin(diaryLiked)
                 .on(diary.diaryId.eq(diaryLiked.diary.diaryId))
-                .where(userEqByLiked(user), isLikedCheck())
+                .where(userEqByLiked(user), isLikedCheck() , isDeletedCheckByDiary())
                 .orderBy(diary.diaryId.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -103,7 +105,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .from(diary)
                 .leftJoin(diaryLiked)
                 .on(diary.diaryId.eq(diaryLiked.diary.diaryId))
-                .where(userEqByLiked(user), isLikedCheck())
+                .where(userEqByLiked(user), isLikedCheck() ,isDeletedCheckByDiary())
                 .orderBy(diary.diaryId.desc())
                 .offset(pageable.getOffset());
 
@@ -125,7 +127,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .from(diary)
                 .leftJoin(scrap)
                 .on(diary.diaryId.eq(scrap.diary.diaryId))
-                .where(userEqByScrap(user), isDeletedCheckByScrap())
+                .where(userEqByScrap(user), isDeletedCheckByScrap() , isDeletedCheckByDiary())
                 .orderBy(diary.diaryId.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -175,5 +177,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     }
 
     private BooleanExpression diaryEq(Diary diary) {return diary != null ? diaryLiked.diary.eq(diary) : null;}
+
+    private BooleanExpression isDeletedCheckByDiary() {return diary != null ? diary.diaryStatus.ne("DELETE") : null;}
 
 }

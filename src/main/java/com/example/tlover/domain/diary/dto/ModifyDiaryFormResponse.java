@@ -38,6 +38,7 @@ public class ModifyDiaryFormResponse {
                 .diaryContext(diary.getDiaryContext())
                 .diaryStatus(diary.getDiaryStatus())
                 .diaryStartDate(diary.getDiaryStartDate())
+                .diaryView(diary.getDiaryView())
                 .diaryEndDate(diary.getDiaryEndDate())
                 .diaryWriteDate(diary.getDiaryWriteDate())
                 .diaryRegionDetail(diary.getDiaryRegionDetail())

@@ -17,7 +17,7 @@ import com.example.tlover.domain.diary.entity.DiaryLiked;
 import com.example.tlover.domain.diary.repository.DiaryLikedRepository;
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.example.tlover.domain.myfile.exception.NotFoundMyFileException;
-import com.example.tlover.domain.myfile.service.repository.MyFileRepository;
+import com.example.tlover.domain.myfile.repository.MyFileRepository;
 import com.example.tlover.domain.myfile.service.MyFileService;
 import com.example.tlover.domain.plan.entity.Plan;
 import com.example.tlover.domain.plan.exception.NotFoundPlanException;
@@ -118,8 +118,7 @@ public class DiaryServiceImpl implements DiaryService{
         Plan plan = planRepository.findByPlanId(createDiaryRequest.getPlanId()).get();
         Optional<Diary> cdr = diaryRepository.findByUserAndPlan(user,plan);
         Long diaryId =0L;
-        boolean result = false;
-        if(cdr.isEmpty()) {
+        if(cdr.isEmpty() || cdr.get().getDiaryStatus().equals("DELETE")) {
             String regionDetail = toString(createDiaryRequest.getRegionName().stream().toArray(String[]::new));
             Diary diary = diaryRepository.save(Diary.toEntity(regionDetail, createDiaryRequest,user, plan , getPlanDay(plan.getPlanStartDate(), plan.getPlanEndDate())));
             diaryId = diary.getDiaryId();
@@ -139,7 +138,6 @@ public class DiaryServiceImpl implements DiaryService{
                 diaryThemaRepository.save(diaryThema);
             }
 
-
             if (createDiaryRequest.getDiaryImages() != null) {
                 for (MultipartFile diaryImgFileName : createDiaryRequest.getDiaryImages()) {
                     MyFile myFile = myFileService.saveImage(diaryImgFileName);
@@ -155,10 +153,10 @@ public class DiaryServiceImpl implements DiaryService{
                 myFileWhenNull.setDiary(diary);
                 myFileWhenNull.setUser(user);
             }
-            result = true;
+        } else {
+            throw new RuntimeException("이미 작성되어있는 계획입니다.");
         }
-        System.out.println("DiaryServiceImpl.createDiary 4 Line");
-        return CreateDiaryResponse.from(diaryId , result);
+        return CreateDiaryResponse.from(diaryId , true);
     }
 
     private int getPlanDay(String psd , String ped) {
@@ -197,14 +195,10 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     @Transactional
-    public Diary modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId) {
+    public ModifyDiaryResponse modifyDiary(ModifyDiaryRequest modifyDiaryRequest, String loginId) {
         User user = userRepository.findByUserLoginId(loginId).get();
-        if(diaryRepository.findByDiaryId(modifyDiaryRequest.getDiaryId())==null) throw new NotFoundDiaryException();
 
-        Diary diary = diaryRepository.findByUserAndDiaryId(user,modifyDiaryRequest.getDiaryId());
-        if(diary==null) throw new NoAuthorityModifyException();
-
-        if(diary.getDiaryStatus().equals("EDIT")) throw new AlreadyEditDiaryException();
+        Diary diary = diaryRepository.findByDiaryId(modifyDiaryRequest.getDiaryId()).orElseThrow(NotFoundDiaryException::new);
 
         diary.setDiaryTitle(modifyDiaryRequest.getDiaryTitle());
         diary.setDiaryStartDate(modifyDiaryRequest.getDiaryStartDate());
@@ -221,9 +215,16 @@ public class DiaryServiceImpl implements DiaryService{
             diaryRegionRepository.save(diaryRegion);
         }
 
-        //사진 수정
-        for(int i=0; i<diary.getMyFiles().size(); i++){
-            myFileService.deleteFile(diary.getMyFiles().get(i).getMyFileId());
+        //DiaryThema
+        diaryThemaRepository.deleteAllByDiary(diary);
+        for (String themaName : modifyDiaryRequest.getThemaName()) {
+            Thema theam = themaRepository.findByThemaName(themaName);
+            DiaryThema diaryThema = DiaryThema.toEntity(theam, diary);
+            diaryThemaRepository.save(diaryThema);
+        }
+
+        for (MyFile myFile : diary.getMyFiles()) {
+            myFile.setDeleted(true);
         }
 
         for (MultipartFile diaryImgFileName : modifyDiaryRequest.getDiaryImages()) {
@@ -231,8 +232,8 @@ public class DiaryServiceImpl implements DiaryService{
             myFile.setDiary(diary);
             myFile.setUser(user);
         }
-
-        return diary;
+        diary.setDiaryStatus("ACTIVE");
+        return ModifyDiaryResponse.from(diary , user.getUserNickName());
     }
 
     @Override
@@ -318,6 +319,13 @@ public class DiaryServiceImpl implements DiaryService{
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         return DiaryPlanResponse.from(diary.getPlan().getPlanId());
+    }
+
+    @Override
+    public UpdateDiaryStatusResponse checkDiaryStatus(String loginId, Long diaryId) {
+        User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
+        Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
+        return UpdateDiaryStatusResponse.from(diary);
     }
 
     @Override
@@ -416,6 +424,7 @@ public class DiaryServiceImpl implements DiaryService{
 
 
     @Override
+    @Transactional
     public UpdateDiaryStatusResponse updateDiaryEditing(String loginId, Long diaryId) {
         Diary diary = diaryRepository.findByDiaryId(diaryId).orElseThrow(NotFoundDiaryException::new);
         diary.setDiaryStatus("EDIT");

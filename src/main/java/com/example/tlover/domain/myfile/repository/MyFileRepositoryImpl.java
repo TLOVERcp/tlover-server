@@ -1,4 +1,4 @@
-package com.example.tlover.domain.myfile.service.repository;
+package com.example.tlover.domain.myfile.repository;
 
 import com.example.tlover.domain.myfile.entity.MyFile;
 import com.querydsl.core.types.dsl.BooleanExpression;

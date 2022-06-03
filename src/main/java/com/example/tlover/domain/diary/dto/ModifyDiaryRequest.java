@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ import java.util.List;
 @ApiModel(description = "다이어리 수정을 위한 요청 객체")
 public class ModifyDiaryRequest {
 
-    @NotBlank(message = "다이어리 고유 번호를 입력해주세요.")
+    @NotNull(message = "다이어리 고유 번호를 입력해주세요.")
     @ApiModelProperty(notes = "다이어리 키 값을 입력해주세요.")
     private Long diaryId;
 

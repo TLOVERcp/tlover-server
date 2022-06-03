@@ -18,4 +18,6 @@ public interface DiaryThemaRepository extends JpaRepository<DiaryThema, Long> {
     List<DiaryThema> findByThemaThemaId(Long themaId);
 
     Optional<List<DiaryThema>> findAllByDiary(Diary diary);
+
+    void deleteAllByDiary(Diary diary);
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -32,17 +33,16 @@ public class MyDiaryListResponse {
     private List<String> myFileKeys;
 
     public static MyDiaryListResponse from(Diary diary, String diaryRegionNames, List<String> diaryThemaNames){
-        List<MyFile> myFiles = diary.getMyFiles();
+        List<MyFile> myFiles = diary.getMyFiles().stream().filter(myFile -> !myFile.isDeleted()).collect(Collectors.toList());
         List<String> myFileKeys = new ArrayList<>();
         for (MyFile myFile : myFiles) myFileKeys.add(myFile.getFileKey());
-
 
         return MyDiaryListResponse.builder()
                 .diaryId(diary.getDiaryId())
                 .planId(diary.getPlan().getPlanId())
                 .diaryTitle(diary.getDiaryTitle())
                 .diaryStatus(diary.getDiaryStatus())
-//                .diaryContext(diary.getDiaryContext())
+                .diaryContext(diary.getDiaryContext())
                 .diaryStartDate(diary.getDiaryStartDate())
                 .diaryWriteDate(diary.getDiaryWriteDate())
                 .diaryEndDate(diary.getDiaryEndDate())

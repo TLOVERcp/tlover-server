@@ -1,12 +1,9 @@
 package com.example.tlover.domain.authority.service;
 
-import com.example.tlover.domain.authority.dto.AuthorityDiaryListResponse;
-import com.example.tlover.domain.authority.dto.AuthorityDiaryResponse;
-import com.example.tlover.domain.authority.dto.CheckAuthorityDiaryResponse;
+import com.example.tlover.domain.authority.dto.*;
 import com.example.tlover.domain.authority.entity.AuthorityDiary;
 import com.example.tlover.domain.authority.exception.*;
 import com.example.tlover.domain.authority.repository.AuthorityDiaryRepository;
-import com.example.tlover.domain.authority.dto.SharePlanRequest;
 import com.example.tlover.domain.diary.entity.Diary;
 import com.example.tlover.domain.diary.exception.NotFoundDiaryException;
 import com.example.tlover.domain.diary.repository.DiaryRepository;
@@ -96,17 +93,31 @@ public class AuthorityDiaryServiceImpl implements AuthorityDiaryService{
     }
 
     @Override
-    public void getListHostAuthor(String loginId) {
+    public List<AuthorityDiaryListForHostResponse> getListHostAuthor(String loginId) {
         User user = userRepository.findByUserLoginId(loginId).orElseThrow(NotFoundUserException::new);
         List<Diary> diaries = diaryRepository.findByUser(user).orElseThrow(NotFoundUserException::new);
 
         List<List<AuthorityDiary>> result = new ArrayList<>();
 
-//        for (Diary diary : diaries) {
-//            List<AuthorityDiary> authorityDiaryList = authorityDiaryRepository.findByDiaryAndNotAuthorityDiaryStatus(diary, "HOST").orElseThrow(NotFoundAuthorityExpception::new);
-//            result.add(authorityDiaryList);
-//
-//        }
+        for (Diary diary : diaries) {
+            if(diary.getDiaryStatus().equals("ACTIVE")) {
+                Optional<List<AuthorityDiary>> oListAd = authorityDiaryRepository.findByDiaryAndAuthorityDiaryStatusNot(diary, "HOST");
+                if(oListAd.isPresent()) {
+                    result.add(oListAd.get());
+                }
+            }
+        }
+
+        List<AuthorityDiaryListForHostResponse> responseList = new ArrayList<>();
+
+        for (List<AuthorityDiary> authorityDiaries : result) {
+            for (AuthorityDiary authorityDiary : authorityDiaries) {
+                responseList.add(AuthorityDiaryListForHostResponse.from(authorityDiary));
+            }
+        }
+
+        return responseList;
+
     }
 
     @Override
