@@ -6,7 +6,18 @@
                                    너와 나의 여행 다이어리, <br>
                                     내가 기록하고, 너와 공유하는 여행 다이어리 <br></h2></div>
                                     
-                                    
+<div align="center"> 
+<img src="https://user-images.githubusercontent.com/61726631/172529277-04d16a04-32d4-4fb1-8b64-2cfe243b7d37.png" width="21.4%" height="38.04%"/>
+<img src="https://user-images.githubusercontent.com/61726631/172529288-94324223-abc8-4808-a4b6-29110e805c59.png" width="21.4%" height="38.04%"/> 
+<img src="https://user-images.githubusercontent.com/61726631/172529290-9596b833-e8b7-49b9-86e8-7c6d179848dc.png" width="21.4%" height="38.04%"/>    
+<img src="https://user-images.githubusercontent.com/61726631/172529292-d44c325b-b3c5-456b-a78c-64c1f956aa34.png" width="21.4%" height="38.04%"/>  
+</div>     
+
+<div align="center"> 
+<img src="https://user-images.githubusercontent.com/61726631/172529294-3a36e5f2-dc56-435a-ae32-3e3d04114f27.png" width="21.4%" height="38.04%"/>
+<img src="https://user-images.githubusercontent.com/61726631/172529296-c74c6608-5a13-4775-96d3-2c8cfb072f22.png" width="21.4%" height="38.04%"/> 
+<img src="https://user-images.githubusercontent.com/61726631/172529299-7041772e-f57c-4c9a-846b-bb68b01566f8.png" width="21.4%" height="38.04%"/>    
+</div>
 
 ## <p align="center"> 🛠 Tech Stacks </p>
 
